@@ -1,2 +1,3 @@
-# ENV_872_JMN_finalproject
-Final project repository for ENV 872-03L: Jack, Max, and Nancy
+# Alcorn_Bao_Hermanson_ENV_872_EDA_FinalProject
+Final project repository for ENV 872-03L 
+Names: Jack Alcorn, Max Hermanson, and Nancy Bao
