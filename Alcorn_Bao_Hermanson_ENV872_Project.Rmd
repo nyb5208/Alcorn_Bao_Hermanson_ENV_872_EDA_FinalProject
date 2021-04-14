@@ -92,10 +92,13 @@ class(epa.PAair.lead$Date)
 \newpage
 
 # Exploratory Analysis 
-```{r exploratory-analysis}
+```{r exploratory-analysis, include= FALSE, warning = FALSE}
+#
 dim(epa.PAair.lead)
 colnames(epa.PAair.lead)
 head(epa.PAair.lead)
+
+#Cleaned and Processed EPA PA Air Lead Data
 
 ```
 
