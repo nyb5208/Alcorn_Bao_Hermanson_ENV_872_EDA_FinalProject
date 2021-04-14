@@ -46,7 +46,7 @@ library(colormap)
 # Set your ggplot theme
 project.theme <- theme_classic(base_size=12)+
                  theme(plot.title= 
-                         element_text(size=12,
+                         element_text(size=14,
                          face="bold",
                          color= "black",
                          hjust=0.5),
@@ -56,8 +56,26 @@ project.theme <- theme_classic(base_size=12)+
                          element_text(color= "black",face= "bold"),
                          legend.position="top")
 theme_set(project.theme)
-# Load your datasets
+# Load EPA Air Lead Pollution datasets
+epa.PAlead.2010 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_10_PA_lead.csv", stringsAsFactors = TRUE)
+epa.PAlead.2011 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_11_PA_lead.csv", stringsAsFactors = TRUE)
+epa.PAlead.2012 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_12_PA_lead.csv", stringsAsFactors = TRUE)
+epa.PAlead.2013 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_13_PA_lead.csv", stringsAsFactors = TRUE)
+epa.PAlead.2014 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_14_PA_lead.csv", stringsAsFactors = TRUE)
+epa.PAlead.2015 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_15_PA_lead.csv", stringsAsFactors = TRUE)
+epa.PAlead.2016 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_16_PA_lead.csv", stringsAsFactors = TRUE)
+epa.PAlead.2017 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_17_PA_lead.csv", stringsAsFactors = TRUE)
+epa.PAlead.2018 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_18_PA_lead.csv", stringsAsFactors = TRUE)
+epa.PAlead.2019 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_19_PA_lead.csv", stringsAsFactors = TRUE)
+epa.PAlead.2020 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_20_PA_lead.csv", stringsAsFactors = TRUE)
+# Combine data sets with rbind()
+epa.PAair.lead <-rbind(epa.PAlead.2010, epa.PAlead.2011, epa.PAlead.2012, epa.PAlead.2013,
+                       epa.PAlead.2014, epa.PAlead.2015, epa.PAlead.2016, epa.PAlead.2017,
+                       epa.PAlead.2018, epa.PAlead.2019, epa.PAlead.2020)
 
+#Change date variable from factor to date
+epa.PAair.lead$Date <- as.Date(epa.PAair.lead$Date, format="%m/%d/%Y")
+class(epa.PAair.lead$Date)
 ```
 
 
