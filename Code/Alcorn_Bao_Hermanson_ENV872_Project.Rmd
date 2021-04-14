@@ -27,9 +27,35 @@ getwd()
 # Load your packages
 library(tidyverse)
 library(ggplot2)
-library()
-# Set your ggplot theme
+library(ggridges)
+library(ggpubr)
+library(plyr)
+library(lubridate)
+library(zoo)
+library(trend)
+library(sf)
+library(knitr)
+library(kableExtra)
+#Load color palette packages
+library(RColorBrewer)
+library(wesanderson)
+library(viridisLite)
+library(viridis)
+library(colormap)
 
+# Set your ggplot theme
+project.theme <- theme_classic(base_size=12)+
+                 theme(plot.title= 
+                         element_text(size=12,
+                         face="bold",
+                         color= "black",
+                         hjust=0.5),
+                         axis.text = 
+                         element_text(color = "black"),
+                         axis.title = 
+                         element_text(color= "black",face= "bold"),
+                         legend.position="top")
+theme_set(project.theme)
 # Load your datasets
 
 ```
@@ -48,7 +74,9 @@ library()
 \newpage
 
 # Exploratory Analysis 
+```{r exploratory-analysis}
 
+```
 
 
 \newpage
