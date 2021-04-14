@@ -6,7 +6,7 @@ output:
     number_sections: yes
 geometry: margin=2.54cm
 title: "Spatial and Temporal Evaluation of Lead Air Pollution Patterns in Pennsylvania"
-subtitle: "Web address for GitHub repository"
+subtitle: "https://github.com/nyb5208/Alcorn_Bao_Hermanson_ENV_872_EDA_FinalProject.git"
 author: "Jack Alcorn, Max Hermanson, and Nancy Bao "
 fontsize: 12pt
 mainfont: Times New Roman
@@ -25,7 +25,9 @@ mainfont: Times New Roman
 # Set your working directory
 getwd()
 # Load your packages
-
+library(tidyverse)
+library(ggplot2)
+library()
 # Set your ggplot theme
 
 # Load your datasets
