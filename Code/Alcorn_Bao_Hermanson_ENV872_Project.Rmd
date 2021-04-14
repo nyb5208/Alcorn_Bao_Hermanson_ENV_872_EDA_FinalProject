@@ -5,9 +5,9 @@ output:
     fig_caption: yes
     number_sections: yes
 geometry: margin=2.54cm
-title: "Insert title of project here"
+title: "Spatial and Temporal Evaluation of Lead Air Pollution Patterns in Pennsylvania"
 subtitle: "Web address for GitHub repository"
-author: "Name"
+author: "Jack Alcorn, Max Hermanson, and Nancy Bao "
 fontsize: 12pt
 mainfont: Times New Roman
 
@@ -23,7 +23,7 @@ mainfont: Times New Roman
 
 ```{r setup, include=FALSE}
 # Set your working directory
-
+getwd()
 # Load your packages
 
 # Set your ggplot theme
