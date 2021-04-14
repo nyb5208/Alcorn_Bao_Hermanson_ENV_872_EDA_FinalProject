@@ -56,6 +56,8 @@ project.theme <- theme_classic(base_size=12)+
                          element_text(color= "black",face= "bold"),
                          legend.position="top")
 theme_set(project.theme)
+#___________________
+
 # Load EPA Air Lead Pollution datasets
 epa.PAlead.2010 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_10_PA_lead.csv", stringsAsFactors = TRUE)
 epa.PAlead.2011 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_11_PA_lead.csv", stringsAsFactors = TRUE)
@@ -76,6 +78,12 @@ epa.PAair.lead <-rbind(epa.PAlead.2010, epa.PAlead.2011, epa.PAlead.2012, epa.PA
 #Change date variable from factor to date
 epa.PAair.lead$Date <- as.Date(epa.PAair.lead$Date, format="%m/%d/%Y")
 class(epa.PAair.lead$Date)
+#___________________
+#Load other datasets
+
+#Read in PA Counties shp file (State FIPS = 42)
+PA_county_sf <- st_read("./Data/Spatial/cb_2018_us_county_20m.shp") %>%
+filter(STATEFP == 42)
 ```
 
 
