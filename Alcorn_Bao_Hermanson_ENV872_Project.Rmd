@@ -68,7 +68,7 @@ epa.PAlead.2017 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_17_PA_lead.csv", strings
 epa.PAlead.2018 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_18_PA_lead.csv", stringsAsFactors = TRUE)
 epa.PAlead.2019 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_19_PA_lead.csv", stringsAsFactors = TRUE)
 epa.PAlead.2020 <-read.csv( "./Data/Raw/EPA_Lead_PA/EPA_20_PA_lead.csv", stringsAsFactors = TRUE)
-# Combine data sets with rbind()
+# Combined the EPA lead air data sets with rbind()
 epa.PAair.lead <-rbind(epa.PAlead.2010, epa.PAlead.2011, epa.PAlead.2012, epa.PAlead.2013,
                        epa.PAlead.2014, epa.PAlead.2015, epa.PAlead.2016, epa.PAlead.2017,
                        epa.PAlead.2018, epa.PAlead.2019, epa.PAlead.2020)
@@ -86,13 +86,16 @@ class(epa.PAair.lead$Date)
 \newpage
 
 # Dataset Information
-
+>US EPA Daily Outdoor Air Quality Data 
 
 
 \newpage
 
 # Exploratory Analysis 
 ```{r exploratory-analysis}
+dim(epa.PAair.lead)
+colnames(epa.PAair.lead)
+head(epa.PAair.lead)
 
 ```
 
@@ -100,8 +103,13 @@ class(epa.PAair.lead$Date)
 \newpage
 
 # Analysis
+```{r time_series-analysis}
 
+```
 
+```{r spatial-analysis}
+
+```
 
 ## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
 
