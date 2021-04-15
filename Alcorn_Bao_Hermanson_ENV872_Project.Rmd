@@ -107,7 +107,10 @@ colnames(epa.PAair.lead)
 head(epa.PAair.lead)
 
 #Cleaned and Processed EPA PA Air Lead Data
-
+epa.PA.airPb.processed <- epa.PAair.lead %>%
+                                  
+                                  mutate(Month = month(Date),
+                                  Year=year(Date))
 ```
 
 
@@ -126,7 +129,7 @@ head(epa.PAair.lead)
 
 ## Question 2: Where are the hotspots for air lead concentrations in Pennsylvania? 
 
-
+## Question 3: 
 
 
 \newpage
