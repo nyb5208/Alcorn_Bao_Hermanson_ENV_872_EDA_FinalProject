@@ -128,7 +128,7 @@ epa.PA.airPb.processed <- epa.PAair.lead %>%
 ## Question 1: How do air lead concentrations vary from 2010 to 2020 across Pennsylvania?
 
 ## Question 2: Where are the hotspots for air lead concentrations in Pennsylvania? 
-
+#Jack
 ## Question 3: 
 
 
