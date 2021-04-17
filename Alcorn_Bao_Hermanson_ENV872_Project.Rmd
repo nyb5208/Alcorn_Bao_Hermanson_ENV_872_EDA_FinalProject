@@ -1,6 +1,8 @@
 ---
 output: 
   pdf_document:
+    
+    
     keep_tex: yes
     fig_caption: yes
     number_sections: yes
@@ -10,7 +12,8 @@ subtitle: "https://github.com/nyb5208/Alcorn_Bao_Hermanson_ENV_872_EDA_FinalProj
 author: "Jack Alcorn, Max Hermanson, and Nancy Bao "
 fontsize: 12pt
 mainfont: Times New Roman
-
+editor_options:
+  chunk_output_type: console
 ---
 
 \newpage
@@ -42,7 +45,8 @@ library(wesanderson)
 library(viridisLite)
 library(viridis)
 library(colormap)
-
+library(mapview)
+library(sf)
 # Set your ggplot theme
 project.theme <- theme_classic(base_size=12)+
                  theme(plot.title= 
@@ -125,11 +129,49 @@ epa.PA.airPb.processed <- epa.PAair.lead %>%
 
 ```
 
+```{r Regression}
+###Metal####
+#need to use R spatial analysis to determine which county FIPS each metal processing plant is in 
+metal_sf <- st_read('./Data/Raw/Metal_processing/PA_DEP/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant.shp')
+metal_csv <- read.csv("./Data/Raw/Metal_processing/PA_DEP/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant.csv", stringsAsFactors = TRUE)
+mapview(metal_sf)
+
+
+#metal_sf2 <- county_sf %>% 
+  #filter(STATEFP == 31)
+
+###Blood_Lead_Children####
+##contains county FIPS code
+children_blood_lead <- read.csv("./Data/Raw/BloodLeadLevels/PA_CountyLevelSummary_2017.csv", stringsAsFactors = TRUE)
+children_blood_lead$FIPS<- children_blood_lead$PA.Blood.Lead.Levels..µg.dL..among.Children...72.Months.of.Age..by.County.and.Blood.Lead.Level..BLL..Group..2017
+###2010 Census #####
+census_sf <- st_read('./Data/Raw/CensusData/tl_2020_42_county10/tl_2020_42_county10.shp')
+mapview(census_sf)
+census_sf$FIPS <- census_sf$STATEFP10
+
+
+#mapping intersections
+newmap<- ggplot()+
+  geom_sf(data = census_sf, color = "Black", fill = "Green", alpha = 0.3, show.legend = "polygon")+
+  geom_sf(data = metal_sf, color = 'blue', size = 2, show.legend = "point" )
+newmap
+
+metal_data_sf <- st_as_sf(metal_sf, coords = c('X', 'Y'), crs = 4269)
+
+st_crs(census_sf)$epsg 
+st_crs(metal_sf)$epsg
+
+metal_intersection_withcounties <- census_sf[metal_sf,]
+metal_intersection_withcounties2 <- census_sf %>% 
+  filter(st_intersects(x = ., y = metal_sf, sparse = FALSE))
+```
 ## Question 1: How do air lead concentrations vary from 2010 to 2020 across Pennsylvania?
 
 ## Question 2: Where are the hotspots for air lead concentrations in Pennsylvania? 
 #Jack
-## Question 3: 
+
+## Question 3: PA Income, resperitory disease, water lead levels, number of: airports, metal processing plants, coal plants, incinerators
+
 
 
 \newpage
