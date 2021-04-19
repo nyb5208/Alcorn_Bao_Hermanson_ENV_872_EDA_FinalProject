@@ -129,6 +129,12 @@ epa.PA.airPb.processed <- epa.PAair.lead %>%
 #Create dataframe named all.Days using seq() and lubridate function ymd()
 all.Days<-as.data.frame(seq(ymd("2010-01-01"), ymd("2020-12-31"),by="days"))
 all.Days<-setNames(all.Days,c("Date"))
+epa.PAcounty.Pb <- epa.PA.airPb.processed %>%
+                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
+                  group_by(COUNTY) %>%
+                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
+                  arrange(desc(County.Mean.Pb))
+                  
 # Allegheny County
 Allegheny_co_Pb <- epa.PA.airPb.processed %>%
                     filter(COUNTY=="Allegheny") %>%
