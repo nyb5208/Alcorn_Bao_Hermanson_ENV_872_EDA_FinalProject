@@ -306,6 +306,16 @@ mapview(metal_intersection_withcounties3)
 metal_intersection_withcounties2 <- census_sf %>% 
   filter(st_intersects(x = ., y = metal_4269, sparse = FALSE))
 
+#airport
+airport_raw <- read.csv("./Data/Raw/Airport Data/Airports.csv",  stringsAsFactors = TRUE)
+airport_sf <- st_as_sf(airport_raw, coords = c('X', 'Y'), crs = 4269)
+airport_PA <- airport_sf %>% 
+  filter(STATE == "PA") %>% 
+  filter(TYPE_CODE == "AD") %>% 
+  filter(PRIVATEUSE == 0)
+mapview(airport_PA)
+
+#resp disease 
 
 ```
 filter(!is.na(Latitude), !is.na(Longitude)) %>%
