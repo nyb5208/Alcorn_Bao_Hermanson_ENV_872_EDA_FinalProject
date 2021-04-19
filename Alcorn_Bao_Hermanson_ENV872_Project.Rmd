@@ -163,6 +163,56 @@ Philly_Pb <-left_join(all.Days,Philly_co_Pb)
 # 
 summary(epa.PA.airPb.processed$COUNTY)
 PA.lead.2010.2020<-left_join(all.Days,epa.PA.airPb.processed)
+###################
+# Allegheny Co. 
+Allegheny_lineplot<-ggplot(Allegheny_Pb,aes(x = Date,
+y = Daily.Mean.Pb.Concentration))+
+geom_line(color = "black") +
+labs(y="Daily Average Pb Concentration (ppm)",
+title="Daily Average Pb Concentrations from 2010 to 2020 in Allegheny Co., PA")+
+  scale_x_date(date_breaks = "6 months",date_labels = "%b %Y")+
+theme(axis.text.x=element_text(angle=90, hjust=1))
+print(Allegheny_lineplot)
+#
+# Beaver Co. 
+Beaver_lineplot<-ggplot(Beaver_Pb,aes(x = Date,
+y = Daily.Mean.Pb.Concentration))+
+geom_line(color = "black") +
+labs(y="Daily Average Pb Concentration (ppm)",
+title="Daily Average Pb Concentrations from 2010 to 2020 in Beaver Co., PA")+
+  scale_x_date(date_breaks = "6 months",date_labels = "%b %Y")+
+theme(axis.text.x=element_text(angle=90, hjust=1))
+print(Beaver_lineplot)
+#
+# Berks Co.
+Berks_lineplot<-ggplot(Berks_Pb,aes(x = Date,
+y = Daily.Mean.Pb.Concentration))+
+geom_line(color = "black") +
+labs(y="Daily Average Pb Concentration (ppm)",
+title="Daily Average Pb Concentrations from 2010 to 2020 in Berk Co., PA")+
+  scale_x_date(date_breaks = "6 months",date_labels = "%b %Y")+
+theme(axis.text.x=element_text(angle=90, hjust=1))
+print(Berks_lineplot)
+#
+# Delaware Co.
+Delaware_lineplot<-ggplot(Delaware_Pb,aes(x = Date,
+y = Daily.Mean.Pb.Concentration))+
+geom_line(color = "black") +
+labs(y="Daily Average Pb Concentration (ppm)",
+title="Daily Average Pb Concentrations from 2010 to 2020 in Delaware Co., PA")+
+  scale_x_date(date_breaks = "6 months",date_labels = "%b %Y")+
+theme(axis.text.x=element_text(angle=90, hjust=1))
+print(Delaware_lineplot)
+#
+# Philadelphia Co.
+Philly_lineplot<-ggplot(Philly_Pb,aes(x = Date,
+y = Daily.Mean.Pb.Concentration))+
+geom_line(color = "black") +
+labs(y="Daily Average Pb Concentration (ppm)",
+title="Daily Average Pb Concentrations from 2010 to 2020 in Philadelphia Co., PA")+
+  scale_x_date(date_breaks = "6 months",date_labels = "%b %Y")+
+theme(axis.text.x=element_text(angle=90, hjust=1))
+print(Philly_lineplot)
 ```
 
 ```{r spatial-analysis}
