@@ -222,6 +222,50 @@ print(Philly_lineplot)
 ```
 
 ```{r spatial-analysis}
+#Reduce our data to just one record for each location, computing mean and max daily AQI values 2010 and 2020
+EPAair_PA_Lead_avg2010 <- epa.PAlead.2010 %>%
+  group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
+  summarize(meanPb = mean(Daily.Mean.Pb.Concentration),
+            maxPb = max(Daily.Mean.Pb.Concentration))
+
+EPAair_PA_Lead_avg2015 <- epa.PAlead.2015 %>%
+  group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
+  summarize(meanPb = mean(Daily.Mean.Pb.Concentration),
+            maxPb = max(Daily.Mean.Pb.Concentration))
+
+EPAair_PA_Lead_avg2020 <- epa.PAlead.2020 %>%
+  group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
+  summarize(meanPb = mean(Daily.Mean.Pb.Concentration),
+            maxPb = max(Daily.Mean.Pb.Concentration))
+
+#Convert the dataset to a spatially enabled "sf" data frame
+sf_PA_Lead_avg2010 <- st_as_sf(EPAair_PA_Lead_avg2010,
+                             coords = c('SITE_LONGITUDE','SITE_LATITUDE'),
+                             crs=4326)
+
+sf_PA_Lead_avg2015 <- st_as_sf(EPAair_PA_Lead_avg2015,
+                             coords = c('SITE_LONGITUDE','SITE_LATITUDE'),
+                             crs=4326)
+
+sf_PA_Lead_avg2020 <- st_as_sf(EPAair_PA_Lead_avg2020,
+                             coords = c('SITE_LONGITUDE','SITE_LATITUDE'),
+                             crs=4326)
+
+#Map sf datasets
+PA_map_2010<-mapview(sf_PA_Lead_avg2010, 
+        zcol='meanPb', 
+        cex='maxPb')
+PA_map_2010
+
+PA_map_2015<-mapview(sf_PA_Lead_avg2015, 
+        zcol='meanPb', 
+        cex='maxPb')
+PA_map_2015
+
+PA_map_2020<-mapview(sf_PA_Lead_avg2020, 
+        zcol='meanPb', 
+        cex='maxPb')
+PA_map_2020
 
 ```
 
