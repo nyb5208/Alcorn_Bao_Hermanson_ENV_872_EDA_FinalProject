@@ -132,12 +132,34 @@ all.Days<-setNames(all.Days,c("Date"))
 # Allegheny County
 Allegheny_co_Pb <- epa.PA.airPb.processed %>%
                     filter(COUNTY=="Allegheny") %>%
-                    select(Date,Daily.Mean.Pb.Concentration, Month:Year)
+                    select(Date,Daily.Mean.Pb.Concentration)
+Allegheny_Pb <-left_join(all.Days,Allegheny_co_Pb)
 # Beaver County
+Beaver_co_Pb <- epa.PA.airPb.processed %>%
+                    filter(COUNTY=="Beaver") %>%
+                    select(Date,Daily.Mean.Pb.Concentration)
+Beaver_Pb <-left_join(all.Days,Beaver_co_Pb)
 # Berks County
+Berks_co_Pb <- epa.PA.airPb.processed %>%
+                    filter(COUNTY=="Berks") %>%
+                    select(Date,Daily.Mean.Pb.Concentration)
+Berks_Pb <-left_join(all.Days,Berks_co_Pb)
 # Delaware County
+Delaware_co_Pb <- epa.PA.airPb.processed %>%
+                    filter(COUNTY=="Delaware") %>%
+                    select(Date,Daily.Mean.Pb.Concentration)
+Delaware_Pb <-left_join(all.Days,Delaware_co_Pb)
 # Lancaster County
-# Philadephia County
+Lancaster_co_Pb <- epa.PA.airPb.processed %>%
+                    filter(COUNTY=="Lancaster") %>%
+                    select(Date,Daily.Mean.Pb.Concentration)
+Lancaster_Pb <-left_join(all.Days,Lancaster_co_Pb)
+
+# Philadelphia County
+Philly_co_Pb <- epa.PA.airPb.processed %>%
+                    filter(COUNTY=="Philadelphia") %>%
+                    select(Date,Daily.Mean.Pb.Concentration)
+Philly_Pb <-left_join(all.Days,Philly_co_Pb)
 # 
 summary(epa.PA.airPb.processed$COUNTY)
 PA.lead.2010.2020<-left_join(all.Days,epa.PA.airPb.processed)
