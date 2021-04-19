@@ -32,7 +32,7 @@ library(tidyverse)
 library(ggplot2)
 library(ggridges)
 library(ggpubr)
-library(plyr)
+library(dplyr)
 library(lubridate)
 library(zoo)
 library(trend)
@@ -113,7 +113,8 @@ head(epa.PAair.lead)
 #Cleaned and Processed EPA PA Air Lead Data
 epa.PA.airPb.processed <- epa.PAair.lead %>%
                                   mutate(Month = month(Date),
-                                  Year=year(Date))
+                                  Year=year(Date)) %>%
+                                  group_by()
 ```
 
 
