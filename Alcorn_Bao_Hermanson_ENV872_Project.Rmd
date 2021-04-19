@@ -112,9 +112,12 @@ head(epa.PAair.lead)
 
 #Cleaned and Processed EPA PA Air Lead Data
 epa.PA.airPb.processed <- epa.PAair.lead %>%
+                                  select(Date, Site.ID, 
+                                         Daily.Mean.Pb.Concentration,
+                                         Site.Name,AQS_PARAMETER_DESC,
+                                         STATE,COUNTY) %>%
                                   mutate(Month = month(Date),
-                                  Year=year(Date)) %>%
-                                  group_by()
+                                  Year=year(Date))
 ```
 
 
@@ -123,7 +126,21 @@ epa.PA.airPb.processed <- epa.PAair.lead %>%
 ##### MAX 
 # Analysis
 ```{r time_series-analysis}
-
+#Create dataframe named all.Days using seq() and lubridate function ymd()
+all.Days<-as.data.frame(seq(ymd("2010-01-01"), ymd("2020-12-31"),by="days"))
+all.Days<-setNames(all.Days,c("Date"))
+# Allegheny County
+Allegheny_co_Pb <- epa.PA.airPb.processed %>%
+                    filter(COUNTY=="Allegheny") %>%
+                    select(Date,Daily.Mean.Pb.Concentration, Month:Year)
+# Beaver County
+# Berks County
+# Delaware County
+# Lancaster County
+# Philadephia County
+# 
+summary(epa.PA.airPb.processed$COUNTY)
+PA.lead.2010.2020<-left_join(all.Days,epa.PA.airPb.processed)
 ```
 
 ```{r spatial-analysis}
