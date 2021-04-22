@@ -88,6 +88,7 @@ class(epa.PAair.lead$Date)
 #Read in PA Counties shp file (State FIPS = 42)
 PA_county_sf <- st_read("./Data/Spatial/cb_2018_us_county_20m.shp") %>%
 filter(STATEFP == 42)
+
 ```
 
 
@@ -115,9 +116,11 @@ epa.PA.airPb.processed <- epa.PAair.lead %>%
                                   select(Date, Site.ID, 
                                          Daily.Mean.Pb.Concentration,
                                          Site.Name,AQS_PARAMETER_DESC,
-                                         STATE,COUNTY) %>%
+                                         STATE,COUNTY, COUNTY_CODE) %>%
                                   mutate(Month = month(Date),
                                   Year=year(Date))
+
+#Nancy, I added 'COUNTY_CODE' to the select() command above. I hope this doesn't mess anything up. 
 ```
 
 
@@ -134,7 +137,13 @@ epa.PAcounty.Pb <- epa.PA.airPb.processed %>%
                   group_by(COUNTY) %>%
                   summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
                   arrange(desc(County.Mean.Pb))
-                  
+
+epa.PAcounty.Pb2 <- epa.PA.airPb.processed %>%    #ADDED BY MAX FOR REGRESSION STUFF 
+   select(Date,COUNTY, Daily.Mean.Pb.Concentration, COUNTY_CODE) %>%
+                  group_by(COUNTY_CODE) %>%
+  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
+                  arrange(desc(County.Mean.Pb))
+  
 # Allegheny County
 Allegheny_co_Pb <- epa.PA.airPb.processed %>%
                     filter(COUNTY=="Allegheny") %>%
@@ -299,9 +308,18 @@ newmap
 st_crs(census_sf)$epsg 
 st_crs(metal_4269)$epsg
 
+
+epa.PAcounty.Pb2$FIPS <- epa.PAcounty.Pb2$COUNTY_CODE
+class(epa.PAcounty.Pb2$FIPS)
+metal_intersection_withcounties$FIPS <- as.numeric(metal_intersection_withcounties$COUNTYFP10)
+class(metal_intersection_withcounties$FIPS)
+
+
+test_join <- right_join(epa.PAcounty.Pb2, metal_intersection_withcounties3, by = c("FIPS"))
+
 metal_intersection_withcounties <- census_sf[metal_4269,]
 metal_intersection_withcounties3 <- metal_4269[census_sf,]
-mapview(metal_intersection_withcounties3)
+mapview(metal_intersection_withcounties)
 #mapview(metal_intersection_withcounties)
 metal_intersection_withcounties2 <- census_sf %>% 
   filter(st_intersects(x = ., y = metal_4269, sparse = FALSE))
