@@ -334,21 +334,18 @@ sf_PA_Lead_avg2020 <- st_as_sf(EPAair_PA_Lead_avg2020,
                              crs=4326)
 
 #Map sf datasets
-PA_map_2010<-mapview(sf_PA_Lead_avg2010, 
-        zcol='meanPb', 
-        cex='maxPb')
-PA_map_2010
+ggplot() + 
+  geom_sf(data=sf_PA_Lead_avg2010, aes(color=meanPb, size=maxPb))+
+  project.theme
 
-PA_map_2015<-mapview(sf_PA_Lead_avg2015, 
-        zcol='meanPb', 
-        cex='maxPb')
-PA_map_2015
-
-PA_map_2020<-mapview(sf_PA_Lead_avg2020, 
-        zcol='meanPb', 
-        cex='maxPb')
-PA_map_2020
-
+#read in county shape file
+counties_sf<- st_read('./Data/Spatial/cb_2018_us_county_20m.shp')%>%
+  filter(STATEFP == 42) #Filter for just PA Counties
+colnames(counties_sf)[6]<-"County"
+#read in county income data
+income_PA<-read.csv("./Data/Raw/PA_income_per_county.csv", header = TRUE)
+#join county income and county shape file
+PA_county_income<-left_join(counties_sf, income_PA, by = c("County"))
 ```
 
 ```{r Regression}
