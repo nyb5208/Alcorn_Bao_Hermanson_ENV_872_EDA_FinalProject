@@ -120,7 +120,7 @@ epa.PA.airPb.processed <- epa.PAair.lead %>%
                                   mutate(Month = month(Date),
                                   Year=year(Date))
 
-#Nancy, I added 'COUNTY_CODE' to the select() command above. I hope this doesn't mess anything up. 
+#Nancy, I added 'COUNTY_CODE' to the select() command above. I hope this doesn't mess anything up. **You're good**.
 ```
 
 
@@ -136,12 +136,6 @@ epa.PAcounty.Pb <- epa.PA.airPb.processed %>%
                   select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
                   group_by(COUNTY) %>%
                   summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
-                  arrange(desc(County.Mean.Pb))
-
-epa.PAcounty.Pb2 <- epa.PA.airPb.processed %>%    #ADDED BY MAX FOR REGRESSION STUFF 
-   select(Date,COUNTY, Daily.Mean.Pb.Concentration, COUNTY_CODE) %>%
-                  group_by(COUNTY_CODE) %>%
-  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
                   arrange(desc(County.Mean.Pb))
   
 # Allegheny County
@@ -230,6 +224,85 @@ theme(axis.text.x=element_text(angle=90, hjust=1))
 print(Philly_lineplot)
 ```
 
+
+```{r Linear Interpolation Visuals}
+#Looking at the top 5 PA counties for highest air Pb concentrations from 2010 to 2020
+#
+epa.PAcounty.Pb2014 <- epa.PA.airPb.processed %>%
+                  filter(Year==2014) %>%
+                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
+                  group_by(COUNTY) %>%
+                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
+                  arrange(desc(County.Mean.Pb))
+#
+epa.PAcounty.Pb2015 <- epa.PA.airPb.processed %>%
+                  filter(Year==2015) %>%
+                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
+                  group_by(COUNTY) %>%
+                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
+                  arrange(desc(County.Mean.Pb))
+#
+epa.PAcounty.Pb2016 <- epa.PA.airPb.processed %>%
+                  filter(Year==2016) %>%
+                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
+                  group_by(COUNTY) %>%
+                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
+                  arrange(desc(County.Mean.Pb))           
+#
+epa.PAcounty.Pb2017 <- epa.PA.airPb.processed %>%
+                  filter(Year==2017) %>%
+                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
+                  group_by(COUNTY) %>%
+                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
+                  arrange(desc(County.Mean.Pb))   
+#
+epa.PAcounty.Pb2018 <- epa.PA.airPb.processed %>%
+                  filter(Year==2018) %>%
+                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
+                  group_by(COUNTY) %>%
+                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
+                  arrange(desc(County.Mean.Pb))      
+#
+epa.PAcounty.Pb2019 <- epa.PA.airPb.processed %>%
+                  filter(Year==2019) %>%
+                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
+                  group_by(COUNTY) %>%
+                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
+                  arrange(desc(County.Mean.Pb))  
+#
+epa.PAcounty.Pb2020 <- epa.PA.airPb.processed %>%
+                  filter(Year==2020) %>%
+                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
+                  group_by(COUNTY) %>%
+                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
+                  arrange(desc(County.Mean.Pb))      
+#1.Carbon County
+#2.Berks County
+#3.Beaver County
+#4.Lancaster County
+#5.Philadelphia County
+PA.airPB.filtered.Carbon <- epa.PA.airPb.processed %>%
+                     filter(COUNTY=="Carbon") %>%
+                     select(Date, Daily.Mean.Pb.Concentration)
+time_days <-as.data.frame(seq(ymd("2012-07-01"), ymd("2020-09-30"),by="days"))
+time_days <-setNames(time_days, c("Date"))
+PA.airPb.Carbon <-left_join(time_days, PA.airPB.filtered.Carbon)
+
+PA.airPb.clean.Carbon <- PA.airPb.Carbon %>%
+                  mutate(Daily.Mean.Pb.Concentration=
+                           zoo::na.approx(Daily.Mean.Pb.Concentration))
+summary(PA.airPb.clean.Carbon$Daily.Mean.Pb.Concentration)
+
+PA.county.airPb.Carbon <-ggplot(epa.PA.airPb.filtered.Carbon)+
+                         geom_bar(aes(x=Date,
+                             y=Daily.Mean.Pb.Concentration))+
+  scale_x_date(date_breaks = "6 months",date_labels = "%b %Y")
+print(PA.county.airPb.Carbon)
+```
+
+
+
+
 ```{r spatial-analysis}
 #Reduce our data to just one record for each location, computing mean and max daily AQI values 2010 and 2020
 EPAair_PA_Lead_avg2010 <- epa.PAlead.2010 %>%
@@ -279,6 +352,12 @@ PA_map_2020
 ```
 
 ```{r Regression}
+#
+epa.PAcounty.Pb2 <- epa.PA.airPb.processed %>%    #ADDED BY MAX FOR REGRESSION STUFF 
+   select(Date,COUNTY, Daily.Mean.Pb.Concentration, COUNTY_CODE) %>%
+                  group_by(COUNTY_CODE) %>%
+  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
+                  arrange(desc(County.Mean.Pb))
 ###Metal####
 #need to use R spatial analysis to determine which county FIPS each metal processing plant is in 
 metal_sf <- st_read('./Data/Raw/Metal_processing/PA_DEP/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant.shp')
