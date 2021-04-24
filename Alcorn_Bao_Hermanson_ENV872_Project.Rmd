@@ -320,7 +320,7 @@ Allentown.Pb.monthly.trend.seasonal <-Kendall::SeasonalMannKendall(Allentown.msa
 summary(Allentown.Pb.monthly.trend.seasonal)
 Allentown.Pb.monthly.trend.nonseasonal <- Kendall::MannKendall(Allentown.msa.Pb.monthly.ts)
 summary(Allentown.Pb.monthly.trend.nonseasonal)
-#
+#Decomposition of the time series
 Allentown.msa.Pb.daily.decomp <- stl(Allentown.msa.Pb.daily.ts, s.window = "periodic")
 plot(Allentown.msa.Pb.daily.decomp)
 #
