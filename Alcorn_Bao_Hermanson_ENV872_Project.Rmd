@@ -316,6 +316,10 @@ Allentown.msa.Pb.monthly.ts <-ts(Allentown.monthly.Pb.msa$Mean.monthly.Pb,
                                 start=c(2012,1),
                                 end=c(2020,9),
                                 frequency=12)
+Allentown.Pb.monthly.trend.seasonal <-Kendall::SeasonalMannKendall(Allentown.msa.Pb.monthly.ts)
+summary(Allentown.Pb.monthly.trend.seasonal)
+Allentown.Pb.monthly.trend.nonseasonal <- Kendall::MannKendall(Allentown.msa.Pb.monthly.ts)
+summary(Allentown.Pb.monthly.trend.nonseasonal)
 #
 Allentown.msa.Pb.daily.decomp <- stl(Allentown.msa.Pb.daily.ts, s.window = "periodic")
 plot(Allentown.msa.Pb.daily.decomp)
