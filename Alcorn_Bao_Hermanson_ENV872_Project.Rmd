@@ -139,7 +139,7 @@ all.Days<-setNames(all.Days,c("Date"))
 #Looked at Monthly Lead Air concentrations of the Five major metropolitan areas in Pennsylvania 
 #Philadelphia Metropolitan Area
 epa.PA.monthly.Pb.Philly <-epa.PA.airPb.processed %>%
-                  filter(COUNTY==c("Philadelphia","Delaware"))%>%
+                  filter(CBSA_CODE==37980)%>%
                   select(Date,Date_combined, Daily.Mean.Pb.Concentration,) %>%
                   group_by(Date_combined)%>%
                   dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))%>%
@@ -148,7 +148,7 @@ view(epa.PA.monthly.Pb.Philly)
 #
 #Pittsburgh Metropolitan Area
 epa.PA.monthly.Pb.Pitt <-epa.PA.airPb.processed %>%
-                  filter(COUNTY %in% c("Allegheny","Beaver","Westmoreland"))%>%
+                  filter(CBSA_CODE==38300)%>%
                   select(Date,Date_combined, Daily.Mean.Pb.Concentration,) %>%
                   group_by(Date_combined)%>%
                   dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))%>%
@@ -158,8 +158,8 @@ view(epa.PA.monthly.Pb.Pitt)
 #
 # Allentown-Bethlehem-Easton Metropolitan Area
 epa.PA.monthly.Pb.Allentown <-epa.PA.airPb.processed %>%
-                  filter(COUNTY=="Carbon")%>%
-                  select(Date,Date_combined,COUNTY, Daily.Mean.Pb.Concentration,) %>%
+                  filter(CBSA_CODE==10900)%>%
+                  select(Date,Date_combined, Daily.Mean.Pb.Concentration,) %>%
                   group_by(Date_combined)%>%
                   dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))%>%
                   add_column(CBSA="Allentown-Bethlehem-Easton")
@@ -167,7 +167,7 @@ epa.PA.monthly.Pb.Allentown
 #Now looking at major mining county: Luzerne Co, PA (#Scranton-Wilkes-Barre-Hazleton Metropolitan Area)
 #Luzerne
 epa.PA.monthly.Pb.Scranton <-epa.PA.airPb.processed %>%
-                  filter(COUNTY=="Luzerne")%>%
+                  filter(CBSA_CODE==42540)%>%
                   select(Date,Date_combined,COUNTY, Daily.Mean.Pb.Concentration,) %>%
                   group_by(Date_combined)%>%
                   dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))%>%
@@ -175,7 +175,7 @@ epa.PA.monthly.Pb.Scranton <-epa.PA.airPb.processed %>%
 epa.PA.monthly.Pb.Scranton 
 # Lancaster Metropolitan Area 
 epa.PA.monthly.Pb.Lancaster <-epa.PA.airPb.processed %>%
-                  filter(COUNTY=="Lancaster")%>%
+                  filter(CBSA_CODE==29540)%>%
                   select(Date,Date_combined,COUNTY, Daily.Mean.Pb.Concentration,) %>%
                   group_by(Date_combined)%>%
                   dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))%>%
@@ -209,7 +209,24 @@ print(PAmonthly_plot)
 ```
 
 ```{r time-series-analysis}
-
+#I am looking at the two metropolitan areas with Air Concentrations that exceeded the EPA primary and secondary NAAQs
+#Scranton-Wilkes-Barre-Hazleton
+view(epa.PA.monthly.Pb.Scranton) #data runs from 2010 to 2018
+Scranton.days <-as.data.frame(seq(ymd("2010-01-01"), ymd("2018-12-31"),by="days"))
+Scranton.days <-setNames(Scranton.days,c("Date"))
+Scranton.msa.Pb.filter<-epa.PA.airPb.processed %>%
+                          filter(CBSA_CODE==42540)%>%
+                          select(Date,Daily.Mean.Pb.Concentration,CBSA_NAME,CBSA_CODE)
+                  
+Scranton.msa.Pb<-left_join(Scranton.days,Scranton.msa.Pb.filter)
+#Allentown-Bethlehem-Easton
+#data runs from July 2010 to December 2020
+Allentown.days <-as.data.frame(seq(ymd("2010-07-01"), ymd("2020-12-31"),by="days"))
+Allentown.days<-setNames(Allentown.days,c("Date"))
+Allentown.msa.Pb.filter<-epa.PA.airPb.processed %>%
+                   filter(CBSA_NAME=="Allentown-Bethlehem-Easton")%>%
+                   select(Date,Daily.Mean.Pb.Concentration)
+Allentown.msa.Pb<-left_join(Allentown.days,Allentown.msa.Pb.filter)                   
 ```
 
 ```{r spatial-analysis}
