@@ -216,15 +216,15 @@ Scranton.days <-as.data.frame(seq(ymd("2010-01-01"), ymd("2018-12-31"),by="days"
 Scranton.days <-setNames(Scranton.days,c("Date"))
 Scranton.msa.Pb.filter<-epa.PA.airPb.processed %>%
                           filter(CBSA_CODE==42540)%>%
-                          select(Date,Daily.Mean.Pb.Concentration,CBSA_NAME,CBSA_CODE)
+                          select(Date,Daily.Mean.Pb.Concentration)
                   
 Scranton.msa.Pb<-left_join(Scranton.days,Scranton.msa.Pb.filter)
 #Allentown-Bethlehem-Easton
 #data runs from July 2010 to December 2020
-Allentown.days <-as.data.frame(seq(ymd("2010-07-01"), ymd("2020-12-31"),by="days"))
+Allentown.days <-as.data.frame(seq(ymd("2012-07-01"), ymd("2020-12-31"),by="days"))
 Allentown.days<-setNames(Allentown.days,c("Date"))
 Allentown.msa.Pb.filter<-epa.PA.airPb.processed %>%
-                   filter(CBSA_NAME=="Allentown-Bethlehem-Easton")%>%
+                   filter(CBSA_CODE==10900)%>%
                    select(Date,Daily.Mean.Pb.Concentration)
 Allentown.msa.Pb<-left_join(Allentown.days,Allentown.msa.Pb.filter)                   
 ```
