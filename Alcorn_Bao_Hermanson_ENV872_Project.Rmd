@@ -319,6 +319,9 @@ Allentown.msa.Pb.monthly.ts <-ts(Allentown.monthly.Pb.msa$Mean.monthly.Pb,
 #
 Allentown.msa.Pb.daily.decomp <- stl(Allentown.msa.Pb.daily.ts, s.window = "periodic")
 plot(Allentown.msa.Pb.daily.decomp)
+#
+Allentown.msa.Pb.monthly.decomp <- stl(Allentown.msa.Pb.monthly.ts, s.window = "periodic")
+plot(Allentown.msa.Pb.monthly.decomp)
 ```
 
 ```{r spatial-analysis}
