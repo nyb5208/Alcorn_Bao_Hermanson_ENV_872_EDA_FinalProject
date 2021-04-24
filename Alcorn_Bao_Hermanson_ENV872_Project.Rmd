@@ -227,15 +227,30 @@ Scranton.msa.Pb.cleaned
 Scranton.msa.linear.interpolation<-ggplot(Scranton.msa.Pb.cleaned) +
 geom_line(aes(x = Date,
 y = Daily.Mean.Pb.Concentration.clean),
-color = "blue", alpha=1) +
+color = "blue", alpha=0.5) +
 geom_line(aes(x = Date,
 y = Daily.Mean.Pb.Concentration),
 color = "orange",alpha=1) +
-ylab("Daily Mean Pb Air Concentration (ug/m^3)")+
+labs(y="Daily Mean Pb Air Concentration (ug/m^3)",title="Scranton-Wilkes-Barre-Hazleton Metropolitan Area")+
   scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
                                        limits=c(as.Date("2010-01-01"), as.Date("2018-10-01")),
-             expand=c(0,0))
+             expand=c(0,0))+
+                          theme(axis.text.x=element_text(angle=90, hjust=1))
 print(Scranton.msa.linear.interpolation)
+#
+Scranton.monthly.Pb.msa <-Scranton.msa.Pb.cleaned %>%
+                        mutate(Month = month(Date),
+                        Year=year(Date)) %>%
+                        mutate(Date_combined = my(paste0(Month,"-",Year)))%>%
+                        group_by(Date_combined)%>%
+                        dplyr::summarise(Mean.monthly.Pb=mean(Daily.Mean.Pb.Concentration.clean))
+Scranton.monthly.Pb.msa <- Scranton.monthly.Pb.msa %>%
+                           mutate(Date=as.Date(Date_combined))
+#Checking the first and last dates of data collection
+first(Scranton.msa.Pb.cleaned$Date)
+last(Scranton.msa.Pb.cleaned$Date)
+#
+#
 #Allentown-Bethlehem-Easton
 #data runs from July 2010 to December 2020
 Allentown.days <-as.data.frame(seq(ymd("2012-07-02"), ymd("2020-12-29"),by="days"))
@@ -248,6 +263,20 @@ Allentown.msa.Pb<-left_join(Allentown.days,Allentown.msa.Pb.filter)
 Allentown.msa.Pb.cleaned <-Allentown.msa.Pb %>%
   mutate(Daily.Mean.Pb.Concentration.clean=zoo::na.approx(Daily.Mean.Pb.Concentration))
 Allentown.msa.Pb.cleaned
+#Allentown linear interpolation
+Allentown.msa.linear.interpolation<-ggplot(Allentown.msa.Pb.cleaned) +
+geom_line(aes(x = Date,
+y = Daily.Mean.Pb.Concentration.clean),
+color = "blue", alpha=1) +
+geom_line(aes(x = Date,
+y = Daily.Mean.Pb.Concentration),
+color = "orange",alpha=1) +
+labs(y="Daily Mean Pb Air Concentration (ug/m^3)",title="Allentown-Bethlehem-Easton Metropolitan Area")+
+  scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
+                                       limits=c(as.Date("2010-01-01"), as.Date("2018-10-01")),
+             expand=c(0,0))+
+                          theme(axis.text.x=element_text(angle=90, hjust=1))
+print(Allentown.msa.linear.interpolation)
 ```
 
 ```{r spatial-analysis}
