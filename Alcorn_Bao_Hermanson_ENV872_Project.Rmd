@@ -250,6 +250,16 @@ Scranton.monthly.Pb.msa <- Scranton.monthly.Pb.msa %>%
 first(Scranton.msa.Pb.cleaned$Date)
 last(Scranton.msa.Pb.cleaned$Date)
 #
+#Time Series: daily
+Scranton.msa.Pb.daily.ts <-ts(Scranton.msa.Pb.cleaned$Daily.Mean.Pb.Concentration.clean,
+                              start=c(2010,1),
+                              end=c(2018,9),
+                              frequency=365)
+#Time Series: monthly
+Scranton.msa.Pb.monthly.ts <-ts(Scranton.monthly.Pb.msa$Mean.monthly.Pb,
+                                start=c(2010,1),
+                                end=c(2018,9),
+                                frequency=12)
 #
 #Allentown-Bethlehem-Easton
 #data runs from July 2010 to December 2020
