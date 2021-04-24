@@ -212,7 +212,7 @@ print(PAmonthly_plot)
 #I am looking at the two metropolitan areas with Air Concentrations that exceeded the EPA primary and secondary NAAQs
 #Scranton-Wilkes-Barre-Hazleton
 view(epa.PA.monthly.Pb.Scranton) #data runs from 2010 to 2018
-Scranton.days <-as.data.frame(seq(ymd("2010-01-01"), ymd("2018-12-31"),by="days"))
+Scranton.days <-as.data.frame(seq(ymd("2010-01-02"), ymd("2018-09-29"),by="days"))
 Scranton.days <-setNames(Scranton.days,c("Date"))
 Scranton.msa.Pb.filter<-epa.PA.airPb.processed %>%
                           filter(CBSA_CODE==42540)%>%
@@ -221,11 +221,24 @@ Scranton.msa.Pb.filter<-epa.PA.airPb.processed %>%
 Scranton.msa.Pb<-left_join(Scranton.days,Scranton.msa.Pb.filter)
 #Cleaned Scranton data
 Scranton.msa.Pb.cleaned <-Scranton.msa.Pb %>%
-  mutate(Daily.Mean.Pb.Concentration.clean=zoo::na.spline(Daily.Mean.Pb.Concentration))
+  mutate(Daily.Mean.Pb.Concentration.clean=zoo::na.approx(Daily.Mean.Pb.Concentration))
 Scranton.msa.Pb.cleaned
+#Scranton linear interpolation
+Scranton.msa.linear.interpolation<-ggplot(Scranton.msa.Pb.cleaned) +
+geom_line(aes(x = Date,
+y = Daily.Mean.Pb.Concentration.clean),
+color = "blue", alpha=1) +
+geom_line(aes(x = Date,
+y = Daily.Mean.Pb.Concentration),
+color = "orange",alpha=1) +
+ylab("Daily Mean Pb Air Concentration (ug/m^3)")+
+  scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
+                                       limits=c(as.Date("2010-01-01"), as.Date("2018-10-01")),
+             expand=c(0,0))
+print(Scranton.msa.linear.interpolation)
 #Allentown-Bethlehem-Easton
 #data runs from July 2010 to December 2020
-Allentown.days <-as.data.frame(seq(ymd("2012-07-01"), ymd("2020-12-31"),by="days"))
+Allentown.days <-as.data.frame(seq(ymd("2012-07-02"), ymd("2020-12-29"),by="days"))
 Allentown.days<-setNames(Allentown.days,c("Date"))
 Allentown.msa.Pb.filter<-epa.PA.airPb.processed %>%
                    filter(CBSA_CODE==10900)%>%
@@ -233,7 +246,7 @@ Allentown.msa.Pb.filter<-epa.PA.airPb.processed %>%
 Allentown.msa.Pb<-left_join(Allentown.days,Allentown.msa.Pb.filter)
 #Cleaned Allentown data
 Allentown.msa.Pb.cleaned <-Allentown.msa.Pb %>%
-  mutate(Daily.Mean.Pb.Concentration.clean=zoo::na.spline(Daily.Mean.Pb.Concentration))
+  mutate(Daily.Mean.Pb.Concentration.clean=zoo::na.approx(Daily.Mean.Pb.Concentration))
 Allentown.msa.Pb.cleaned
 ```
 
