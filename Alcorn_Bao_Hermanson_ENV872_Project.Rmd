@@ -115,12 +115,14 @@ head(epa.PAair.lead)
 epa.PA.airPb.processed <- epa.PAair.lead %>%
                                   select(Date, Site.ID, 
                                          Daily.Mean.Pb.Concentration,
-                                         Site.Name,AQS_PARAMETER_DESC,
+                                         Site.Name,AQS_PARAMETER_DESC,CBSA_NAME,CBSA_CODE,
                                          STATE,COUNTY, COUNTY_CODE) %>%
                                   mutate(Month = month(Date),
-                                  Year=year(Date))
-
-#Nancy, I added 'COUNTY_CODE' to the select() command above. I hope this doesn't mess anything up. **You're good**.
+                                  Year=year(Date)) %>%
+                                  mutate(Date_combined = my(paste0(Month,"-",Year)))
+# Looking at the Combined Statistical Areas to identify the metropolitan areas included in this study
+summary(epa.PA.airPb.processed$CBSA_NAME)
+summary(epa.PA.airPb.processed$COUNTY)
 ```
 
 
@@ -128,180 +130,87 @@ epa.PA.airPb.processed <- epa.PAair.lead %>%
 # Introduction 
 ##### MAX 
 # Analysis
-```{r time_series-analysis}
+```{r time_series-data-wrangling}
+#Looking at the lead air concentrations for major metropolitan areas in Pennsylvania 
 #Create dataframe named all.Days using seq() and lubridate function ymd()
 all.Days<-as.data.frame(seq(ymd("2010-01-01"), ymd("2020-12-31"),by="days"))
 all.Days<-setNames(all.Days,c("Date"))
-epa.PAcounty.Pb <- epa.PA.airPb.processed %>%
-                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
-                  group_by(COUNTY) %>%
-                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
-                  arrange(desc(County.Mean.Pb))
-  
-# Allegheny County
-Allegheny_co_Pb <- epa.PA.airPb.processed %>%
-                    filter(COUNTY=="Allegheny") %>%
-                    select(Date,Daily.Mean.Pb.Concentration)
-Allegheny_Pb <-left_join(all.Days,Allegheny_co_Pb)
-# Beaver County
-Beaver_co_Pb <- epa.PA.airPb.processed %>%
-                    filter(COUNTY=="Beaver") %>%
-                    select(Date,Daily.Mean.Pb.Concentration)
-Beaver_Pb <-left_join(all.Days,Beaver_co_Pb)
-# Berks County
-Berks_co_Pb <- epa.PA.airPb.processed %>%
-                    filter(COUNTY=="Berks") %>%
-                    select(Date,Daily.Mean.Pb.Concentration)
-Berks_Pb <-left_join(all.Days,Berks_co_Pb)
-# Delaware County
-Delaware_co_Pb <- epa.PA.airPb.processed %>%
-                    filter(COUNTY=="Delaware") %>%
-                    select(Date,Daily.Mean.Pb.Concentration)
-Delaware_Pb <-left_join(all.Days,Delaware_co_Pb)
-# Lancaster County
-Lancaster_co_Pb <- epa.PA.airPb.processed %>%
-                    filter(COUNTY=="Lancaster") %>%
-                    select(Date,Daily.Mean.Pb.Concentration)
-Lancaster_Pb <-left_join(all.Days,Lancaster_co_Pb)
 
-# Philadelphia County
-Philly_co_Pb <- epa.PA.airPb.processed %>%
-                    filter(COUNTY=="Philadelphia") %>%
-                    select(Date,Daily.Mean.Pb.Concentration)
-Philly_Pb <-left_join(all.Days,Philly_co_Pb)
-# 
-summary(epa.PA.airPb.processed$COUNTY)
-PA.lead.2010.2020<-left_join(all.Days,epa.PA.airPb.processed)
-###################
-# Allegheny Co. 
-Allegheny_lineplot<-ggplot(Allegheny_Pb,aes(x = Date,
-y = Daily.Mean.Pb.Concentration))+
-geom_line(color = "black") +
-labs(y="Daily Average Pb Concentration (ppm)",
-title="Daily Average Pb Concentrations from 2010 to 2020 in Allegheny Co., PA")+
-  scale_x_date(date_breaks = "6 months",date_labels = "%b %Y")+
-theme(axis.text.x=element_text(angle=90, hjust=1))
-print(Allegheny_lineplot)
+#Looked at Monthly Lead Air concentrations of the Five major metropolitan areas in Pennsylvania 
+#Philadelphia Metropolitan Area
+epa.PA.monthly.Pb.Philly <-epa.PA.airPb.processed %>%
+                  filter(COUNTY==c("Philadelphia","Delaware"))%>%
+                  select(Date,Date_combined, Daily.Mean.Pb.Concentration,) %>%
+                  group_by(Date_combined)%>%
+                  dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))%>%
+                  add_column(CBSA="Philadelphia-Camden-Wilmington")
+view(epa.PA.monthly.Pb.Philly)
 #
-# Beaver Co. 
-Beaver_lineplot<-ggplot(Beaver_Pb,aes(x = Date,
-y = Daily.Mean.Pb.Concentration))+
-geom_line(color = "black") +
-labs(y="Daily Average Pb Concentration (ppm)",
-title="Daily Average Pb Concentrations from 2010 to 2020 in Beaver Co., PA")+
-  scale_x_date(date_breaks = "6 months",date_labels = "%b %Y")+
-theme(axis.text.x=element_text(angle=90, hjust=1))
-print(Beaver_lineplot)
+#Pittsburgh Metropolitan Area
+epa.PA.monthly.Pb.Pitt <-epa.PA.airPb.processed %>%
+                  filter(COUNTY %in% c("Allegheny","Beaver","Westmoreland"))%>%
+                  select(Date,Date_combined, Daily.Mean.Pb.Concentration,) %>%
+                  group_by(Date_combined)%>%
+                  dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))%>%
+                  add_column(CBSA="Pittsburgh")
+view(epa.PA.monthly.Pb.Pitt)
+#only have data from 2010 to 2017 for Pittsburgh area (Allegheny Co., PA)
 #
-# Berks Co.
-Berks_lineplot<-ggplot(Berks_Pb,aes(x = Date,
-y = Daily.Mean.Pb.Concentration))+
-geom_line(color = "black") +
-labs(y="Daily Average Pb Concentration (ppm)",
-title="Daily Average Pb Concentrations from 2010 to 2020 in Berk Co., PA")+
-  scale_x_date(date_breaks = "6 months",date_labels = "%b %Y")+
-theme(axis.text.x=element_text(angle=90, hjust=1))
-print(Berks_lineplot)
-#
-# Delaware Co.
-Delaware_lineplot<-ggplot(Delaware_Pb,aes(x = Date,
-y = Daily.Mean.Pb.Concentration))+
-geom_line(color = "black") +
-labs(y="Daily Average Pb Concentration (ppm)",
-title="Daily Average Pb Concentrations from 2010 to 2020 in Delaware Co., PA")+
-  scale_x_date(date_breaks = "6 months",date_labels = "%b %Y")+
-theme(axis.text.x=element_text(angle=90, hjust=1))
-print(Delaware_lineplot)
-#
-# Philadelphia Co.
-Philly_lineplot<-ggplot(Philly_Pb,aes(x = Date,
-y = Daily.Mean.Pb.Concentration))+
-geom_line(color = "black") +
-labs(y="Daily Average Pb Concentration (ppm)",
-title="Daily Average Pb Concentrations from 2010 to 2020 in Philadelphia Co., PA")+
-  scale_x_date(date_breaks = "6 months",date_labels = "%b %Y")+
-theme(axis.text.x=element_text(angle=90, hjust=1))
-print(Philly_lineplot)
+# Allentown-Bethlehem-Easton Metropolitan Area
+epa.PA.monthly.Pb.Allentown <-epa.PA.airPb.processed %>%
+                  filter(COUNTY=="Carbon")%>%
+                  select(Date,Date_combined,COUNTY, Daily.Mean.Pb.Concentration,) %>%
+                  group_by(Date_combined)%>%
+                  dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))%>%
+                  add_column(CBSA="Allentown-Bethlehem-Easton")
+epa.PA.monthly.Pb.Allentown 
+#Now looking at major mining county: Luzerne Co, PA (#Scranton-Wilkes-Barre-Hazleton Metropolitan Area)
+#Luzerne
+epa.PA.monthly.Pb.Scranton <-epa.PA.airPb.processed %>%
+                  filter(COUNTY=="Luzerne")%>%
+                  select(Date,Date_combined,COUNTY, Daily.Mean.Pb.Concentration,) %>%
+                  group_by(Date_combined)%>%
+                  dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))%>%
+                  add_column(CBSA="Scranton-Wilkes_Barre-Hazleton")
+epa.PA.monthly.Pb.Scranton 
+# Lancaster Metropolitan Area 
+epa.PA.monthly.Pb.Lancaster <-epa.PA.airPb.processed %>%
+                  filter(COUNTY=="Lancaster")%>%
+                  select(Date,Date_combined,COUNTY, Daily.Mean.Pb.Concentration,) %>%
+                  group_by(Date_combined)%>%
+                  dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))%>%
+                  add_column(CBSA="Lancaster")
+epa.PA.monthly.Pb.Lancaster
+#Created a monthly mean Pb air concentration in PA counties 
+Pa.monthly.Pb.MSA<-rbind(epa.PA.monthly.Pb.Philly, epa.PA.monthly.Pb.Pitt, epa.PA.monthly.Pb.Allentown, epa.PA.monthly.Pb.Scranton, epa.PA.monthly.Pb.Lancaster)
+view(Pa.monthly.Pb.MSA)
+class(Pa.monthly.Pb.MSA$Date_combined)
 ```
 
 
-```{r Linear Interpolation Visuals}
-#Looking at the top 5 PA counties for highest air Pb concentrations from 2010 to 2020
-#
-epa.PAcounty.Pb2014 <- epa.PA.airPb.processed %>%
-                  filter(Year==2014) %>%
-                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
-                  group_by(COUNTY) %>%
-                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
-                  arrange(desc(County.Mean.Pb))
-#
-epa.PAcounty.Pb2015 <- epa.PA.airPb.processed %>%
-                  filter(Year==2015) %>%
-                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
-                  group_by(COUNTY) %>%
-                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
-                  arrange(desc(County.Mean.Pb))
-#
-epa.PAcounty.Pb2016 <- epa.PA.airPb.processed %>%
-                  filter(Year==2016) %>%
-                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
-                  group_by(COUNTY) %>%
-                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
-                  arrange(desc(County.Mean.Pb))           
-#
-epa.PAcounty.Pb2017 <- epa.PA.airPb.processed %>%
-                  filter(Year==2017) %>%
-                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
-                  group_by(COUNTY) %>%
-                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
-                  arrange(desc(County.Mean.Pb))   
-#
-epa.PAcounty.Pb2018 <- epa.PA.airPb.processed %>%
-                  filter(Year==2018) %>%
-                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
-                  group_by(COUNTY) %>%
-                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
-                  arrange(desc(County.Mean.Pb))      
-#
-epa.PAcounty.Pb2019 <- epa.PA.airPb.processed %>%
-                  filter(Year==2019) %>%
-                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
-                  group_by(COUNTY) %>%
-                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
-                  arrange(desc(County.Mean.Pb))  
-#
-epa.PAcounty.Pb2020 <- epa.PA.airPb.processed %>%
-                  filter(Year==2020) %>%
-                  select(Date,COUNTY, Daily.Mean.Pb.Concentration) %>%
-                  group_by(COUNTY) %>%
-                  summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
-                  arrange(desc(County.Mean.Pb))      
-#1.Carbon County
-#2.Berks County
-#3.Beaver County
-#4.Lancaster County
-#5.Philadelphia County
-PA.airPB.filtered.Carbon <- epa.PA.airPb.processed %>%
-                     filter(COUNTY=="Carbon") %>%
-                     select(Date, Daily.Mean.Pb.Concentration)
-time_days <-as.data.frame(seq(ymd("2012-07-01"), ymd("2020-09-30"),by="days"))
-time_days <-setNames(time_days, c("Date"))
-PA.airPb.Carbon <-left_join(time_days, PA.airPB.filtered.Carbon)
+```{r time-series-visuals}
+#Looking at the top 5 Metropolitan Areas for air Pb concentrations from 2010 to 2020
+#PA Metropolitan Area
+PAmonthly_plot<-ggplot(Pa.monthly.Pb.MSA,aes(x = Date_combined,
+                      y = Mean.monthly.Pb, color= CBSA))+
+                      geom_line() +
+                      labs(y="Monthly Average Pb Air Concentration (ug/m^3)",
+                           x="Date",
+                          title="Monthly Average Pb Air Concentrations from 2010 to 2020 in PA Metro Areas")+
+                          scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
+                                       limits=c(as.Date("2010-01-01"), as.Date("2021-01-01")),
+             expand=c(0,0))+
+                          theme(axis.text.x=element_text(angle=90, hjust=1))+
+                      geom_hline(yintercept=0.15, linetype='dotted', col = 'black')+
+                      annotate("text", x = as.Date("2016-12-01", "%Y-%m-%d"), y = 0.15,
+                               label = "EPA Primary and Secondary 3-month Average Pb NAAQ Standard=0.15ug/m^3", vjust = -0.5)
+print(PAmonthly_plot)
 
-PA.airPb.clean.Carbon <- PA.airPb.Carbon %>%
-                  mutate(Daily.Mean.Pb.Concentration=
-                           zoo::na.approx(Daily.Mean.Pb.Concentration))
-summary(PA.airPb.clean.Carbon$Daily.Mean.Pb.Concentration)
-
-PA.county.airPb.Carbon <-ggplot(epa.PA.airPb.filtered.Carbon)+
-                         geom_bar(aes(x=Date,
-                             y=Daily.Mean.Pb.Concentration))+
-  scale_x_date(date_breaks = "6 months",date_labels = "%b %Y")
-print(PA.county.airPb.Carbon)
 ```
 
+```{r time-series-analysis}
 
-
+```
 
 ```{r spatial-analysis}
 #Reduce our data to just one record for each location, computing mean and max daily AQI values 2010 and 2020
