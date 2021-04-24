@@ -219,6 +219,10 @@ Scranton.msa.Pb.filter<-epa.PA.airPb.processed %>%
                           select(Date,Daily.Mean.Pb.Concentration)
                   
 Scranton.msa.Pb<-left_join(Scranton.days,Scranton.msa.Pb.filter)
+#Cleaned Scranton data
+Scranton.msa.Pb.cleaned <-Scranton.msa.Pb %>%
+  mutate(Daily.Mean.Pb.Concentration.clean=zoo::na.spline(Daily.Mean.Pb.Concentration))
+Scranton.msa.Pb.cleaned
 #Allentown-Bethlehem-Easton
 #data runs from July 2010 to December 2020
 Allentown.days <-as.data.frame(seq(ymd("2012-07-01"), ymd("2020-12-31"),by="days"))
@@ -226,7 +230,11 @@ Allentown.days<-setNames(Allentown.days,c("Date"))
 Allentown.msa.Pb.filter<-epa.PA.airPb.processed %>%
                    filter(CBSA_CODE==10900)%>%
                    select(Date,Daily.Mean.Pb.Concentration)
-Allentown.msa.Pb<-left_join(Allentown.days,Allentown.msa.Pb.filter)                   
+Allentown.msa.Pb<-left_join(Allentown.days,Allentown.msa.Pb.filter)
+#Cleaned Allentown data
+Allentown.msa.Pb.cleaned <-Allentown.msa.Pb %>%
+  mutate(Daily.Mean.Pb.Concentration.clean=zoo::na.spline(Daily.Mean.Pb.Concentration))
+Allentown.msa.Pb.cleaned
 ```
 
 ```{r spatial-analysis}
