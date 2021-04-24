@@ -37,6 +37,7 @@ library(lubridate)
 library(zoo)
 library(trend)
 library(sf)
+library(Kendall)
 library(knitr)
 library(kableExtra)
 #Load color palette packages
@@ -261,6 +262,11 @@ Scranton.msa.Pb.monthly.ts <-ts(Scranton.monthly.Pb.msa$Mean.monthly.Pb,
                                 end=c(2018,9),
                                 frequency=12)
 #
+Scranton.msa.Pb.daily.decomp <- stl(Scranton.msa.Pb.daily.ts, s.window = "periodic")
+plot(Scranton.msa.Pb.daily.decomp)
+
+Scranton.msa.Pb.monthly.decomp <-stl(Scranton.msa.Pb.monthly.ts, s.window = "periodic")
+plot(Scranton.msa.Pb.monthly.decomp)
 #Allentown-Bethlehem-Easton
 #data runs from July 2010 to December 2020
 Allentown.days <-as.data.frame(seq(ymd("2012-07-02"), ymd("2020-12-29"),by="days"))
@@ -283,10 +289,36 @@ y = Daily.Mean.Pb.Concentration),
 color = "orange",alpha=1) +
 labs(y="Daily Mean Pb Air Concentration (ug/m^3)",title="Allentown-Bethlehem-Easton Metropolitan Area")+
   scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
-                                       limits=c(as.Date("2010-01-01"), as.Date("2018-10-01")),
+                                       limits=c(as.Date("2017-07-01"), as.Date("2020-10-01")),
              expand=c(0,0))+
                           theme(axis.text.x=element_text(angle=90, hjust=1))
 print(Allentown.msa.linear.interpolation)
+#
+#Checking the first and last dates of data collection
+first(Allentown.msa.Pb.cleaned$Date)
+last(Allentown.msa.Pb.cleaned$Date)
+#
+Allentown.monthly.Pb.msa <-Allentown.msa.Pb.cleaned %>%
+                        mutate(Month = month(Date),
+                        Year=year(Date)) %>%
+                        mutate(Date_combined = my(paste0(Month,"-",Year)))%>%
+                        group_by(Date_combined)%>%
+                        dplyr::summarise(Mean.monthly.Pb=mean(Daily.Mean.Pb.Concentration.clean))
+Allentown.monthly.Pb.msa <- Allentown.monthly.Pb.msa %>%
+                           mutate(Date=as.Date(Date_combined))
+#Time Series: daily
+Allentown.msa.Pb.daily.ts <-ts(Allentown.msa.Pb.cleaned$Daily.Mean.Pb.Concentration.clean,
+                              start=c(2012,7),
+                              end=c(2020,9),
+                              frequency=365)
+#Time Series: monthly
+Allentown.msa.Pb.monthly.ts <-ts(Allentown.monthly.Pb.msa$Mean.monthly.Pb,
+                                start=c(2012,1),
+                                end=c(2020,9),
+                                frequency=12)
+#
+Allentown.msa.Pb.daily.decomp <- stl(Allentown.msa.Pb.daily.ts, s.window = "periodic")
+plot(Allentown.msa.Pb.daily.decomp)
 ```
 
 ```{r spatial-analysis}
