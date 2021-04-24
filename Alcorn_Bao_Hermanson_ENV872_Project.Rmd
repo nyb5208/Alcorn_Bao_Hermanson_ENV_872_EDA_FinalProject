@@ -417,24 +417,49 @@ epa.PAcounty.Pb2 <- epa.PA.airPb.processed %>%    #ADDED BY MAX FOR REGRESSION S
 ###Metal####
 #need to use R spatial analysis to determine which county FIPS each metal processing plant is in 
 metal_sf <- st_read('./Data/Raw/Metal_processing/PA_DEP/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant.shp')
-metal_csv <- read.csv("./Data/Raw/Metal_processing/PA_DEP/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant.csv", stringsAsFactors = TRUE)
-#mapview(metal_sf)
+metal_csv <- read.csv("./Data/Raw/Metal_processing/PA_DEP/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant.csv")
+
+census_sf <- st_read('./Data/Raw/CensusData/tl_2020_42_county10/tl_2020_42_county10.shp')
+mapview(census_sf)
+census_sf$FIPS <- census_sf$STATEFP10
+st_crs(census_sf)$epsg
+metal_data_sf <- st_as_sf(metal_csv, coords = c('X', 'Y'), crs = 4269)
 metal_4269 <- st_transform(metal_sf, crs = 4269)
 
-#metal_sf2 <- county_sf %>% 
-  #filter(STATEFP == 31)
+class(metal_4269)
+metal_join <- st_join(metal_4269, census_sf, join = st_intersects)
+metal_join
+class(metal_join$COUNTYFP10)
+metal_join$COUNTYFP10
+
+metal_summary <- metal_join %>% 
+  filter(SITE_STATU == "ACTIVE") %>% 
+  select(COUNTYFP10) %>% 
+  count(COUNTYFP10)
+census_sf2 <- census_sf %>% 
+  select(COUNTYFP10, NAME10)
+
+metal_join_census <- st_join(census_sf2, metal_summary)
+metal_join_census[is.na(metal_join_census)] = 0  #remove NAs 
+metal_join_census <- metal_join_census %>% 
+  select(COUNTYFP10.x, NAME10, n, geometry)
+
+
 
 ###Blood_Lead_Children####
 ##contains county FIPS code
 children_blood_lead <- read.csv("./Data/Raw/BloodLeadLevels/PA_CountyLevelSummary_2017.csv", stringsAsFactors = TRUE)
-children_blood_lead$FIPS<- children_blood_lead$PA.Blood.Lead.Levels..µg.dL..among.Children...72.Months.of.Age..by.County.and.Blood.Lead.Level..BLL..Group..2017
+children_blood_lead$COUNTYFP10<- as.character(children_blood_lead$PA.Blood.Lead.Levels..µg.dL..among.Children...72.Months.of.Age..by.County.and.Blood.Lead.Level..BLL..Group..2017)
+class(children_blood_lead$COUNTYFP10)
+children_blood_lead$COUNTYFP10
+
 ###2010 Census #####
 census_sf <- st_read('./Data/Raw/CensusData/tl_2020_42_county10/tl_2020_42_county10.shp')
 mapview(census_sf)
 census_sf$FIPS <- census_sf$STATEFP10
 
 
-#mapping intersections
+#mapping intersections#####
 newmap<- ggplot()+
   geom_sf(data = census_sf, color = "Black", fill = "Green", alpha = 0.3, show.legend = "polygon")+
   geom_sf(data = metal_sf, color = 'blue', size = 2, show.legend = "point" )
@@ -444,20 +469,11 @@ st_crs(census_sf)$epsg
 st_crs(metal_4269)$epsg
 
 
-epa.PAcounty.Pb2$FIPS <- epa.PAcounty.Pb2$COUNTY_CODE
-class(epa.PAcounty.Pb2$FIPS)
-metal_intersection_withcounties$FIPS <- as.numeric(metal_intersection_withcounties$COUNTYFP10)
-class(metal_intersection_withcounties$FIPS)
 
 
-test_join <- right_join(epa.PAcounty.Pb2, metal_intersection_withcounties3, by = c("FIPS"))
 
-metal_intersection_withcounties <- census_sf[metal_4269,]
-metal_intersection_withcounties3 <- metal_4269[census_sf,]
-mapview(metal_intersection_withcounties)
-#mapview(metal_intersection_withcounties)
-metal_intersection_withcounties2 <- census_sf %>% 
-  filter(st_intersects(x = ., y = metal_4269, sparse = FALSE))
+
+
 
 #airport
 airport_raw <- read.csv("./Data/Raw/Airport Data/Airports.csv",  stringsAsFactors = TRUE)
