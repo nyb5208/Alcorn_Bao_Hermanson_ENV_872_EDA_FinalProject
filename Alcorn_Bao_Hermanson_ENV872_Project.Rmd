@@ -329,8 +329,8 @@ plot(Allentown.msa.Pb.monthly.decomp)
 ```
 
 ```{r spatial-analysis}
-#Reduce our data to just one record for each location, computing mean and max daily AQI values 2010 and 2020
-#Reduce our data to just one record for each location, computing mean and max daily AQI values 2010 and 2020
+#Data wrangling: Reduce our data to just one record for each county, determining mean and max daily air lead values for 2010, 2015, and 2020
+
 EPAair_PA_Lead_avg2010 <- epa.PAlead.2010 %>%
   group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
   summarize(meanPb = mean(Daily.Mean.Pb.Concentration),
@@ -352,23 +352,23 @@ sf_PA_Lead_avg2010 <- st_as_sf(EPAair_PA_Lead_avg2010,
                              crs=4326)
 
 sf_PA_Lead_high_2010<-filter(sf_PA_Lead_avg2010, maxPb > 0.15)
-range(sf_PA_Lead_high_2010$meanPb)
+
 
 sf_PA_Lead_mean_2010<-filter(sf_PA_Lead_avg2010, meanPb > 0.15)
-range(sf_PA_Lead_mean_2010$meanPb)
+
 
 sf_PA_Lead_avg2015 <- st_as_sf(EPAair_PA_Lead_avg2015,
                              coords = c('SITE_LONGITUDE','SITE_LATITUDE'),
                              crs=4326)
 
+sf_PA_Lead_high_2015<-filter(sf_PA_Lead_avg2015, maxPb > 0.15)
+
+
 sf_PA_Lead_avg2020 <- st_as_sf(EPAair_PA_Lead_avg2020,
                              coords = c('SITE_LONGITUDE','SITE_LATITUDE'),
                              crs=4326)
 
-#Map sf datasets
-ggplot() + 
-  geom_sf(data=sf_PA_Lead_avg2010, aes(color=meanPb, size=maxPb))+
-  project.theme
+sf_PA_Lead_high_2020<-filter(sf_PA_Lead_avg2020, maxPb > 0.15)
 
 #read in county shape file
 counties_sf<- st_read('./Data/Spatial/cb_2018_us_county_20m.shp')%>%
@@ -391,7 +391,7 @@ CDC_PA_2010_avg<-CDC_PA_2010%>%
             meanPOV = mean(E_P_POV),
             meanPOP = sum(TOTPOP))
 
-range(CDC_PA_2010_avg$meanPCI)
+range(CDC_PA_2010_avg$meanPOP)
 
 #join CDC data and county shape file
 PA_county_2010<-left_join(counties_sf, CDC_PA_2010_avg, by = c("CNTY_FIPS"))
@@ -399,17 +399,38 @@ PA_county_2010<-left_join(counties_sf, CDC_PA_2010_avg, by = c("CNTY_FIPS"))
 
 ggplot() + 
   geom_sf(data=PA_county_2010,aes(fill = meanPOV),alpha=0.3) + 
-  scale_fill_gradient2(low="red",high="blue") + 
-  geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))
+  scale_fill_gradient2(low="blue",high="red", midpoint = .15) +
+   labs(fill = "% Pop in Poverty")+
+  geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
+  labs(size="Lead Values")+
+  ggtitle("Mean Lead Values Across Pennsylvania")
 
-PA1<-ggplot() + 
+ggplot() + 
+  geom_sf(data=PA_county_2010,aes(fill = meanPOP),alpha=0.3) +
+   scale_fill_gradient2(low="blue", mid = "yellow",high="red", guide = "colourbar", breaks = c(10000, 1500000)) +
+   labs(fill = "% Pop in Poverty")+
+  geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
+  labs(size="Lead Values")+
+  ggtitle("Mean Lead Values Across Pennsylvania")
+
+ggplot() + 
   geom_sf(data=PA_county_2010,aes(fill = meanPCI),alpha=0.3) + 
-  scale_fill_gradient(low="blue", high="red", breaks=c(16000,28000, 40000)) +
+  scale_fill_gradient2(low="blue",high="red", midpoint = 28000, breaks=c(16000,28000, 40000)) + 
+  labs(fill = "Per Capita Income")+
+  geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
+  labs(size="Lead Values")+
+  ggtitle("Mean Lead Values Across Pennsylvania")
+
+ggplot() + 
+  geom_sf(data=PA_county_2010,aes(fill = meanPCI),alpha=0.3) + 
+ scale_fill_gradient2(low="blue",high="red", midpoint = 28000, breaks=c(16000,28000, 40000)) +
   labs(fill="Per Capita Income")+
   geom_sf(data=sf_PA_Lead_high_2010, aes(size=maxPb))+
-  ggtitle("Max Lead Levels over .15")
-PA1
-PA1+guides(fill=guide_legend(title="Per Capita Income"))
+  labs(size="Lead Levels")+
+  ggtitle("2010 Max Lead Levels over .15")
+
+
+
 #2014
 CDC_PA_2014<-read.csv("./Data/Raw/Pennsylvania_CDC_2014.csv", header = TRUE)
 
@@ -428,12 +449,12 @@ PA_county_2014<-left_join(counties_sf, CDC_PA_2014_avg, by = c("CNTY_FIPS"))
 
 ggplot() + 
   geom_sf(data=PA_county_2014,aes(fill = meanPOV),alpha=0.3) + 
-  scale_fill_gradient2(low="red",high="blue") + 
+  scale_fill_gradient(low="red",high="blue") + 
   geom_sf(data=sf_PA_Lead_avg2015, aes(size=meanPb))
 
 ggplot() + 
   geom_sf(data=PA_county_2014,aes(fill = meanPCI),alpha=0.3) + 
-  scale_fill_gradient2(low="blue",high="red") + 
+  scale_fill_gradient(low="blue",high="red") + 
   geom_sf(data=sf_PA_Lead_avg2015, aes(size=meanPb))
 
 ggplot() + 
@@ -441,10 +462,15 @@ ggplot() +
   scale_fill_gradient2(low="blue",high="red") + 
   geom_sf(data=sf_PA_Lead_avg2015, aes(size=meanPb))
 
+
 ggplot() + 
   geom_sf(data=PA_county_2014,aes(fill = meanPCI),alpha=0.3) + 
-  scale_fill_gradient2(low="blue",mid="yellow",high="red") + 
-  geom_sf(data=sf_PA_Lead_avg2015, aes(size=maxPb))
+  scale_fill_gradient2(low="blue",high="red", midpoint = 28000, breaks=c(18000,28000, 40000)) +
+  labs(fill="Per Capita Income")+
+  geom_sf(data=sf_PA_Lead_high_2015, aes(size=maxPb))+
+  labs(size="Lead Levels")+
+  ggtitle("2015 Max Lead Levels over .15")
+
 
 
 
@@ -466,13 +492,21 @@ PA_county_2018<-left_join(counties_sf, CDC_PA_2018_avg, by = c("CNTY_FIPS"))
 
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPOV),alpha=0.3) + 
-  scale_fill_gradient2(low="red",high="blue") + 
+  scale_fill_gradient(low="red",high="blue") + 
   geom_sf(data=sf_PA_Lead_avg2020, aes(size=meanPb))
 
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPCI),alpha=0.3) + 
-  scale_fill_gradient2(low="blue",high="red") + 
+  scale_fill_gradient(low="blue",high="red") + 
   geom_sf(data=sf_PA_Lead_avg2020, aes(size=meanPb))
+
+ggplot() + 
+  geom_sf(data=PA_county_2018,aes(fill = meanPCI),alpha=0.3) + 
+  scale_fill_gradient2(low="blue",high="red", midpoint = 35000, breaks=c(20000,35000, 45000)) +
+  labs(fill="Per Capita Income")+
+  geom_sf(data=sf_PA_Lead_high_2020, aes(size=maxPb))+
+  labs(size="Lead Levels")+
+  ggtitle("2020 Max Lead Levels over .15")
 
 
 ```
