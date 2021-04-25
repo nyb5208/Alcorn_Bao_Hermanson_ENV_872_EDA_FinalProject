@@ -414,6 +414,12 @@ epa.PAcounty.Pb2 <- epa.PA.airPb.processed %>%    #ADDED BY MAX FOR REGRESSION S
                   group_by(COUNTY_CODE) %>%
   summarise(County.Mean.Pb=mean(Daily.Mean.Pb.Concentration))%>%
                   arrange(desc(County.Mean.Pb))
+
+###2010 Census #####
+census_sf <- st_read('./Data/Raw/CensusData/tl_2020_42_county10/tl_2020_42_county10.shp')
+mapview(census_sf)
+census_sf$FIPS <- census_sf$STATEFP10
+
 ###Metal####
 #need to use R spatial analysis to determine which county FIPS each metal processing plant is in 
 metal_sf <- st_read('./Data/Raw/Metal_processing/PA_DEP/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant.shp')
@@ -439,18 +445,52 @@ metal_summary <- metal_join %>%
 census_sf2 <- census_sf %>% 
   select(COUNTYFP10, NAME10)
 
-metal_join_census <- st_join(census_sf2, metal_summary)
+metal_join_census <- st_join(census_sf2, metal_summary)  ## geographic joining 
 metal_join_census[is.na(metal_join_census)] = 0  #remove NAs 
 metal_join_census <- metal_join_census %>% 
   select(COUNTYFP10.x, NAME10, n, geometry) 
 
 metal_join_census$dummy_metal <- as.numeric(metal_join_census$n > 0)
 
+
+
+#airport
+airport_raw <- read.csv("./Data/Raw/Airport Data/Airports.csv",  stringsAsFactors = TRUE)
+airport_sf <- st_as_sf(airport_raw, coords = c('X', 'Y'), crs = 4269)
+airport_PA <- airport_sf %>% 
+  filter(STATE == "PA") %>% 
+  filter(TYPE_CODE == "AD") %>% 
+  filter(PRIVATEUSE == 0)
+mapview(airport_PA)
+
+airport_PA2_subset <- airport_PA %>% 
+  select(NAME, geometry)
+
+airport_join <- st_join(airport_PA2_subset, census_sf, join = st_intersects)
+class(airport_join$COUNTYFP10)
+airport_summary <- airport_join %>% 
+  select(COUNTYFP10) %>% 
+  count(COUNTYFP10)
+census_sf2 <- census_sf %>% 
+  select(COUNTYFP10, NAME10)
+airport_join_census <- st_join(census_sf2, airport_summary)
+airport_join_census$number_airports <- airport_join_census$n
+
+
+
+
+metal_join_census_airport <- st_join(metal_join_census, airport_PA)
+
+
+
+
 joint_nonSF <- metal_join_census %>% 
   select(COUNTYFP10.x, NAME10, n)
 joint_nonSF <- joint_nonSF %>% st_drop_geometry()
 joint_nonSF$COUNTYFP10 <- joint_nonSF$COUNTYFP10.x
 class(joint_nonSF)
+
+
 
 ###Blood_Lead_Children####
 ##contains county FIPS code
@@ -464,16 +504,9 @@ blood_lead <- children_blood_lead %>%
   select(COUNTYFP10, County.Name, Percent_.5)
 
 
-joint_nonSF$COUNTYFP10 <- sub("^0+", "", joint_nonSF$COUNTYFP10) 
+joint_nonSF$COUNTYFP10 <- sub("^0+", "", joint_nonSF$COUNTYFP10) ####
 print(joint_nonSF$COUNTYFP10)
 joint_nonSF2 <- left_join(joint_nonSF, blood_lead)
-
-
-###2010 Census #####
-census_sf <- st_read('./Data/Raw/CensusData/tl_2020_42_county10/tl_2020_42_county10.shp')
-mapview(census_sf)
-census_sf$FIPS <- census_sf$STATEFP10
-
 
 #mapping intersections#####
 newmap<- ggplot()+
@@ -485,20 +518,6 @@ st_crs(census_sf)$epsg
 st_crs(metal_4269)$epsg
 
 
-
-
-
-
-
-
-#airport
-airport_raw <- read.csv("./Data/Raw/Airport Data/Airports.csv",  stringsAsFactors = TRUE)
-airport_sf <- st_as_sf(airport_raw, coords = c('X', 'Y'), crs = 4269)
-airport_PA <- airport_sf %>% 
-  filter(STATE == "PA") %>% 
-  filter(TYPE_CODE == "AD") %>% 
-  filter(PRIVATEUSE == 0)
-mapview(airport_PA)
 
 #resp disease 
 
