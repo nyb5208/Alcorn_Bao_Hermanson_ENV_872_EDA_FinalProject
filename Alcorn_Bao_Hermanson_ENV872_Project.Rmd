@@ -442,16 +442,32 @@ census_sf2 <- census_sf %>%
 metal_join_census <- st_join(census_sf2, metal_summary)
 metal_join_census[is.na(metal_join_census)] = 0  #remove NAs 
 metal_join_census <- metal_join_census %>% 
-  select(COUNTYFP10.x, NAME10, n, geometry)
+  select(COUNTYFP10.x, NAME10, n, geometry) 
 
+metal_join_census$dummy_metal <- as.numeric(metal_join_census$n > 0)
 
+joint_nonSF <- metal_join_census %>% 
+  select(COUNTYFP10.x, NAME10, n)
+joint_nonSF <- joint_nonSF %>% st_drop_geometry()
+joint_nonSF$COUNTYFP10 <- joint_nonSF$COUNTYFP10.x
+class(joint_nonSF)
 
 ###Blood_Lead_Children####
 ##contains county FIPS code
 children_blood_lead <- read.csv("./Data/Raw/BloodLeadLevels/PA_CountyLevelSummary_2017.csv", stringsAsFactors = TRUE)
-children_blood_lead$COUNTYFP10<- as.character(children_blood_lead$PA.Blood.Lead.Levels..µg.dL..among.Children...72.Months.of.Age..by.County.and.Blood.Lead.Level..BLL..Group..2017)
+children_blood_lead$COUNTYFP10<- as.character(children_blood_lead$County.FIPS)
 class(children_blood_lead$COUNTYFP10)
-children_blood_lead$COUNTYFP10
+print(children_blood_lead$COUNTYFP10)
+
+children_blood_lead$Percent_.5 <- as.numeric(children_blood_lead$Percent_.5)
+blood_lead <- children_blood_lead %>% 
+  select(COUNTYFP10, County.Name, Percent_.5)
+
+
+joint_nonSF$COUNTYFP10 <- sub("^0+", "", joint_nonSF$COUNTYFP10) 
+print(joint_nonSF$COUNTYFP10)
+joint_nonSF2 <- left_join(joint_nonSF, blood_lead)
+
 
 ###2010 Census #####
 census_sf <- st_read('./Data/Raw/CensusData/tl_2020_42_county10/tl_2020_42_county10.shp')
