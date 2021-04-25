@@ -511,7 +511,10 @@ metal_join$COUNTYFP10
 metal_summary <- metal_join %>% 
   filter(SITE_STATU == "ACTIVE") %>% 
   select(COUNTYFP10) %>% 
-  count(COUNTYFP10)
+  count(COUNTYFP10) %>% 
+  mutate(number_metal_plants = n) %>% 
+  mutate(COUNTYFP10 = sub("^0+", "", COUNTYFP10)) %>% #get rid of trailing zeros 
+  select(COUNTYFP10, number_metal_plants, geometry)
 census_sf2 <- census_sf %>% 
   select(COUNTYFP10, NAME10)
 
@@ -524,7 +527,7 @@ metal_join_census$dummy_metal <- as.numeric(metal_join_census$n > 0)
 
 
 
-#airport
+#####airport#####
 airport_raw <- read.csv("./Data/Raw/Airport Data/Airports.csv",  stringsAsFactors = TRUE)
 airport_sf <- st_as_sf(airport_raw, coords = c('X', 'Y'), crs = 4269)
 airport_PA <- airport_sf %>% 
@@ -540,12 +543,17 @@ airport_join <- st_join(airport_PA2_subset, census_sf, join = st_intersects)
 class(airport_join$COUNTYFP10)
 airport_summary <- airport_join %>% 
   select(COUNTYFP10) %>% 
-  count(COUNTYFP10)
+  count(COUNTYFP10) %>% 
+  mutate(number_airports = n) %>% 
+  mutate(COUNTYFP10 = sub("^0+", "", COUNTYFP10)) %>% 
+  select(COUNTYFP10, number_airports, geometry)
+
+
+
 census_sf2 <- census_sf %>% 
   select(COUNTYFP10, NAME10)
 airport_join_census <- st_join(census_sf2, airport_summary)
 airport_join_census$number_airports <- airport_join_census$n
-
 
 
 
@@ -560,6 +568,28 @@ joint_nonSF <- joint_nonSF %>% st_drop_geometry()
 joint_nonSF$COUNTYFP10 <- joint_nonSF$COUNTYFP10.x
 class(joint_nonSF)
 
+#####Incinerators #####
+incinerate_sf_raw <- st_read('./Data/Raw/Incinerator_Shp_Data/Air_Emission_Plant_-_Incinerator.shp')
+incinerate_sf <- st_transform(incinerate_sf_raw, crs = 4269)
+st_crs(incinerate_sf)$epsg 
+st_crs(census_sf2)$epsg 
+incinerate_sf2 <- incinerate_sf %>% 
+  select( SITE_NAME, SITE_STATU, geometry, SUB_FACILI) %>% 
+  filter(SITE_STATU == "ACTIVE") %>% 
+  filter(SUB_FACILI == "INCINERATOR" ) %>% 
+incinerate_join_census<- st_join(incinerate_sf, census_sf2, join = st_intersects) # join 
+incinerate_join_census[is.na(incinerate_join_census)] = 0  #remove NAs 
+incinerate_join_census <- metal_join_census %>%  #clean data 
+  select(COUNTYFP10.x, NAME10, n, geometry) 
+
+incinerator_summary <- incinerate_join_census %>% 
+  select(COUNTYFP10) %>% 
+  count(COUNTYFP10) %>% 
+  mutate(number_incinerators = n) %>% #rename count column
+  mutate(COUNTYFP10 = sub("^0+", "", COUNTYFP10)) %>% #get rid of trailing zeros 
+  select(COUNTYFP10, number_incinerators, geometry) #clean
+
+incinerator_summary[is.na(incinerator_summary)] = 0  #remove NAs and FINAL PRODUCT
 
 
 ###Blood_Lead_Children####
@@ -574,9 +604,24 @@ blood_lead <- children_blood_lead %>%
   select(COUNTYFP10, County.Name, Percent_.5)
 
 
-joint_nonSF$COUNTYFP10 <- sub("^0+", "", joint_nonSF$COUNTYFP10) ####
+joint_nonSF$COUNTYFP10 <- sub("^0+", "", joint_nonSF$COUNTYFP10) #get rid of trailing 0's 
 print(joint_nonSF$COUNTYFP10)
 joint_nonSF2 <- left_join(joint_nonSF, blood_lead)
+#### Joining Data ####
+blood_lead #non-sf; join below three and then drop geometry, then join all. 
+incinerator_summary
+airport_summary
+metal_summary
+
+incinerator_summary2 <- incinerator_summary %>% st_drop_geometry()
+airport_summary2 <- airport_summary %>% st_drop_geometry()
+metal_summary2 <- metal_summary %>% st_drop_geometry()
+
+
+i_a_join<- left_join(incinerator_summary2, airport_summary2)
+i_a_m_join <- left_join(i_a_join, metal_summary2)
+i_a_m_b_join <- left_join(i_a_m_join, blood_lead)
+
 
 #mapping intersections#####
 newmap<- ggplot()+
@@ -588,8 +633,6 @@ st_crs(census_sf)$epsg
 st_crs(metal_4269)$epsg
 
 
-
-#resp disease 
 
 ```
 filter(!is.na(Latitude), !is.na(Longitude)) %>%
