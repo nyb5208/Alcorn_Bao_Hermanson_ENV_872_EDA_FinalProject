@@ -485,6 +485,9 @@ summary(Lancaster.Pb.daily.trend.nonseasonal)
 #
 Lancaster.Pb.monthly.trend.nonseasonal <-Kendall::MannKendall(Lancaster.msa.Pb.monthly.ts)
 summary(Lancaster.Pb.monthly.trend.nonseasonal)
+Lancaster.Pb.monthly.trend.seasonal<-
+  Kendall::SeasonalMannKendall(Lancaster.msa.Pb.monthly.ts)
+summary(Lancaster.Pb.monthly.trend.seasonal)
 #Allentown
 Allentown.msa.linear.interpolation<-ggplot(Allentown.msa.Pb.cleaned) +
 geom_line(aes(x = Date,
