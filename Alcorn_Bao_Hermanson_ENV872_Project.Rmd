@@ -348,6 +348,41 @@ labs(y="Daily Mean Air Pb Level (ug/m^3)",title="Daily Mean Air Pb Levels in the
                           theme(axis.text.x=element_text(angle=90, hjust=1))+
   theme(plot.margin=unit(c(1,1,1.5,1.2),"cm"))
 print(Pitt.msa.linear.interp.plot)
+#
+Pitt.monthly.Pb.msa <-Pitt.msa.Pb.cleaned %>%
+                        mutate(Month = month(Date),
+                        Year=year(Date)) %>%
+                        mutate(Date_combined = my(paste0(Month,"-",Year)))%>%
+                        group_by(Date_combined)%>%
+                        dplyr::summarise(Mean.monthly.Pb=mean(Daily.Mean.Pb.Concentration.clean))
+Pitt.monthly.Pb.msa <- Pitt.monthly.Pb.msa %>%
+                           mutate(Date=as.Date(Date_combined))
+#Checking the first and last dates of data collection
+first(Pitt.msa.Pb.cleaned$Date)
+last(Pitt.msa.Pb.cleaned$Date)
+#
+#Time Series: daily
+Pitt.msa.Pb.daily.ts <-ts(Pitt.msa.Pb.cleaned$Daily.Mean.Pb.Concentration.clean,
+                              start=c(2010,1),
+                              end=c(2020,12),
+                              frequency=365)
+#Time Series: monthly
+Pitt.msa.Pb.monthly.ts <-ts(Pitt.monthly.Pb.msa$Mean.monthly.Pb,
+                                start=c(2010,1),
+                                end=c(2020,12),
+                                frequency=12)
+#
+Pitt.msa.Pb.daily.decomp <- stl(Pitt.msa.Pb.daily.ts, s.window = "periodic")
+plot(Pitt.msa.Pb.daily.decomp)
+
+Pitt.msa.Pb.monthly.decomp <-stl(Pitt.msa.Pb.monthly.ts, s.window = "periodic")
+plot(Pitt.msa.Pb.monthly.decomp)
+#
+Pitt.Pb.daily.trend.nonseasonal <-Kendall::MannKendall(Pitt.msa.Pb.daily.ts)
+summary(Pitt.Pb.daily.trend.nonseasonal)
+#
+Pitt.Pb.monthly.trend.nonseasonal <-Kendall::MannKendall(Pitt.msa.Pb.monthly.ts)
+summary(Pitt.Pb.monthly.trend.nonseasonal)
 #Scranton-Wilkes-Barre-Hazleton
 #Scranton linear interpolation
 Scranton.msa.linear.interpolation<-ggplot(Scranton.msa.Pb.cleaned) +
@@ -497,6 +532,39 @@ plot(Allentown.msa.Pb.daily.decomp)
 #
 Allentown.msa.Pb.monthly.decomp <- stl(Allentown.msa.Pb.monthly.ts, s.window = "periodic")
 plot(Allentown.msa.Pb.monthly.decomp)
+#Decided to look at Philadelphia as well
+#Checking the first and last dates of data collection
+first(Phila.msa.Pb.cleaned$Date)
+last(Phila.msa.Pb.cleaned$Date)
+#
+Phila.monthly.Pb.msa <-Phila.msa.Pb.cleaned %>%
+                        mutate(Month = month(Date),
+                        Year=year(Date)) %>%
+                        mutate(Date_combined = my(paste0(Month,"-",Year)))%>%
+                        group_by(Date_combined)%>%
+                        dplyr::summarise(Mean.monthly.Pb=mean(Daily.Mean.Pb.Concentration.clean))
+Phila.monthly.Pb.msa <- Phila.monthly.Pb.msa %>%
+                           mutate(Date=as.Date(Date_combined))
+#Time Series: daily
+Phila.msa.Pb.daily.ts <-ts(Phila.msa.Pb.cleaned$Daily.Mean.Pb.Concentration.clean,
+                              start=c(2010,1),
+                              end=c(2020,12),
+                              frequency=365)
+Phila.Pb.daily.trend.nonseasonal <-Kendall::MannKendall(Phila.msa.Pb.daily.ts)
+summary(Phila.Pb.daily.trend.nonseasonal)
+#Time Series: monthly
+Phila.msa.Pb.monthly.ts <-ts(Phila.monthly.Pb.msa$Mean.monthly.Pb,
+                                start=c(2010,1),
+                                end=c(2020,12),
+                                frequency=12)
+Phila.Pb.monthly.trend.nonseasonal <- Kendall::MannKendall(Phila.msa.Pb.monthly.ts)
+summary(Phila.Pb.monthly.trend.nonseasonal)
+#Decomposition of the time series
+Phila.msa.Pb.daily.decomp <- stl(Phila.msa.Pb.daily.ts, s.window = "periodic")
+plot(Phila.msa.Pb.daily.decomp)
+#
+Phila.msa.Pb.monthly.decomp <- stl(Phila.msa.Pb.monthly.ts, s.window = "periodic")
+plot(Phila.msa.Pb.monthly.decomp)
 ```
 
 ```{r spatial-analysis}
