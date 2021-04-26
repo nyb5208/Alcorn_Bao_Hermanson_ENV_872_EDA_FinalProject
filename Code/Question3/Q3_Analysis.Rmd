@@ -1,0 +1,54 @@
+---
+title: "Q3_Analysis"
+author: "Max Hermanson"
+date: "4/26/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+#Individual Scatters to test for linearity 
+plot(x = i_a_m_b_join$log_metal, y = i_a_m_b_join$Percent_.5) #log metal; looks better 
+plot(x = i_a_m_b_join$log_incinerate, y = i_a_m_b_join$Percent_.5) 
+plot(x = i_a_m_b_join$log_PCI, y = i_a_m_b_join$Percent_.5)
+plot(x = i_a_m_b_join$quadPOV, y = i_a_m_b_join$Percent_.5)
+plot(x = i_a_m_b_join$number_airports, y = i_a_m_b_join$Percent_.5)
+
+ggplot(i_a_m_b_join, aes(log_metal, Percent_.5)) +
+  geom_point() + 
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(log_incinerate, Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(meanPCI    , Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(quadPOV, Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(number_airports, Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+#homoskedasticity and normality 
+par(mfrow=c(2,2), mar = c(2,2,2,2))
+plot(model4)
+plot(model9)
+summary(model4)
+summary(model9)
+AIC(model4)
+AIC(model9)
+
+#Multicolinearity 
+library(car)
+vif(model9)
+vif(model4)
+
+```
+
+
+```
