@@ -439,7 +439,7 @@ summary(Scranton.Pb.monthly.trend.nonseasonal)
 Lancaster.msa.linear.interpolation<-ggplot(Lancaster.msa.Pb.cleaned) +
 geom_line(aes(x = Date,
 y = Daily.Mean.Pb.Concentration.clean),
-color = "orange", alpha=1) +
+color = "orange", alpha=1)
 labs(y="Daily Mean Air Pb Level (ug/m^3)",title="Daily Mean Air Pb Levels in the Lancaster, PA Metropolitan Area from 2012 to 2020")+
   scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
                                        limits=c(as.Date("2012-01-01"), as.Date("2021-01-01")),
