@@ -242,21 +242,94 @@ print(PAmonthly_plot)
 
 ```
 
-```{r time-series-analysis}
-#I am looking at the two metropolitan areas with Air Concentrations that exceeded the EPA primary and secondary NAAQs
-#Scranton-Wilkes-Barre-Hazleton
-view(epa.PA.monthly.Pb.Scranton) #data runs from 2010 to 2018
+```{r linear_interpolation}
+# Philadelphia-Camden-Wilmington, PA-NJ-DE-MD 
+Philadelphia.days <-as.data.frame(seq(ymd("2010-01-02"), ymd("2020-12-29"),by="days"))
+Philadelphia.days <-setNames(Philadelphia.days,c("Date"))
+Phila.msa.Pb.filter <-epa.PA.airPb.processed %>%
+                        filter(CBSA_CODE==37980) %>%
+                        select(Date,Daily.Mean.Pb.Concentration)
+Phila.msa.Pb<-left_join(Philadelphia.days,Phila.msa.Pb.filter)
+Phila.msa.Pb.cleaned <-Phila.msa.Pb %>%
+                        mutate(Daily.Mean.Pb.Concentration.clean=
+                                 zoo::na.approx(Daily.Mean.Pb.Concentration)) %>%
+                        add_column(MSA=c("Philadelphia-Camden-Wilmington, PA-NJ-DE-MD"))                        
+# Pittsburgh, PA 
+Pitt.days <-as.data.frame(seq(ymd("2010-01-02"), ymd("2020-12-29"),by="days"))
+Pitt.days <-setNames(Pitt.days, c("Date"))
+Pitt.msa.Pb.filter<-epa.PA.airPb.processed %>%
+                        filter(CBSA_CODE==38300) %>%
+                        select(Date,Daily.Mean.Pb.Concentration)
+Pitt.msa.Pb<-left_join(Pitt.days,Pitt.msa.Pb.filter)
+Pitt.msa.Pb.cleaned <- Pitt.msa.Pb %>%
+                        mutate(Daily.Mean.Pb.Concentration.clean=
+                                 zoo::na.approx(Daily.Mean.Pb.Concentration)) %>%
+                        add_column(MSA=c("Pittsburgh, PA"))
+# Allentown-Bethlehem-Easton, PA-NJ 
+Allentown.days <-as.data.frame(seq(ymd("2012-07-02"), ymd("2020-12-29"),by="days"))
+Allentown.days<-setNames(Allentown.days,c("Date"))
+Allentown.msa.Pb.filter<-epa.PA.airPb.processed %>%
+                   filter(CBSA_CODE==10900)%>%
+                   select(Date,Daily.Mean.Pb.Concentration) %>%
+                   add_column(MSA=)
+Allentown.msa.Pb<-left_join(Allentown.days,Allentown.msa.Pb.filter)
+#Cleaned Allentown data
+Allentown.msa.Pb.cleaned <-Allentown.msa.Pb %>%
+  mutate(Daily.Mean.Pb.Concentration.clean=
+           zoo::na.approx(Daily.Mean.Pb.Concentration))%>%
+           add_column(MSA=c(Allentown-Bethlehem-Easton, PA-NJ))
+Allentown.msa.Pb.cleaned
+#
+# Scranton--Wilkes-Barre--Hazleton, PA
 Scranton.days <-as.data.frame(seq(ymd("2010-01-02"), ymd("2018-09-29"),by="days"))
 Scranton.days <-setNames(Scranton.days,c("Date"))
 Scranton.msa.Pb.filter<-epa.PA.airPb.processed %>%
                           filter(CBSA_CODE==42540)%>%
                           select(Date,Daily.Mean.Pb.Concentration)
-                  
 Scranton.msa.Pb<-left_join(Scranton.days,Scranton.msa.Pb.filter)
 #Cleaned Scranton data
 Scranton.msa.Pb.cleaned <-Scranton.msa.Pb %>%
-  mutate(Daily.Mean.Pb.Concentration.clean=zoo::na.approx(Daily.Mean.Pb.Concentration))
+  mutate(Daily.Mean.Pb.Concentration.clean=
+           zoo::na.approx(Daily.Mean.Pb.Concentration)) %>%
+           add_column(MSA=c("Scranton--Wilkes-Barre--Hazleton, PA"))
 Scranton.msa.Pb.cleaned
+#
+#Lancaster, PA
+Lancaster.days <-as.data.frame(seq(ymd("2012-01-04"), ymd("2020-12-29"),by="days"))
+Lancaster.msa.Pb.filter<-epa.PA.airPb.processed %>%
+                          filter(CBSA_CODE==29540) %>%
+                          select(Date,Daily.Mean.Pb.Concentration) %>%
+Lancaster.msa.Pb <-left_join(Lancaster.days,Lancaster.msa.Pb.filter)
+Lancaster.msa.Pb.cleaned <-Lancaster.msa.Pb %>%
+  mutate(Daily.Mean.Pb.Concentration.clean=
+           zoo::na.approx(Daily.Mean.Pb.Concentration))%>%
+           add_column(MSA=c("Lancaster, PA"))
+```
+
+```{r linear-interp-visual}
+#first I joined all the linear interpolated data together
+PA.msa.Pb.cleaned <-rbind(Phila.msa.Pb.cleaned,Pitt.msa.Pb.cleaned,Allentown.msa.Pb.cleaned,Scranton.msa.Pb.cleaned, Lancaster.msa.Pb.cleaned)
+#
+PA.msa.Pb.cleaned.plot<-ggplot(PA.msa.Pb.cleaned, aes(x = Date,
+                      y = Daily.Mean.Pb.Concentration.clean, color= MSA))+
+                      geom_line() +
+                      labs(y="Monthly Average Pb Air Concentration (ug/m^3)",
+                           x="Date",
+                          title="Monthly Average Pb Air Concentrations from 2010 to 2020 in PA Metro Areas")+
+                          scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
+                                       limits=c(as.Date("2010-01-01"), as.Date("2021-01-01")),
+             expand=c(0,0))+
+                          theme(axis.text.x=element_text(angle=90, hjust=1))+
+                      geom_hline(yintercept=0.15, linetype='dotted', col = 'black')+
+                      annotate("text", x = as.Date("2016-12-01", "%Y-%m-%d"), y = 0.15,
+                               label = "EPA Primary and Secondary 3-month Average Pb NAAQ Standard=0.15ug/m^3", vjust = -0.5)
+print(PAmonthly_plot)
+
+```
+
+```{r time-series-analysis}
+#I am looking at the two metropolitan areas with Air Concentrations that exceeded the EPA primary and secondary NAAQs
+#Scranton-Wilkes-Barre-Hazleton
 #Scranton linear interpolation
 Scranton.msa.linear.interpolation<-ggplot(Scranton.msa.Pb.cleaned) +
 geom_line(aes(x = Date,
@@ -301,17 +374,6 @@ plot(Scranton.msa.Pb.daily.decomp)
 Scranton.msa.Pb.monthly.decomp <-stl(Scranton.msa.Pb.monthly.ts, s.window = "periodic")
 plot(Scranton.msa.Pb.monthly.decomp)
 #Allentown-Bethlehem-Easton
-#data runs from July 2010 to December 2020
-Allentown.days <-as.data.frame(seq(ymd("2012-07-02"), ymd("2020-12-29"),by="days"))
-Allentown.days<-setNames(Allentown.days,c("Date"))
-Allentown.msa.Pb.filter<-epa.PA.airPb.processed %>%
-                   filter(CBSA_CODE==10900)%>%
-                   select(Date,Daily.Mean.Pb.Concentration)
-Allentown.msa.Pb<-left_join(Allentown.days,Allentown.msa.Pb.filter)
-#Cleaned Allentown data
-Allentown.msa.Pb.cleaned <-Allentown.msa.Pb %>%
-  mutate(Daily.Mean.Pb.Concentration.clean=zoo::na.approx(Daily.Mean.Pb.Concentration))
-Allentown.msa.Pb.cleaned
 #Allentown linear interpolation
 Allentown.msa.linear.interpolation<-ggplot(Allentown.msa.Pb.cleaned) +
 geom_line(aes(x = Date,
