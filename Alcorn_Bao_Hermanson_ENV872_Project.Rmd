@@ -917,8 +917,8 @@ model5 <- lm(formula = Percent_.5 ~ number_metal_plants + number_incinerators + 
 summary(model5)
 plot(model5)
 
-model6 <- lm(formula = Percent_.5 ~ number_metal_plants + log_metal+ log_incinerate + meanPCI + meanPOV+    number_incinerators + number_airports + log_PCI + quadPOV, data = i_a_m_b_join) # plugged in every variable and then ran through "step" function , which produced model 7 
-summary(model5)
+model6 <- lm(formula = Percent_.5 ~ number_metal_plants + log_metal+ log_incinerate + meanPCI +    number_incinerators + number_airports + log_PCI + quadPOV, data = i_a_m_b_join) # plugged in every variable and then ran through "step" function , which produced model 7 
+summary(model6)
 step(model6) 
 #step function 
 
@@ -928,6 +928,14 @@ summary(model7)
 model8 <- lm(formula = Percent_.5 ~ log_metal + log_incinerate + number_airports + meanPCI + quadPOV, data = i_a_m_b_join)
 summary(model8)
 
+model9 <- lm(formula = Percent_.5 ~ log_metal + log_incinerate + meanPCI + quadPOV, data = i_a_m_b_join)
+summary(model9)
+plot(model9)
+step(model9)
+
+model10 <- lm(formula = Percent_.5 ~ meanPCI, data = i_a_m_b_join)
+summary(model10)
+plot(model10)
 
 ### Regression Visualization #####
 par(mfrow=c(2,2), mar = c(2,2,2,2))
