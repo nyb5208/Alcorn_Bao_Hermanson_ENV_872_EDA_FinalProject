@@ -863,8 +863,18 @@ i_a_m_b_join <- left_join(i_a_m_b_join, CDC_PA_2010_avg2)
 i_a_m_b_join[is.na(i_a_m_b_join)] = 0  #remove NAs 
 
 ### Data Visualization ####
-
-
+p1<-ggplot(i_a_m_b_join, aes(x=number_incinerators))+
+  geom_histogram(fill="lightgreen", color="darkgreen", binwidth=1)+
+  labs(x="# of Incinerators", title="Incinerators per county, histogram")
+p2<-ggplot(i_a_m_b_join, aes(x=number_airports))+
+  geom_histogram(fill="lightgreen", color="darkgreen", binwidth=1)+
+  labs(x="# of airports", title="Airports per county, histogram")
+p3<-ggplot(i_a_m_b_join, aes(x=number_metal_plants))+
+  geom_histogram(fill="lightgreen", color="darkgreen", binwidth=1)+
+  labs(x="# of metal plants", title="Processing plants per county, histogram")
+p1
+p2
+p3
 
 #### Regression Modeling ##### 
 i_a_m_b_join$number_incinerators <-i_a_m_b_join$number_incinerators+0.001 #account for zeros in log
@@ -915,6 +925,9 @@ step(model6)
 model7 <- lm(formula = Percent_.5 ~ meanPOV+ quadPOV, data = i_a_m_b_join)
 summary(model7)
 
+model8 <- lm(formula = Percent_.5 ~ log_metal + log_incinerate + number_airports + meanPCI + quadPOV, data = i_a_m_b_join)
+summary(model8)
+
 
 ### Regression Visualization #####
 par(mfrow=c(2,2), mar = c(2,2,2,2))
@@ -931,6 +944,10 @@ library(corrplot)
 df_corr <- i_a_m_b_join %>% 
   select(number_incinerators, number_airports, number_metal_plants, Percent_.5) %>% 
   cor()
+df_corr2 <- i_a_m_b_join %>% 
+  select(number_incinerators, number_airports, number_metal_plants, meanPCI, quadPOV, Percent_.5) %>% 
+  cor()
+df_corr2
 df_corr # correlation between model's variables. 
 par(mfrow=c(1,1))
 corrplot(df_corr, method = "ellipse")
