@@ -18,6 +18,7 @@ editor_options:
 
 \newpage
 \tableofcontents 
+
 \newpage
 \listoftables 
 \newpage
@@ -94,7 +95,13 @@ filter(STATEFP == 42)
 
 
 # Rationale and Research Questions
+>
 
+- ***Question 1: How do air lead concentrations vary from 2010 to 2020 across Pennsylvania?***
+
+- ***Question 2: Where are the hotspots for air lead concentrations in Pennsylvania?***
+
+- ***Question 3: PA Income, resperitory disease, water lead levels, number of: airports, metal processing plants, coal plants, incinerators***
 
 
 \newpage
@@ -129,7 +136,7 @@ summary(epa.PA.airPb.processed$COUNTY)
 
 \newpage
 # Introduction 
-##### MAX 
+
 # Analysis
 ```{r time_series-data-wrangling}
 #Looking at the lead air concentrations for major metropolitan areas in Pennsylvania 
@@ -650,21 +657,9 @@ latlong_final <- latlong_sf %>%
          fips = if_else(is.na(intersection), "",
                         census_tracts$GEOID[intersection]))
 head(latlong_final)
-## Question 1: How do air lead concentrations vary from 2010 to 2020 across Pennsylvania?
-
-## Question 2: Where are the hotspots for air lead concentrations in Pennsylvania? 
-#Jack
-
-## Question 3: PA Income, resperitory disease, water lead levels, number of: airports, metal processing plants, coal plants, incinerators
-
-
 
 \newpage
-
 # Summary and Conclusions
-
-
 \newpage
-
 # References
 <add references here if relevant, otherwise delete this section> 
