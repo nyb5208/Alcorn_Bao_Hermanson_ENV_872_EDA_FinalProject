@@ -179,7 +179,7 @@ epa.PA.monthly.Pb.Philly <-epa.PA.airPb.processed %>%
                   group_by(Date_combined)%>%
                   dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))%>%
                   add_column(CBSA="Philadelphia-Camden-Wilmington")
-view(epa.PA.monthly.Pb.Philly)
+epa.PA.monthly.Pb.Philly
 #
 #Pittsburgh Metropolitan Area
 epa.PA.monthly.Pb.Pitt <-epa.PA.airPb.processed %>%
@@ -188,7 +188,7 @@ epa.PA.monthly.Pb.Pitt <-epa.PA.airPb.processed %>%
                   group_by(Date_combined)%>%
                   dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))%>%
                   add_column(CBSA="Pittsburgh")
-view(epa.PA.monthly.Pb.Pitt)
+epa.PA.monthly.Pb.Pitt
 #only have data from 2010 to 2017 for Pittsburgh area (Allegheny Co., PA)
 #
 # Allentown-Bethlehem-Easton, PA-NJ Metropolitan Area
@@ -217,7 +217,7 @@ epa.PA.monthly.Pb.Lancaster <-epa.PA.airPb.processed %>%
 epa.PA.monthly.Pb.Lancaster
 #Created a monthly mean Pb air concentration in PA counties 
 Pa.monthly.Pb.MSA<-rbind(epa.PA.monthly.Pb.Philly, epa.PA.monthly.Pb.Pitt, epa.PA.monthly.Pb.Allentown, epa.PA.monthly.Pb.Scranton, epa.PA.monthly.Pb.Lancaster)
-view(Pa.monthly.Pb.MSA)
+Pa.monthly.Pb.MSA
 class(Pa.monthly.Pb.MSA$Date_combined)
 ```
 
@@ -270,14 +270,13 @@ Allentown.days <-as.data.frame(seq(ymd("2012-07-02"), ymd("2020-12-29"),by="days
 Allentown.days<-setNames(Allentown.days,c("Date"))
 Allentown.msa.Pb.filter<-epa.PA.airPb.processed %>%
                    filter(CBSA_CODE==10900)%>%
-                   select(Date,Daily.Mean.Pb.Concentration) %>%
-                   add_column(MSA=)
+                   select(Date,Daily.Mean.Pb.Concentration)
 Allentown.msa.Pb<-left_join(Allentown.days,Allentown.msa.Pb.filter)
 #Cleaned Allentown data
 Allentown.msa.Pb.cleaned <-Allentown.msa.Pb %>%
   mutate(Daily.Mean.Pb.Concentration.clean=
            zoo::na.approx(Daily.Mean.Pb.Concentration))%>%
-           add_column(MSA=c(Allentown-Bethlehem-Easton, PA-NJ))
+           add_column(MSA=c("Allentown-Bethlehem-Easton, PA-NJ"))
 Allentown.msa.Pb.cleaned
 #
 # Scranton--Wilkes-Barre--Hazleton, PA
@@ -297,8 +296,11 @@ Scranton.msa.Pb.cleaned
 #Lancaster, PA
 Lancaster.days <-as.data.frame(seq(ymd("2012-01-04"), ymd("2020-12-29"),by="days"))
 Lancaster.msa.Pb.filter<- epa.PA.airPb.processed %>%
-                          filter(CBSA_NAME=="29540") %>%
-                          select(Date,Daily.Mean.Pb.Concentration) %>%
+                          filter(CBSA_CODE=="29540") %>%
+                          select(Date,Daily.Mean.Pb.Concentration)
+
+Lancaster.days<-setNames(Lancaster.days,c("Date"))
+#
 Lancaster.msa.Pb <-left_join(Lancaster.days,Lancaster.msa.Pb.filter)
 Lancaster.msa.Pb.cleaned <-Lancaster.msa.Pb %>%
   mutate(Daily.Mean.Pb.Concentration.clean=
@@ -306,16 +308,18 @@ Lancaster.msa.Pb.cleaned <-Lancaster.msa.Pb %>%
            add_column(MSA=c("Lancaster, PA"))
 ```
 
-```{r linear-interp-visual}
+```{r linear-interp-visual,echo=FALSE}
 #first I joined all the linear interpolated data together
 PA.msa.Pb.cleaned <-rbind(Phila.msa.Pb.cleaned,Pitt.msa.Pb.cleaned,Allentown.msa.Pb.cleaned,Scranton.msa.Pb.cleaned, Lancaster.msa.Pb.cleaned)
+class(PA.msa.Pb.cleaned$Date)
 #
 PA.msa.Pb.cleaned.plot<-ggplot(PA.msa.Pb.cleaned, aes(x = Date,
                       y = Daily.Mean.Pb.Concentration.clean, color= MSA))+
                       geom_line() +
-                      labs(y="Monthly Average Pb Air Concentration (ug/m^3)",
+                      labs(y="Daily Average Air Pb Level (ug/m^3)",
                            x="Date",
-                          title="Monthly Average Pb Air Concentrations from 2010 to 2020 in PA Metro Areas")+
+                          title="Daily Average Air Pb Levels from 2010 to 2020 in Metropolitan Areas in PA",
+                          color="")+
                           scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
                                        limits=c(as.Date("2010-01-01"), as.Date("2021-01-01")),
              expand=c(0,0))+
@@ -323,7 +327,7 @@ PA.msa.Pb.cleaned.plot<-ggplot(PA.msa.Pb.cleaned, aes(x = Date,
                       geom_hline(yintercept=0.15, linetype='dotted', col = 'black')+
                       annotate("text", x = as.Date("2016-12-01", "%Y-%m-%d"), y = 0.15,
                                label = "EPA Primary and Secondary 3-month Average Pb NAAQ Standard=0.15ug/m^3", vjust = -0.5)
-print(PAmonthly_plot)
+print(PA.msa.Pb.cleaned.plot)
 
 ```
 
@@ -382,7 +386,7 @@ color = "blue", alpha=1) +
 geom_line(aes(x = Date,
 y = Daily.Mean.Pb.Concentration),
 color = "orange",alpha=1) +
-labs(y="Daily Mean Pb Air Concentration (ug/m^3)",title="Allentown-Bethlehem-Easton Metropolitan Area")+
+labs(y="Daily Mean Air Pb Level (ug/m^3)",title="Allentown-Bethlehem-Easton Metropolitan Area")+
   scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
                                        limits=c(as.Date("2017-07-01"), as.Date("2020-10-01")),
              expand=c(0,0))+
