@@ -242,7 +242,7 @@ print(PAmonthly_plot)
 
 ```
 
-```{r linear_interpolation}
+```{r linear_interpolation,include=FALSE}
 # Philadelphia-Camden-Wilmington, PA-NJ-DE-MD 
 Philadelphia.days <-as.data.frame(seq(ymd("2010-01-02"), ymd("2020-12-29"),by="days"))
 Philadelphia.days <-setNames(Philadelphia.days,c("Date"))
@@ -332,21 +332,37 @@ print(PA.msa.Pb.cleaned.plot)
 ```
 
 ```{r time-series-analysis}
-#I am looking at the two metropolitan areas with Air Concentrations that exceeded the EPA primary and secondary NAAQs
+#I am looking at the  metropolitan areas with Air Pb Levelse that exceeded the EPA primary and secondary NAAQs
+#Pittsburgh
+Pitt.msa.linear.interp.plot <-ggplot(Pitt.msa.Pb.cleaned)+
+geom_line(aes(x = Date,
+y = Daily.Mean.Pb.Concentration.clean),
+color = "chartreuse4", alpha=0.5) +
+labs(y="Daily Mean Air Pb Level (ug/m^3)",title="Daily Mean Air Pb Levels in the Pittsburgh, PA Metropolitan Area from 2010 to 2020")+
+  scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
+                                       limits=c(as.Date("2010-01-01"), as.Date("2020-01-01")),
+             expand=c(0,0))+
+                      geom_hline(yintercept=0.15, linetype='dotted', col = 'black')+
+                      annotate("text", x = as.Date("2016-12-01", "%Y-%m-%d"), y = 0.15,
+                               label = "EPA Primary and Secondary 3-month Average Pb NAAQ Standard=0.15ug/m^3", vjust = -0.5)+
+                          theme(axis.text.x=element_text(angle=90, hjust=1))+
+  theme(plot.margin=unit(c(1,1,1.5,1.2),"cm"))
+print(Pitt.msa.linear.interp.plot)
 #Scranton-Wilkes-Barre-Hazleton
 #Scranton linear interpolation
 Scranton.msa.linear.interpolation<-ggplot(Scranton.msa.Pb.cleaned) +
 geom_line(aes(x = Date,
 y = Daily.Mean.Pb.Concentration.clean),
 color = "blue", alpha=0.5) +
-geom_line(aes(x = Date,
-y = Daily.Mean.Pb.Concentration),
-color = "orange",alpha=1) +
-labs(y="Daily Mean Pb Air Concentration (ug/m^3)",title="Scranton-Wilkes-Barre-Hazleton Metropolitan Area")+
+labs(y="Daily Mean Pb Air Concentration (ug/m^3)",title="Daily Mean Air Pb Levels in the Scranton-Wilkes-Barre-Hazleton Metropolitan Area from 2010 to 2018")+
   scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
                                        limits=c(as.Date("2010-01-01"), as.Date("2018-10-01")),
              expand=c(0,0))+
-                          theme(axis.text.x=element_text(angle=90, hjust=1))
+                      geom_hline(yintercept=0.15, linetype='dotted', col = 'black')+
+                      annotate("text", x = as.Date("2014-10-01", "%Y-%m-%d"), y = 0.15,
+                               label = "EPA Primary and Secondary 3-month Average Pb NAAQ Standard=0.15ug/m^3", vjust = -0.5)+
+                          theme(axis.text.x=element_text(angle=90, hjust=1))+
+  theme(plot.margin=unit(c(1,1,1.5,1.2),"cm"))
 print(Scranton.msa.linear.interpolation)
 #
 Scranton.monthly.Pb.msa <-Scranton.msa.Pb.cleaned %>%
