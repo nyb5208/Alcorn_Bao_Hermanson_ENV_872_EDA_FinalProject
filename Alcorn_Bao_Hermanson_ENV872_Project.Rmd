@@ -332,7 +332,7 @@ print(PA.msa.Pb.cleaned.plot)
 ```
 
 ```{r time-series-analysis}
-#I am looking at the  metropolitan areas with Air Pb Levelse that exceeded the EPA primary and secondary NAAQs
+#I am looking at the  metropolitan areas with Air Pb Levels that exceeded the EPA primary and secondary NAAQs
 #Pittsburgh
 Pitt.msa.linear.interp.plot <-ggplot(Pitt.msa.Pb.cleaned)+
 geom_line(aes(x = Date,
@@ -393,22 +393,38 @@ plot(Scranton.msa.Pb.daily.decomp)
 
 Scranton.msa.Pb.monthly.decomp <-stl(Scranton.msa.Pb.monthly.ts, s.window = "periodic")
 plot(Scranton.msa.Pb.monthly.decomp)
-#Allentown-Bethlehem-Easton
-#Allentown linear interpolation
+#Lancaster, PA
+#Lancaster linear interpolation
+Lancaster.msa.linear.interpolation<-ggplot(Lancaster.msa.Pb.cleaned) +
+geom_line(aes(x = Date,
+y = Daily.Mean.Pb.Concentration.clean),
+color = "orange", alpha=1) +
+labs(y="Daily Mean Air Pb Level (ug/m^3)",title="Daily Mean Air Pb Levels in the Lancaster, PA Metropolitan Area from 2012 to 2020")+
+  scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
+                                       limits=c(as.Date("2012-01-01"), as.Date("2021-01-01")),
+             expand=c(0,0))+
+                      geom_hline(yintercept=0.15, linetype='dotted', col = 'black')+
+                      annotate("text", x = as.Date("2014-10-01", "%Y-%m-%d"), y = 0.15,
+                               label = "EPA Primary and Secondary 3-month Average Pb NAAQ Standard=0.15ug/m^3", vjust = -0.5)+
+                          theme(axis.text.x=element_text(angle=90, hjust=1))+
+  theme(plot.margin=unit(c(1,1,1.5,1.2),"cm"))
+print(Lancaster.msa.linear.interpolation)
+#
+#Allentown
 Allentown.msa.linear.interpolation<-ggplot(Allentown.msa.Pb.cleaned) +
 geom_line(aes(x = Date,
 y = Daily.Mean.Pb.Concentration.clean),
-color = "blue", alpha=1) +
-geom_line(aes(x = Date,
-y = Daily.Mean.Pb.Concentration),
-color = "orange",alpha=1) +
-labs(y="Daily Mean Air Pb Level (ug/m^3)",title="Allentown-Bethlehem-Easton Metropolitan Area")+
+color = "aquamarine", alpha=1) +
+labs(y="Daily Mean Air Pb Level (ug/m^3)",title="Daily Mean Air Pb Levels in the Allentown-Bethlehem-Easton, PA-NJ Metropolitan Area from 2012 to 2020")+
   scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
-                                       limits=c(as.Date("2017-07-01"), as.Date("2020-10-01")),
+                                       limits=c(as.Date("2012-07-01"), as.Date("2021-01-01")),
              expand=c(0,0))+
-                          theme(axis.text.x=element_text(angle=90, hjust=1))
+                      geom_hline(yintercept=0.15, linetype='dotted', col = 'black')+
+                      annotate("text", x = as.Date("2014-10-01", "%Y-%m-%d"), y = 0.15,
+                               label = "EPA Primary and Secondary 3-month Average Pb NAAQ Standard=0.15ug/m^3", vjust = -0.5)+
+                          theme(axis.text.x=element_text(angle=90, hjust=1))+
+  theme(plot.margin=unit(c(1,1,1.5,1.2),"cm"))
 print(Allentown.msa.linear.interpolation)
-#
 #Checking the first and last dates of data collection
 first(Allentown.msa.Pb.cleaned$Date)
 last(Allentown.msa.Pb.cleaned$Date)
