@@ -708,7 +708,7 @@ ggplot() +
 
 ```
 
-```{r Regression}
+```{r Regression Data Wrangling}
 #
 epa.PAcounty.Pb2 <- epa.PA.airPb.processed %>%    #ADDED BY MAX FOR REGRESSION STUFF 
    select(Date,COUNTY, Daily.Mean.Pb.Concentration, COUNTY_CODE) %>%
@@ -820,7 +820,7 @@ incinerator_summary <- incinerate_join_census %>%
   mutate(COUNTYFP10 = sub("^0+", "", COUNTYFP10)) %>% #get rid of trailing zeros 
   select(COUNTYFP10, number_incinerators, geometry) #clean
 
-incinerator_summary[is.na(incinerator_summary)] = 0  #remove NAs and FINAL PRODUCT
+incinerator_summary[is.na(incinerator_summary)] = 0  #remove NAs 
 
 
 ###Blood_Lead_Children####
@@ -852,13 +852,53 @@ metal_summary2 <- metal_summary %>% st_drop_geometry()
 i_a_join<- left_join(incinerator_summary2, airport_summary2)
 i_a_m_join <- left_join(i_a_join, metal_summary2)
 i_a_m_b_join <- left_join(i_a_m_join, blood_lead)   # join of all datasets USE IN REGRESSION 
+i_a_m_b_join[is.na(i_a_m_b_join)] = 0  #remove NAs 
 
-plot(x = i_a_m_b_join$number_metal_plants, y = i_a_m_b_join$Percent_.5)
-plot(x = i_a_m_b_join$number_incinerators, y = i_a_m_b_join$Percent_.5)
+### Data Visualization ####
+
+
+
+#### Regression Modeling ##### 
+i_a_m_b_join$number_incinerators <-i_a_m_b_join$number_incinerators+0.001 #account for zeros in log
+i_a_m_b_join$number_airports <- i_a_m_b_join$number_airports+0.001 #account for zeros in log
+i_a_m_b_join$number_metal_plants <- i_a_m_b_join$number_metal_plants+1 #account for zeros in log
+
+plot(x = i_a_m_b_join$number_metal_plants, y = i_a_m_b_join$Percent_.5) # consider logging
+plot(x = i_a_m_b_join$number_incinerators, y = i_a_m_b_join$Percent_.5) # consider logging 
 plot(x = i_a_m_b_join$number_airports, y = i_a_m_b_join$Percent_.5)
-plot(x = i_a_m_b_join, y = i_a_m_b_join$Percent_.5)
 
+i_a_m_b_join$log_metal <- log(i_a_m_b_join$number_metal_plants) #log transform X
+i_a_m_b_join$log_incinerate <- log(i_a_m_b_join$number_incinerators) #log transform X
+i_a_m_b_join$log_blood <- log(i_a_m_b_join$Percent_.5) #log transform Y 
+plot(x = i_a_m_b_join$log_metal, y = i_a_m_b_join$Percent_.5) #log metal; looks better 
+plot(x = i_a_m_b_join$log_incinerate, y = i_a_m_b_join$Percent_.5) #log incinerator ; looks better
+plot(x = i_a_m_b_join$number_airports, y = i_a_m_b_join$log_blood) 
 
+model1 <- lm(formula = Percent_.5 ~ number_metal_plants + number_incinerators + number_airports, data = i_a_m_b_join)
+summary(model1)
+
+model2 <- lm(formula = Percent_.5 ~ log_metal + log_incinerate + number_airports, data = i_a_m_b_join)
+summary(model2)
+
+model3 <- lm(formula = log_blood ~ number_metal_plants + number_incinerators + number_airports, data = i_a_m_b_join)
+summary(model3)
+
+### Regression Visualization #####
+par(mfrow=c(2,2), mar = c(2,2,2,2))
+plot(model2)
+plot(model1)
+plot(model3)
+
+step(model1) #eliminates variables.... ignore for this model... 
+
+#install.packages("corrplot")
+library(corrplot)
+df_corr <- i_a_m_b_join %>% 
+  select(number_incinerators, number_airports, number_metal_plants, Percent_.5) %>% 
+  cor()
+df_corr # correlation between model's variables. 
+par(mfrow=c(1,1))
+corrplot(df_corr, method = "ellipse")
 
 
 
@@ -868,8 +908,11 @@ newmap<- ggplot()+
   geom_sf(data = metal_sf, color = 'blue', size = 2, show.legend = "point" )
 newmap
 
-st_crs(census_sf)$epsg 
-st_crs(metal_4269)$epsg
+
+
+
+```
+```{r regression}
 
 
 
