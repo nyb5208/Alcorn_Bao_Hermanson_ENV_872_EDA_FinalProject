@@ -407,15 +407,8 @@ ggplot() +
    labs(fill = "% Pop in Poverty")+
   geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
   labs(size="Lead Values")+
-  ggtitle("Mean Lead Values Across Pennsylvania")
+  ggtitle("2010 Mean Lead Values Across Pennsylvania")
 
-ggplot() + 
-  geom_sf(data=PA_county_2010,aes(fill = meanPOP),alpha=0.3) +
-   scale_fill_gradient2(low="blue", mid = "yellow",high="red", guide = "colourbar", breaks = c(10000, 1500000)) +
-   labs(fill = "% Pop in Poverty")+
-  geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
-  labs(size="Lead Values")+
-  ggtitle("Mean Lead Values Across Pennsylvania")
 
 ggplot() + 
   geom_sf(data=PA_county_2010,aes(fill = meanPCI),alpha=0.3) + 
@@ -423,7 +416,7 @@ ggplot() +
   labs(fill = "Per Capita Income")+
   geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
   labs(size="Lead Values")+
-  ggtitle("Mean Lead Values Across Pennsylvania")
+  ggtitle("2010 Mean Lead Values Across Pennsylvania")
 
 ggplot() + 
   geom_sf(data=PA_county_2010,aes(fill = meanPCI),alpha=0.3) + 
@@ -496,13 +489,20 @@ PA_county_2018<-left_join(counties_sf, CDC_PA_2018_avg, by = c("CNTY_FIPS"))
 
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPOV),alpha=0.3) + 
-  scale_fill_gradient(low="red",high="blue") + 
-  geom_sf(data=sf_PA_Lead_avg2020, aes(size=meanPb))
+  scale_fill_gradient2(low="blue",high="red", midpoint = .15) +
+   labs(fill = "% Pop in Poverty")+
+  geom_sf(data=sf_PA_Lead_avg2020, aes(size=meanPb))+
+  labs(size="Lead Values")+
+  ggtitle("2020 Mean Lead Values Across Pennsylvania")
+
 
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPCI),alpha=0.3) + 
-  scale_fill_gradient(low="blue",high="red") + 
-  geom_sf(data=sf_PA_Lead_avg2020, aes(size=meanPb))
+  scale_fill_gradient2(low="blue",high="red", midpoint = 35000, breaks=c(20000,35000, 47000)) + 
+  labs(fill = "Per Capita Income")+
+  geom_sf(data=sf_PA_Lead_avg2020, aes(size=meanPb))+
+  labs(size="Lead Values")+
+  ggtitle("2020 Mean Lead Values Across Pennsylvania")
 
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPCI),alpha=0.3) + 
