@@ -7,7 +7,7 @@ output:
     fig_caption: yes
     number_sections: yes
 geometry: margin=2.54cm
-title: "Spatial and Temporal Evaluation of Lead Air Pollution Patterns in Pennsylvania"
+title: "Temporal, Spatial, and Regression Analyses of Lead Air Pollution Patterns and Sources in Pennsylvania"
 subtitle: "https://github.com/nyb5208/Alcorn_Bao_Hermanson_ENV_872_EDA_FinalProject.git"
 author: "Jack Alcorn, Max Hermanson, and Nancy Bao "
 fontsize: 12pt
@@ -20,7 +20,7 @@ editor_options:
 \tableofcontents 
 
 \newpage
-\listoftables 
+\listoftables
 \newpage
 \listoffigures 
 \newpage
@@ -85,8 +85,6 @@ epa.PAair.lead <-rbind(epa.PAlead.2010, epa.PAlead.2011, epa.PAlead.2012, epa.PA
 epa.PAair.lead$Date <- as.Date(epa.PAair.lead$Date, format="%m/%d/%Y")
 class(epa.PAair.lead$Date)
 #___________________
-#Load other datasets
-
 #Read in PA Counties shp file (State FIPS = 42)
 PA_county_sf <- st_read("./Data/Spatial/cb_2018_us_county_20m.shp") %>%
 filter(STATEFP == 42)
@@ -107,7 +105,7 @@ filter(STATEFP == 42)
 \newpage
 
 # Dataset Information
->US EPA Daily Outdoor Air Quality Data 
+
 
 
 \newpage
@@ -140,6 +138,14 @@ summary(epa.PA.airPb.processed$COUNTY)
 # Analysis
 ```{r time_series-data-wrangling}
 #Looking at the lead air concentrations for major metropolitan areas in Pennsylvania 
+# Looking at the Combined Statistical Areas (CBSA) to identify the metropolitan areas included in this study
+summary(epa.PA.airPb.processed$CBSA_NAME)
+summary(epa.PA.airPb.processed$COUNTY)
+
+#Need to determine the top 5 metropolitan areas by 2010 US Census population size :
+## Loaded US census data to determine the most populated metropolitan areas from the CBSAs provided in the epa Air Lead data
+PA.msa.population.size <-read.csv("")
+
 #Create dataframe named all.Days using seq() and lubridate function ymd()
 all.Days<-as.data.frame(seq(ymd("2010-01-01"), ymd("2020-12-31"),by="days"))
 all.Days<-setNames(all.Days,c("Date"))
