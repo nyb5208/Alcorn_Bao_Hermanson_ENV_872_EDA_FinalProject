@@ -144,7 +144,7 @@ summary(epa.PA.airPb.processed$COUNTY)
 
 #Need to determine the top 5 metropolitan areas by 2010 US Census population size :
 ## Loaded US census data to determine the most populated metropolitan areas from the CBSAs provided in the epa Air Lead data
-PA.msa.population.size <-read.csv("")
+PA.msa.population.size <-read.csv("./Data/Raw/PA_Metro_Area_data/cbsa-est2019-alldata.csv")
 
 #Create dataframe named all.Days using seq() and lubridate function ymd()
 all.Days<-as.data.frame(seq(ymd("2010-01-01"), ymd("2020-12-31"),by="days"))
