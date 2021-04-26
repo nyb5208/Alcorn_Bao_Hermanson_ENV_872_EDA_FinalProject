@@ -199,8 +199,7 @@ epa.PA.monthly.Pb.Allentown <-epa.PA.airPb.processed %>%
                   dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))%>%
                   add_column(CBSA="Allentown-Bethlehem-Easton")
 epa.PA.monthly.Pb.Allentown 
-#Now looking at major mining county: Luzerne Co, PA (#Scranton-Wilkes-Barre-Hazleton Metropolitan Area)
-#Luzerne
+#Now looking at major mining county: Scranton-Wilkes-Barre-Hazleton Metropolitan Area (Luzerne Co, PA)
 epa.PA.monthly.Pb.Scranton <-epa.PA.airPb.processed %>%
                   filter(CBSA_CODE==42540)%>%
                   select(Date,Date_combined,COUNTY, Daily.Mean.Pb.Concentration,) %>%
