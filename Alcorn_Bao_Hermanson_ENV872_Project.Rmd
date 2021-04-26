@@ -977,13 +977,7 @@ newmap
 
 
 ```
-filter(!is.na(Latitude), !is.na(Longitude)) %>%
 
-latlong_final <- latlong_sf %>%
-  mutate(intersection = as.integer(intersected),
-         fips = if_else(is.na(intersection), "",
-                        census_tracts$GEOID[intersection]))
-head(latlong_final)
 
 \newpage
 # Summary and Conclusions
