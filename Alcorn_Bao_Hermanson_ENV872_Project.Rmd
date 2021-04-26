@@ -296,8 +296,8 @@ Scranton.msa.Pb.cleaned
 #
 #Lancaster, PA
 Lancaster.days <-as.data.frame(seq(ymd("2012-01-04"), ymd("2020-12-29"),by="days"))
-Lancaster.msa.Pb.filter<-epa.PA.airPb.processed %>%
-                          filter(CBSA_CODE==29540) %>%
+Lancaster.msa.Pb.filter<- epa.PA.airPb.processed %>%
+                          filter(CBSA_NAME=="29540") %>%
                           select(Date,Daily.Mean.Pb.Concentration) %>%
 Lancaster.msa.Pb <-left_join(Lancaster.days,Lancaster.msa.Pb.filter)
 Lancaster.msa.Pb.cleaned <-Lancaster.msa.Pb %>%
