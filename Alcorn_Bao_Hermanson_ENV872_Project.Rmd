@@ -111,7 +111,7 @@ filter(STATEFP == 42)
 \newpage
 
 # Exploratory Analysis 
-```{r exploratory-analysis, include= FALSE, warning = FALSE}
+```{r exploratory-analysis, include= FALSE, warning = FALSE,message=FALSE}
 #
 dim(epa.PAair.lead)
 colnames(epa.PAair.lead)
@@ -126,9 +126,6 @@ epa.PA.airPb.processed <- epa.PAair.lead %>%
                                   mutate(Month = month(Date),
                                   Year=year(Date)) %>%
                                   mutate(Date_combined = my(paste0(Month,"-",Year)))
-# Looking at the Combined Statistical Areas to identify the metropolitan areas included in this study
-summary(epa.PA.airPb.processed$CBSA_NAME)
-summary(epa.PA.airPb.processed$COUNTY)
 ```
 
 
@@ -136,20 +133,44 @@ summary(epa.PA.airPb.processed$COUNTY)
 # Introduction 
 
 # Analysis
-```{r time_series-data-wrangling}
+```{r time_series-data-wrangling,echo=FALSE}
 #Looking at the lead air concentrations for major metropolitan areas in Pennsylvania 
 # Looking at the Combined Statistical Areas (CBSA) to identify the metropolitan areas included in this study
 summary(epa.PA.airPb.processed$CBSA_NAME)
+summary(as.factor(epa.PA.airPb.processed$CBSA_CODE))
+#associated CBSA codes 
+### Allentown-Bethlehem-Easton, PA-NJ =10900
+### Chambersburg-Waynesboro =16540
+### Erie=21500
+### Indiana=26860
+### Lancaster=29540
+### Lewisburg=30260
+### New Castle=35260
+### Reading=39740
+### Pittsburgh =38300
+### Philadelphia-Camden-Wilmington, PA-NJ-DE-MD =39780
+### Reading=39740
 summary(epa.PA.airPb.processed$COUNTY)
 
 #Need to determine the top 5 metropolitan areas by 2010 US Census population size :
 ## Loaded US census data to determine the most populated metropolitan areas from the CBSAs provided in the epa Air Lead data
 PA.msa.population.size <-read.csv("./Data/Raw/PA_Metro_Area_data/cbsa-est2019-alldata.csv")
-
-#Create dataframe named all.Days using seq() and lubridate function ymd()
-all.Days<-as.data.frame(seq(ymd("2010-01-01"), ymd("2020-12-31"),by="days"))
-all.Days<-setNames(all.Days,c("Date"))
-
+#Set CBSA variable as factor
+as.factor(PA.msa.population.size$CBSA)
+### Process the PA.msa.population.size data so I only have PA metro areas filtered by CBSA code
+PA.msa.pop.processed <- PA.msa.population.size %>%
+                          filter(LSAD=="Metropolitan Statistical Area") %>%
+                          select(CBSA, NAME, CENSUS2010POP) %>%
+                          filter(CBSA %in% c("10900", "16540", "21500", "26860", "29540",
+                                        "30260", "35260", "37980",
+                                        "38300", "39740", "42540"))%>%
+                          arrange(desc(CENSUS2010POP))
+#Picked the Top 5 Metropolitan Areas to look at:
+## 1. Philadelphia-Camden-Wilmington, PA-NJ-DE-MD 
+## 2. Pittsburgh, PA  
+## 3. Allentown-Bethlehem-Easton, PA-NJ 
+## 4. Scranton--Wilkes-Barre--Hazleton, PA
+## 5. Lancaster, PA 
 #Looked at Monthly Lead Air concentrations of the Five major metropolitan areas in Pennsylvania 
 #Philadelphia Metropolitan Area
 epa.PA.monthly.Pb.Philly <-epa.PA.airPb.processed %>%
