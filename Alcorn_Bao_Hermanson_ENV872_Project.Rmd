@@ -840,10 +840,17 @@ print(joint_nonSF$COUNTYFP10)
 joint_nonSF2 <- left_join(joint_nonSF, blood_lead)
 #### Joining Data ####
 blood_lead #non-sf; join below three and then drop geometry, then join all. 
-incinerator_summary
-airport_summary
-metal_summary
+incinerator_summary #sf
+airport_summary #sf
+metal_summary #sf 
+CDC_PA_2010_avg2 <- CDC_PA_2010_avg %>% 
+  select(CNTY_FIPS, meanPCI, meanPOV) %>% 
+  mutate(COUNTYFP10 = CNTY_FIPS) %>% 
+  select(COUNTYFP10, meanPCI, meanPOV)
+CDC_PA_2010_avg2$COUNTYFP10 <- as.character(CDC_PA_2010_avg2$COUNTYFP10)
 
+class(CDC_PA_2010_avg2$COUNTYFP10)
+class(i_a_m_b_join$COUNTYFP10)
 incinerator_summary2 <- incinerator_summary %>% st_drop_geometry()
 airport_summary2 <- airport_summary %>% st_drop_geometry()
 metal_summary2 <- metal_summary %>% st_drop_geometry()  
@@ -852,6 +859,7 @@ metal_summary2 <- metal_summary %>% st_drop_geometry()
 i_a_join<- left_join(incinerator_summary2, airport_summary2)
 i_a_m_join <- left_join(i_a_join, metal_summary2)
 i_a_m_b_join <- left_join(i_a_m_join, blood_lead)   # join of all datasets USE IN REGRESSION 
+i_a_m_b_join <- left_join(i_a_m_b_join, CDC_PA_2010_avg2)
 i_a_m_b_join[is.na(i_a_m_b_join)] = 0  #remove NAs 
 
 ### Data Visualization ####
@@ -866,13 +874,22 @@ i_a_m_b_join$number_metal_plants <- i_a_m_b_join$number_metal_plants+1 #account 
 plot(x = i_a_m_b_join$number_metal_plants, y = i_a_m_b_join$Percent_.5) # consider logging
 plot(x = i_a_m_b_join$number_incinerators, y = i_a_m_b_join$Percent_.5) # consider logging 
 plot(x = i_a_m_b_join$number_airports, y = i_a_m_b_join$Percent_.5)
+plot(x = i_a_m_b_join$meanPCI, y = i_a_m_b_join$Percent_.5)
+plot(x = i_a_m_b_join$meanPOV, y = i_a_m_b_join$Percent_.5)
 
 i_a_m_b_join$log_metal <- log(i_a_m_b_join$number_metal_plants) #log transform X
 i_a_m_b_join$log_incinerate <- log(i_a_m_b_join$number_incinerators) #log transform X
 i_a_m_b_join$log_blood <- log(i_a_m_b_join$Percent_.5) #log transform Y 
+i_a_m_b_join$log_PCI <- log(i_a_m_b_join$meanPCI)#log transform X
+i_a_m_b_join$quadPOV <- (i_a_m_b_join$meanPOV)^2# quadratic X 
+
 plot(x = i_a_m_b_join$log_metal, y = i_a_m_b_join$Percent_.5) #log metal; looks better 
 plot(x = i_a_m_b_join$log_incinerate, y = i_a_m_b_join$Percent_.5) #log incinerator ; looks better
 plot(x = i_a_m_b_join$number_airports, y = i_a_m_b_join$log_blood) 
+plot(x = i_a_m_b_join$log_PCI, y = i_a_m_b_join$Percent_.5)
+plot(x = i_a_m_b_join$quadPOV, y = i_a_m_b_join$Percent_.5)
+
+
 
 model1 <- lm(formula = Percent_.5 ~ number_metal_plants + number_incinerators + number_airports, data = i_a_m_b_join)
 summary(model1)
@@ -882,12 +899,30 @@ summary(model2)
 
 model3 <- lm(formula = log_blood ~ number_metal_plants + number_incinerators + number_airports, data = i_a_m_b_join)
 summary(model3)
+#additional variables
+model4 <- lm(formula = Percent_.5 ~ number_metal_plants + number_incinerators + number_airports + meanPCI + meanPOV, data = i_a_m_b_join)
+summary(model4)
+
+model5 <- lm(formula = Percent_.5 ~ number_metal_plants + number_incinerators + number_airports + log_PCI + quadPOV, data = i_a_m_b_join)
+summary(model5)
+plot(model5)
+
+model6 <- lm(formula = Percent_.5 ~ number_metal_plants + log_metal+ log_incinerate + meanPCI + meanPOV+    number_incinerators + number_airports + log_PCI + quadPOV, data = i_a_m_b_join) # plugged in every variable and then ran through "step" function , which produced model 7 
+summary(model5)
+step(model6) 
+#step function 
+
+model7 <- lm(formula = Percent_.5 ~ meanPOV+ quadPOV, data = i_a_m_b_join)
+summary(model7)
+
 
 ### Regression Visualization #####
 par(mfrow=c(2,2), mar = c(2,2,2,2))
 plot(model2)
 plot(model1)
 plot(model3)
+plot(model5)
+plot(model7)
 
 step(model1) #eliminates variables.... ignore for this model... 
 
