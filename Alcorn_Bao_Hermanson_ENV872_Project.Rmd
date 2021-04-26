@@ -393,6 +393,12 @@ plot(Scranton.msa.Pb.daily.decomp)
 
 Scranton.msa.Pb.monthly.decomp <-stl(Scranton.msa.Pb.monthly.ts, s.window = "periodic")
 plot(Scranton.msa.Pb.monthly.decomp)
+#
+Scranton.Pb.daily.trend.nonseasonal <-Kendall::MannKendall(Scranton.msa.Pb.daily.ts)
+summary(Scranton.Pb.daily.trend.nonseasonal)
+#
+Scranton.Pb.monthly.trend.nonseasonal <-Kendall::MannKendall(Scranton.msa.Pb.monthly.ts)
+summary(Scranton.Pb.monthly.trend.nonseasonal)
 #Lancaster, PA
 #Lancaster linear interpolation
 Lancaster.msa.linear.interpolation<-ggplot(Lancaster.msa.Pb.cleaned) +
@@ -410,6 +416,40 @@ labs(y="Daily Mean Air Pb Level (ug/m^3)",title="Daily Mean Air Pb Levels in the
   theme(plot.margin=unit(c(1,1,1.5,1.2),"cm"))
 print(Lancaster.msa.linear.interpolation)
 #
+Lancaster.monthly.Pb.msa <-Lancaster.msa.Pb.cleaned %>%
+                        mutate(Month = month(Date),
+                        Year=year(Date)) %>%
+                        mutate(Date_combined = my(paste0(Month,"-",Year)))%>%
+                        group_by(Date_combined)%>%
+                        dplyr::summarise(Mean.monthly.Pb=mean(Daily.Mean.Pb.Concentration.clean))
+Lancaster.monthly.Pb.msa <- Lancaster.monthly.Pb.msa %>%
+                           mutate(Date=as.Date(Date_combined))
+#Checking the first and last dates of data collection
+first(Lancaster.msa.Pb.cleaned$Date)
+last(Lancaster.msa.Pb.cleaned$Date)
+#
+#Time Series: daily
+Lancaster.msa.Pb.daily.ts <-ts(Lancaster.msa.Pb.cleaned$Daily.Mean.Pb.Concentration.clean,
+                              start=c(2012,1),
+                              end=c(2020,12),
+                              frequency=365)
+#Time Series: monthly
+Lancaster.msa.Pb.monthly.ts <-ts(Lancaster.monthly.Pb.msa$Mean.monthly.Pb,
+                                start=c(2012,1),
+                                end=c(2020,12),
+                                frequency=12)
+#
+Lancaster.msa.Pb.daily.decomp <- stl(Lancaster.msa.Pb.daily.ts, s.window = "periodic")
+plot(Lancaster.msa.Pb.daily.decomp)
+
+Lancaster.msa.Pb.monthly.decomp <-stl(Lancaster.msa.Pb.monthly.ts, s.window = "periodic")
+plot(Lancaster.msa.Pb.monthly.decomp)
+#
+Lancaster.Pb.daily.trend.nonseasonal <-Kendall::MannKendall(Lancaster.msa.Pb.daily.ts)
+summary(Lancaster.Pb.daily.trend.nonseasonal)
+#
+Lancaster.Pb.monthly.trend.nonseasonal <-Kendall::MannKendall(Lancaster.msa.Pb.monthly.ts)
+summary(Lancaster.Pb.monthly.trend.nonseasonal)
 #Allentown
 Allentown.msa.linear.interpolation<-ggplot(Allentown.msa.Pb.cleaned) +
 geom_line(aes(x = Date,
@@ -440,15 +480,15 @@ Allentown.monthly.Pb.msa <- Allentown.monthly.Pb.msa %>%
 #Time Series: daily
 Allentown.msa.Pb.daily.ts <-ts(Allentown.msa.Pb.cleaned$Daily.Mean.Pb.Concentration.clean,
                               start=c(2012,7),
-                              end=c(2020,9),
+                              end=c(2020,12),
                               frequency=365)
+Allentown.Pb.daily.trend.nonseasonal <-Kendall::MannKendall(Allentown.msa.Pb.daily.ts)
+summary(Allentown.Pb.daily.trend.nonseasonal)
 #Time Series: monthly
 Allentown.msa.Pb.monthly.ts <-ts(Allentown.monthly.Pb.msa$Mean.monthly.Pb,
-                                start=c(2012,1),
-                                end=c(2020,9),
+                                start=c(2012,7),
+                                end=c(2020,12),
                                 frequency=12)
-Allentown.Pb.monthly.trend.seasonal <-Kendall::SeasonalMannKendall(Allentown.msa.Pb.monthly.ts)
-summary(Allentown.Pb.monthly.trend.seasonal)
 Allentown.Pb.monthly.trend.nonseasonal <- Kendall::MannKendall(Allentown.msa.Pb.monthly.ts)
 summary(Allentown.Pb.monthly.trend.nonseasonal)
 #Decomposition of the time series
