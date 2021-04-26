@@ -152,7 +152,7 @@ summary(as.factor(epa.PA.airPb.processed$CBSA_CODE))
 ### Reading=39740
 summary(epa.PA.airPb.processed$COUNTY)
 
-#Need to determine the top 5 metropolitan areas by 2010 US Census population size :
+#Need to determine the top 5 metropolitan areas by 2010 US Census population size (most populated):
 ## Loaded US census data to determine the most populated metropolitan areas from the CBSAs provided in the epa Air Lead data
 PA.msa.population.size <-read.csv("./Data/Raw/PA_Metro_Area_data/cbsa-est2019-alldata.csv")
 #Set CBSA variable as factor
@@ -165,14 +165,14 @@ PA.msa.pop.processed <- PA.msa.population.size %>%
                                         "30260", "35260", "37980",
                                         "38300", "39740", "42540"))%>%
                           arrange(desc(CENSUS2010POP))
-#Picked the Top 5 Metropolitan Areas to look at:
+#Picked the Top 5 Metropolitan Areas to look at based on 2010 US Census Population Size:
 ## 1. Philadelphia-Camden-Wilmington, PA-NJ-DE-MD 
 ## 2. Pittsburgh, PA  
 ## 3. Allentown-Bethlehem-Easton, PA-NJ 
 ## 4. Scranton--Wilkes-Barre--Hazleton, PA
 ## 5. Lancaster, PA 
 #Looked at Monthly Lead Air concentrations of the Five major metropolitan areas in Pennsylvania 
-#Philadelphia Metropolitan Area
+#Philadelphia-Camden-Wilmington, PA-NJ-DE-MD 
 epa.PA.monthly.Pb.Philly <-epa.PA.airPb.processed %>%
                   filter(CBSA_CODE==37980)%>%
                   select(Date,Date_combined, Daily.Mean.Pb.Concentration,) %>%
@@ -191,7 +191,7 @@ epa.PA.monthly.Pb.Pitt <-epa.PA.airPb.processed %>%
 view(epa.PA.monthly.Pb.Pitt)
 #only have data from 2010 to 2017 for Pittsburgh area (Allegheny Co., PA)
 #
-# Allentown-Bethlehem-Easton Metropolitan Area
+# Allentown-Bethlehem-Easton, PA-NJ Metropolitan Area
 epa.PA.monthly.Pb.Allentown <-epa.PA.airPb.processed %>%
                   filter(CBSA_CODE==10900)%>%
                   select(Date,Date_combined, Daily.Mean.Pb.Concentration,) %>%
