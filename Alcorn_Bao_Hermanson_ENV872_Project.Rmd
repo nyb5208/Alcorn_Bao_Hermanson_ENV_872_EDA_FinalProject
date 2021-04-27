@@ -706,7 +706,7 @@ ggplot() +
    labs(fill = "% Pop in Poverty")+
   geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
    labs(size="Lead Values
-       (ug/m3)")+
+       (ug/m3)")
   
 ```
 
@@ -720,7 +720,7 @@ ggplot() +
     Income")+
   geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
    labs(size="Lead Values
-       (ug/m3)")+
+       (ug/m3)")
   
 ```
 
@@ -733,7 +733,7 @@ ggplot() +
     Income")+
   geom_sf(data=sf_PA_Lead_high_2010, aes(size=maxPb))+
    labs(size="Lead Values
-       (µg/m3)")+
+       (µg/m3)")
   
 
 
@@ -760,7 +760,6 @@ range(sf_PA_Lead_high_2010$meanPb)
 CDC_PA_2014<-read.csv("./Data/Raw/Pennsylvania_CDC_2014.csv", header = TRUE)
 
 CDC_PA_2014$CNTY_FIPS<-as.numeric(CDC_PA_2014$CNTY_FIPS)
-
 CDC_PA_2014_avg<-CDC_PA_2014%>%
   group_by(COUNTY) %>%
   summarize(meanPCI = mean(E_PCI),
@@ -778,7 +777,7 @@ ggplot() +
    labs(fill = "% Pop in Poverty")+
   geom_sf(data=sf_PA_Lead_avg2015, aes(size=meanPb))+
   labs(size="Lead Values 
-       (µg/m3)")+
+       (µg/m3)")
   
 ```
 
@@ -791,7 +790,7 @@ ggplot() +
   Income")+
   geom_sf(data=sf_PA_Lead_avg2015, aes(size=meanPb))+
   labs(size="Lead Values
-       (µg/m3)")+
+       (µg/m3)")
   
 ```
 
@@ -845,7 +844,7 @@ ggplot() +
    labs(fill = "% Pop in Poverty")+
   geom_sf(data=sf_PA_Lead_avg2020, aes(size=meanPb))+
   labs(size="Lead Values 
-       (µg/m3)")+
+       (µg/m3)")
   
 ```
 
@@ -858,7 +857,7 @@ ggplot() +
   Income")+
   geom_sf(data=sf_PA_Lead_avg2020, aes(size=meanPb))+
   labs(size="Lead Values
-       (µg/m3)")+
+       (µg/m3)")
   
 ```
 
@@ -871,7 +870,7 @@ ggplot() +
   Income")+
   geom_sf(data=sf_PA_Lead_high_2020, aes(size=maxPb))+
    labs(size="Lead Values
-       (µg/m3)")+
+       (µg/m3)")
   
 
 
