@@ -7,6 +7,6 @@ The purpose of this study was to assess the temporal and spatial patterns of air
 Furthermore, this study was also interested in assessing the association between lead exposure in children in Pennsylvania and the frequency of sources of lead air emissions via multiple linear regression analyses
 
 #Data Description 
-Data used in this study included: 
--CDC Childhood Blood Lead Surveillance Data: Blood Lead Levels (µg/dL) among Children < 72 Months of Age, by County and Blood Lead Level (BLL) Group, 2017 (.csv)
+##Data used in this study included: 
+###CDC Childhood Blood Lead Surveillance Data: Blood Lead Levels (µg/dL) among Children < 72 Months of Age, by County and Blood Lead Level (BLL) Group, 2017 (.csv)
 
