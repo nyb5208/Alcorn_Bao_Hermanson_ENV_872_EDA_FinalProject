@@ -20,6 +20,42 @@ p1
 p2
 p3
 
+#summary stats tables
+summary.metal <- i_a_m_b_join %>% 
+  select(number_metal_plants) %>% 
+  dplyr::summarize(Length=length(number_metal_plants),
+                   Mean=mean(number_metal_plants),
+                   Median=median(number_metal_plants),
+                   Std_Dev=sd(number_metal_plants),
+                   Minimum=min(number_metal_plants),
+                   Maximum=max(number_metal_plants)
+                   ) 
+glimpse(summary.metal)
+
+summary.incinerate <- i_a_m_b_join %>% 
+  select(number_incinerators) %>% 
+  dplyr::summarize(Length=length(number_incinerators),
+                   Mean=mean(number_incinerators),
+                   Median=median(number_incinerators),
+                   Std_Dev=sd(number_incinerators),
+                   Minimum=min(number_incinerators),
+                   Maximum=max(number_incinerators)
+                   ) 
+glimpse(summary.incinerate)
+
+summary.airport <- i_a_m_b_join %>% 
+  select(number_airports) %>% 
+  dplyr::summarize(Length=length(number_airports),
+                   Mean=mean(number_airports),
+                   Median=median(number_airports),
+                   Std_Dev=sd(number_airports),
+                   Minimum=min(number_airports),
+                   Maximum=max(number_airports)
+                   ) 
+glimpse(summary.airport)
+
+#### Linear Plots ####
+
 ggplot(i_a_m_b_join, aes(log_metal, Percent_.5)) +
   geom_point() + 
   stat_smooth(method = lm, se = FALSE)
@@ -100,44 +136,10 @@ par(mfrow=c(2,2), mar = c(2,2,2,2))
 plot(model4)
 plot(model9)
 
-
-
-summary.metal <- i_a_m_b_join %>% 
-  select(number_metal_plants) %>% 
-  dplyr::summarize(length.methane=length(number_metal_plants),
-                   mean.methane=mean(number_metal_plants),
-                   median.methane=median(number_metal_plants),
-                   sd.methane=sd(number_metal_plants),
-                   min.methane=min(number_metal_plants),
-                   max.methane=max(number_metal_plants)
-                   ) 
+glimpse(summary.airport)
+glimpse(summary.incinerate)
 glimpse(summary.metal)
 
 
-library(gt)
-summary.metal %>% 
-  gt() %>% 
-  tab_header(
-    title= md("Summary Statistics of Metal Plants in PA")
-  ) %>% 
-  
-  
-  fmt_passthrough(columns=vars(length.methane, mean.methane, median.methane, sd.methane, min.methane, max.methane)) %>% 
-  fmt_number(columns=vars(length.methane),decimals=2) %>% 
-  fmt_number(columns=vars(mean.methane), decimals=2) %>% 
-  fmt_number(columns=vars(median.methane), decimals = 2) %>% 
-  fmt_number(columns=vars(sd.methane), decimals = 2) %>% 
-  fmt_number(columns=vars(min.methane), decimals = 2) %>% 
-  fmt_number(columns=vars(max.methane), decimals = 2) %>% 
 
-  cols_label(
-    length.methane="Observations",
-    median.methane="Median",
-    mean.methane="Mean",
-    sd.methane="SD",
-    min.methane = "Min",
-    max.methane = "Max",
-    
-  )  
-summary.metal
 ```
