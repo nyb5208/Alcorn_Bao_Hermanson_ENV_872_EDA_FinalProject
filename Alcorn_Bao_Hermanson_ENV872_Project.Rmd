@@ -7,7 +7,7 @@ output:
     keep_tex: yes
     fig_caption: yes
     number_sections: yes
-  html_document:
+  html_document: no
     df_print: paged
   word_document: default
 subtitle: https://github.com/nyb5208/Alcorn_Bao_Hermanson_ENV_872_EDA_FinalProject.git
@@ -191,7 +191,6 @@ The final model appears to be heteroskedastic based on its scale-location graph,
 Multicollinearity was examined using the vif() function, which conducts a Variance Inflation Factor between explanatory variables. Values above two are considered moderately correlated, but given how close two most of them were, mean-centering was not performed. 
 This model met the normality assumption based on the Normal Q-Q plot. 
 \newpage
-# 
 ```{r exploratory-analysis, include= FALSE, warning = FALSE,message=FALSE}
 #
 #Cleaned and Processed EPA PA Air Lead Data
@@ -308,8 +307,6 @@ Pa.monthly.Pb.MSA
 class(Pa.monthly.Pb.MSA$Date_combined)
 ```
 
-
-<<<<<<< HEAD
 ```{r time-series-visuals,echo=FALSE ,fig.align='left',fig.cap="Monthly Average Pb Air Concentrations from 2010 to 2020 in PA Metro Areas",fig.height = 8, fig.width = 10}
 #Looking at the top 5 Metropolitan Areas for air Pb concentrations from 2010 to 2020 
 #PA Metropolitan Area
@@ -764,7 +761,7 @@ range(sf_PA_Lead_high_2010$meanPb)
 #2015
 CDC_PA_2014<-read.csv("./Data/Raw/Pennsylvania_CDC_2014.csv", header = TRUE)
 
-CDC_PA_2014$CNTY_FIPS<-as.numeric(CDC_PA_2014$CNTY_FIPS)
+
 CDC_PA_2014_avg<-CDC_PA_2014%>%
   group_by(COUNTY) %>%
   summarize(meanPCI = mean(E_PCI),
@@ -772,9 +769,9 @@ CDC_PA_2014_avg<-CDC_PA_2014%>%
             meanPOP = sum(E_TOTPOP))
 
 CDC_PA_2014_avg<-mutate(CDC_PA_2014_avg, meanPOV = (meanPOV/100))
-CDC_PA_2014_avg$CNTY_FIPS<-CDC_PA_2010_avg$CNTY_FIPS
+
 #join CDC data and county shape file
-PA_county_2014<-left_join(counties_sf, CDC_PA_2014_avg, by = c("CNTY_FIPS"))
+PA_county_2014<-left_join(counties_sf, CDC_PA_2014_avg, by = c("COUNTY"))
 
 ggplot() + 
   geom_sf(data=PA_county_2014,aes(fill = meanPOV),alpha=0.3) + 
@@ -830,7 +827,6 @@ sf_PA_Lead_high_2020<-filter(sf_PA_Lead_avg2020, maxPb > 0.15)
 #2020
 CDC_PA_2018<-read.csv("./Data/Raw/Pennsylvania_CDC_2018.csv", header = TRUE)
 
-CDC_PA_2018$CNTY_FIPS<-as.numeric(CDC_PA_2018$CNTY_FIPS)
 
 CDC_PA_2018_avg<-CDC_PA_2018%>%
   group_by(COUNTY) %>%
@@ -839,9 +835,8 @@ CDC_PA_2018_avg<-CDC_PA_2018%>%
             meanPOP = sum(E_TOTPOP))
 
 CDC_PA_2018_avg<-mutate(CDC_PA_2018_avg, meanPOV = (meanPOV/100))
-CDC_PA_2018_avg$CNTY_FIPS<-CDC_PA_2010_avg$CNTY_FIPS
 #join CDC data and county shape file
-PA_county_2018<-left_join(counties_sf, CDC_PA_2018_avg, by = c("CNTY_FIPS"))
+PA_county_2018<-left_join(counties_sf, CDC_PA_2018_avg, by = c("COUNTY"))
 
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPOV),alpha=0.3) + 
@@ -899,7 +894,6 @@ Quantity of plants/airports would have been more useful if the geographic units 
 Of further concern with the metal processing data was that the range of metal-processing plants was low across counties (max number of plants was 12, min 0), with the mean being 1.72 plants/county. Such skewness of the mean may not be appropriate for an OLS regression.
 
 ```{r Regression Data Wrangling,include=FALSE}
-#
 epa.PAcounty.Pb2 <- epa.PA.airPb.processed %>%    #ADDED BY MAX FOR REGRESSION STUFF 
    select(Date,COUNTY, Daily.Mean.Pb.Concentration, COUNTY_CODE) %>%
                   group_by(COUNTY_CODE) %>%
@@ -913,9 +907,11 @@ census_sf$FIPS <- census_sf$STATEFP10
 
 ###Metal####
 #need to use R spatial analysis to determine which county FIPS each metal processing plant is in 
-metal_sf <- st_read('./Data/Raw/Metal_processing/PA_DEP/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant.shp')
+metal_sf <- st_read('./Data/Raw/Metal_processing/PA_DEP/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant 2/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant.shp')
 metal_csv <- read.csv("./Data/Raw/Metal_processing/PA_DEP/Industrial_Mineral_Mining_Operations_(IMMO)_-_Mineral_Preparation_Plant.csv")
+```
 
+```{r section , include = FALSE}
 census_sf <- st_read('./Data/Raw/CensusData/tl_2020_42_county10/tl_2020_42_county10.shp')
 mapview(census_sf)
 census_sf$FIPS <- census_sf$STATEFP10
@@ -942,12 +938,13 @@ census_sf2 <- census_sf %>%
 metal_join_census <- st_join(census_sf2, metal_summary)  ## geographic joining 
 metal_join_census[is.na(metal_join_census)] = 0  #remove NAs 
 metal_join_census <- metal_join_census %>% 
-  select(COUNTYFP10.x, NAME10, n, geometry) 
+  select(COUNTYFP10.x, NAME10, number_metal_plants, geometry) 
 
 metal_join_census$dummy_metal <- as.numeric(metal_join_census$n > 0)
 
+```
 
-
+```{r section2, include = FALSE}
 #####airport#####
 airport_raw <- read.csv("./Data/Raw/Airport Data/Airports.csv",  stringsAsFactors = TRUE)
 airport_sf <- st_as_sf(airport_raw, coords = c('X', 'Y'), crs = 4269)
@@ -969,25 +966,12 @@ airport_summary <- airport_join %>%
   mutate(COUNTYFP10 = sub("^0+", "", COUNTYFP10)) %>% 
   select(COUNTYFP10, number_airports, geometry)
 
+```
 
+```{r section2.1, include = FALSE}
 
 census_sf2 <- census_sf %>% 
   select(COUNTYFP10, NAME10)
-airport_join_census <- st_join(census_sf2, airport_summary)
-airport_join_census$number_airports <- airport_join_census$n
-
-
-
-metal_join_census_airport <- st_join(metal_join_census, airport_PA)
-
-
-
-
-joint_nonSF <- metal_join_census %>% 
-  select(COUNTYFP10.x, NAME10, n)
-joint_nonSF <- joint_nonSF %>% st_drop_geometry()
-joint_nonSF$COUNTYFP10 <- joint_nonSF$COUNTYFP10.x
-class(joint_nonSF)
 
 #####Incinerators #####
 incinerate_sf_raw <- st_read('./Data/Raw/Incinerator_Shp_Data/Air_Emission_Plant_-_Incinerator.shp')
@@ -995,24 +979,23 @@ incinerate_sf <- st_transform(incinerate_sf_raw, crs = 4269)
 st_crs(incinerate_sf)$epsg 
 st_crs(census_sf2)$epsg 
 incinerate_sf2 <- incinerate_sf %>% 
-  select( SITE_NAME, SITE_STATU, geometry, SUB_FACILI) %>% 
-  filter(SITE_STATU == "ACTIVE") %>% 
-  filter(SUB_FACILI == "INCINERATOR" ) %>% 
+                        select( SITE_NAME, SITE_STATU, geometry, SUB_FACILI) %>% 
+                        filter(SITE_STATU == "ACTIVE") %>% 
+                        filter(SUB_FACILI == "INCINERATOR" ) 
 incinerate_join_census<- st_join(incinerate_sf, census_sf2, join = st_intersects) # join 
 incinerate_join_census[is.na(incinerate_join_census)] = 0  #remove NAs 
-incinerate_join_census <- metal_join_census %>%  #clean data 
-  select(COUNTYFP10.x, NAME10, n, geometry) 
 
 incinerator_summary <- incinerate_join_census %>% 
-  select(COUNTYFP10) %>% 
+  select(COUNTYFP10, geometry) %>% 
   count(COUNTYFP10) %>% 
   mutate(number_incinerators = n) %>% #rename count column
   mutate(COUNTYFP10 = sub("^0+", "", COUNTYFP10)) %>% #get rid of trailing zeros 
   select(COUNTYFP10, number_incinerators, geometry) #clean
 
 incinerator_summary[is.na(incinerator_summary)] = 0  #remove NAs 
+```
 
-
+```{r section 3, include = FALSE}
 ###Blood_Lead_Children####
 ##contains county FIPS code
 children_blood_lead <- read.csv("./Data/Raw/BloodLeadLevels/PA_CountyLevelSummary_2017.csv", stringsAsFactors = TRUE)
@@ -1024,23 +1007,18 @@ children_blood_lead$Percent_.5 <- as.numeric(children_blood_lead$Percent_.5)
 blood_lead <- children_blood_lead %>% 
   select(COUNTYFP10, County.Name, Percent_.5)
 
-
-joint_nonSF$COUNTYFP10 <- sub("^0+", "", joint_nonSF$COUNTYFP10) #get rid of trailing 0's 
-print(joint_nonSF$COUNTYFP10)
-joint_nonSF2 <- left_join(joint_nonSF, blood_lead)
 #### Joining Data ####
-blood_lead #non-sf; join below three and then drop geometry, then join all. 
-incinerator_summary #sf
-airport_summary #sf
-metal_summary #sf 
+#blood_lead #non-sf; join below three and then drop geometry, then join all. 
+#incinerator_summary #sf
+#airport_summary #sf
+#metal_summary #sf 
 CDC_PA_2010_avg2 <- CDC_PA_2010_avg %>% 
   select(CNTY_FIPS, meanPCI, meanPOV) %>% 
   mutate(COUNTYFP10 = CNTY_FIPS) %>% 
   select(COUNTYFP10, meanPCI, meanPOV)
 CDC_PA_2010_avg2$COUNTYFP10 <- as.character(CDC_PA_2010_avg2$COUNTYFP10)
 
-class(CDC_PA_2010_avg2$COUNTYFP10)
-class(i_a_m_b_join$COUNTYFP10)
+
 incinerator_summary2 <- incinerator_summary %>% st_drop_geometry()
 airport_summary2 <- airport_summary %>% st_drop_geometry()
 metal_summary2 <- metal_summary %>% st_drop_geometry()  
@@ -1110,27 +1088,7 @@ summary.airport <- i_a_m_b_join %>%
 glimpse(summary.airport)
 ```
 ```{r plots, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Linear Plots of Individual Variables"  }
-#### Linear Plots ####
 
-ggplot(i_a_m_b_join, aes(log_metal, Percent_.5)) +
-  geom_point() + 
-  stat_smooth(method = lm, se = FALSE)
-
-ggplot(i_a_m_b_join, aes(log_incinerate, Percent_.5)) +
-  geom_point() +
-  stat_smooth(method = lm, se = FALSE)
-
-ggplot(i_a_m_b_join, aes(meanPCI    , Percent_.5)) +
-  geom_point() +
-  stat_smooth(method = lm, se = FALSE)
-
-ggplot(i_a_m_b_join, aes(quadPOV, Percent_.5)) +
-  geom_point() +
-  stat_smooth(method = lm, se = FALSE)
-
-ggplot(i_a_m_b_join, aes(number_airports, Percent_.5)) +
-  geom_point() +
-  stat_smooth(method = lm, se = FALSE)
 ```
 
 ```{r transformations, include = FALSE}
@@ -1158,6 +1116,30 @@ plot(x = i_a_m_b_join$log_PCI, y = i_a_m_b_join$Percent_.5)
 plot(x = i_a_m_b_join$quadPOV, y = i_a_m_b_join$Percent_.5)
 ```
 
+```{r linear plotssss , echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Linear models with transformations"}
+#### Linear Plots ####
+
+ggplot(i_a_m_b_join, aes(log_metal, Percent_.5)) +
+  geom_point() + 
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(log_incinerate, Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(meanPCI    , Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(quadPOV, Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(number_airports, Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+```
 
 ```{r modeling, include = FALSE}
 model1 <- lm(formula = Percent_.5 ~ number_metal_plants + number_incinerators + number_airports, data = i_a_m_b_join)
