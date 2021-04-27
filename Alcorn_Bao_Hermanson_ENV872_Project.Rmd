@@ -1190,4 +1190,37 @@ We found that four of the five most populous metropolitan areas Philadelphia-Cam
 
 \newpage
 # References
-<add references here if relevant, otherwise delete this section> 
+Ab Latif Wani, A. A., & Usmani, J. A. (2015). Lead toxicity: a review. Interdisciplinary toxicology, 8(2), 55. doi: 10.1515/intox-2015-0009
+
+About Air Data Reports. (2021). United States Environmental Protection Agency. Retrieved from https://www.epa.gov/outdoor-air-quality-data/about-air-data-reports 
+
+American Lung Association (2021). Most Polluted Cities. Retrieved from https://www.lung.org/research/sota/city-rankings/most-polluted-cities 
+CDC Social Vulnerability Index Data [internet database] available via https://www.atsdr.cdc.gov/placeandhealth/svi/data_documentation_download.html
+Kinney, P. L. (2018). Interactions of climate change, air pollution, and human health. Current environmental health reports, 5(1), 179-186.https://doi.org/10.1007/s40572-018-0188-x
+
+O’Shea, M. J., Vann, D. R., Hwang, W. T., & Gieré, R. (2020). A mineralogical and chemical investigation of road dust in Philadelphia, PA, USA. Environmental Science and Pollution Research, 1-20. https://doi.org/10.1007/s11356-019-06746-y
+
+PA Department of Health (2014). 2014 Childhood Lead Surveillance Annual Report. Retrieved from https://www.health.pa.gov/topics/Documents/Environmental%20Health/2014%20Lead%20Surveillance%20Annual%20Report.pdf 
+
+Pizzol, M., Thomsen, M., & Andersen, M. S. (2010). Long-term human exposure to lead from different media and intake pathways. Science of the total environment, 408(22), 5478-5488. https://doi.org/10.1016/j.scitotenv.2010.07.077  
+
+Schwarz, K., Pickett, S. T., Lathrop, R. G., Weathers, K. C., Pouyat, R. V., & Cadenasso, M. L. (2012). The effects of the urban built environment on the spatial distribution of lead in residential soils. Environmental pollution, 163, 32-39. https://doi.org/10.1016/j.envpol.2011.12.003 
+
+Stevens, S. K. (1955). A Century of Industry in Pennsylvania. Pennsylvania History: A Journal of Mid-Atlantic Studies, 22(1), 49-68. 
+
+United Health Foundation. (2019). America’s Health Rankings. Retrieved from https://assets.americashealthrankings.org/app/uploads/ahr_2019annualreport.pdf 
+
+US Census Bureau. (2019). Metropolitan and Micropolitan Statistical Area Population Estimates and Estimated Components of Change: April 1, 2010 to July 1, 2019 (CBSA-EST2019-alldata). Retrieved from https://www.census.gov/data/tables/time-series/demo/popest/2010s-total-metro-and-micro-statistical-areas.html#par_textimage 
+
+US Census Bureau. (2020a). CBSA-EST2019-alldata: Annual Resident Population Estimates and Estimated Components of Resident Population Change for Metropolitan and Micropolitan Statistical Areas and Their Geographic Components: April 1, 2010 to July 1, 2019 
+https://www2.census.gov/programs-surveys/popest/technical-documentation/file-layouts/2010-2019/cbsa-est2019-alldata.pdf 
+
+US Census Bureau (2020b). METHODOLOGY FOR THE UNITED STATES POPULATION ESTIMATES: VINTAGE 2019 Nation, States, Counties, and Puerto Rico – April 1, 2010 to July 1, 2019. Retrieved from https://www2.census.gov/programs-surveys/popest/technical-documentation/methodology/2010-2019/natstcopr-methv2.pdf 
+
+US Environmental Protection Agency. Air Quality System Data Mart [internet database] available via https://www.epa.gov/airdata. Accessed April 05, 2021.
+
+US EPA. (2021a). Basic Information about Lead Air Pollution. Lead Air Pollution. Retrieved from https://www.epa.gov/lead-air-pollution/basic-information-about-lead-air-pollution#:~:text=At%20the%20national%20level%2C%20major,usually%20found%20near%20lead%20smelters. 
+
+US EPA. (2021b). Timeline of Lead (Pb) National Ambient Air Quality Standards (NAAQS)
+Retrieved from https://www.epa.gov/lead-air-pollution/timeline-lead-pb-national-ambient-air-quality-standards-naaqs 
+WHO. (2021). Lead poisoning and health. Retrieved April 24, 2021, from https://www.who.int/news-room/fact-sheets/detail/lead-poisoning-and-health
