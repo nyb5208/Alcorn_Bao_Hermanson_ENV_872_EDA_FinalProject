@@ -909,7 +909,14 @@ i_a_m_b_join <- left_join(i_a_m_join, blood_lead)   # join of all datasets USE I
 i_a_m_b_join <- left_join(i_a_m_b_join, CDC_PA_2010_avg2)
 i_a_m_b_join[is.na(i_a_m_b_join)] = 0  #remove NAs 
 
+```
+
+#### II 
+
+
+```{r setuping section, echo = FALSE, message = FALSE, warning = FALSE }
 ### Data Visualization ####
+library(ggplot2)
 p1<-ggplot(i_a_m_b_join, aes(x=number_incinerators))+
   geom_histogram(fill="lightgreen", color="darkgreen", binwidth=1)+
   labs(x="# of Incinerators", title="Incinerators per county, histogram")
@@ -922,8 +929,69 @@ p3<-ggplot(i_a_m_b_join, aes(x=number_metal_plants))+
 p1
 p2
 p3
+```
 
-#### Regression Modeling ##### 
+```{r sum stats, echo = FALSE, message = FALSE, warning = FALSE }
+#summary stats tables
+summary.metal <- i_a_m_b_join %>% 
+  select(number_metal_plants) %>% 
+  dplyr::summarize(Length=length(number_metal_plants),
+                   Mean=mean(number_metal_plants),
+                   Median=median(number_metal_plants),
+                   Std_Dev=sd(number_metal_plants),
+                   Minimum=min(number_metal_plants),
+                   Maximum=max(number_metal_plants)
+                   ) 
+glimpse(summary.metal)
+
+summary.incinerate <- i_a_m_b_join %>% 
+  select(number_incinerators) %>% 
+  dplyr::summarize(Length=length(number_incinerators),
+                   Mean=mean(number_incinerators),
+                   Median=median(number_incinerators),
+                   Std_Dev=sd(number_incinerators),
+                   Minimum=min(number_incinerators),
+                   Maximum=max(number_incinerators)
+                   ) 
+glimpse(summary.incinerate)
+
+summary.airport <- i_a_m_b_join %>% 
+  select(number_airports) %>% 
+  dplyr::summarize(Length=length(number_airports),
+                   Mean=mean(number_airports),
+                   Median=median(number_airports),
+                   Std_Dev=sd(number_airports),
+                   Minimum=min(number_airports),
+                   Maximum=max(number_airports)
+                   ) 
+glimpse(summary.airport)
+```
+```{r plots, echo = FALSE, message = FALSE, warning = FALSE }
+#### Linear Plots ####
+
+ggplot(i_a_m_b_join, aes(log_metal, Percent_.5)) +
+  geom_point() + 
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(log_incinerate, Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(meanPCI    , Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(quadPOV, Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(number_airports, Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+```
+
+```{r transformations, include = FALSE}
+#### Transformations ##### 
 i_a_m_b_join$number_incinerators <-i_a_m_b_join$number_incinerators+0.001 #account for zeros in log
 i_a_m_b_join$number_airports <- i_a_m_b_join$number_airports+0.001 #account for zeros in log
 i_a_m_b_join$number_metal_plants <- i_a_m_b_join$number_metal_plants+1 #account for zeros in log
@@ -945,9 +1013,10 @@ plot(x = i_a_m_b_join$log_incinerate, y = i_a_m_b_join$Percent_.5) #log incinera
 plot(x = i_a_m_b_join$number_airports, y = i_a_m_b_join$log_blood) 
 plot(x = i_a_m_b_join$log_PCI, y = i_a_m_b_join$Percent_.5)
 plot(x = i_a_m_b_join$quadPOV, y = i_a_m_b_join$Percent_.5)
+```
 
 
-
+```{r modeling, include = FALSE}
 model1 <- lm(formula = Percent_.5 ~ number_metal_plants + number_incinerators + number_airports, data = i_a_m_b_join)
 summary(model1)
 
@@ -958,7 +1027,7 @@ model3 <- lm(formula = log_blood ~ number_metal_plants + number_incinerators + n
 summary(model3)
 #additional variables
 model4 <- lm(formula = Percent_.5 ~ number_metal_plants + number_incinerators + number_airports + meanPCI + meanPOV, data = i_a_m_b_join)
-summary(model4)
+summary(model4) #use this code !
 
 model5 <- lm(formula = Percent_.5 ~ number_metal_plants + number_incinerators + number_airports + log_PCI + quadPOV, data = i_a_m_b_join)
 summary(model5)
@@ -967,7 +1036,6 @@ plot(model5)
 model6 <- lm(formula = Percent_.5 ~ number_metal_plants + log_metal+ log_incinerate + meanPCI +    number_incinerators + number_airports + log_PCI + quadPOV, data = i_a_m_b_join) # plugged in every variable and then ran through "step" function , which produced model 7 
 summary(model6)
 step(model6) 
-#step function 
 
 model7 <- lm(formula = Percent_.5 ~ meanPOV+ quadPOV, data = i_a_m_b_join)
 summary(model7)
@@ -976,44 +1044,65 @@ model8 <- lm(formula = Percent_.5 ~ log_metal + log_incinerate + number_airports
 summary(model8)
 
 model9 <- lm(formula = Percent_.5 ~ log_metal + log_incinerate + meanPCI + quadPOV, data = i_a_m_b_join)
-summary(model9)
-plot(model9)
-step(model9)
+summary(model9) # final model 
+```
 
-model10 <- lm(formula = Percent_.5 ~ meanPCI, data = i_a_m_b_join)
-summary(model10)
-plot(model10)
-
+```{r analysis tools, echo = FALSE, message = FALSE, warning = FALSE }
 ### Regression Visualization #####
 par(mfrow=c(2,2), mar = c(2,2,2,2))
-plot(model2)
-plot(model1)
-plot(model3)
-plot(model5)
-plot(model7)
 
-step(model1) #eliminates variables.... ignore for this model... 
+plot(model4)
+plot(model9)
 
-#install.packages("corrplot")
-library(corrplot)
-df_corr <- i_a_m_b_join %>% 
-  select(number_incinerators, number_airports, number_metal_plants, Percent_.5) %>% 
-  cor()
-df_corr2 <- i_a_m_b_join %>% 
-  select(number_incinerators, number_airports, number_metal_plants, meanPCI, quadPOV, Percent_.5) %>% 
-  cor()
-df_corr2
-df_corr # correlation between model's variables. 
-par(mfrow=c(1,1))
-corrplot(df_corr, method = "ellipse")
+glimpse(summary.airport)
+glimpse(summary.incinerate)
+glimpse(summary.metal)
 
+```
+### III 
 
+```{r setup}
+par(mfrow=c(2,2), mar = c(2,2,2,2))
+#Individual Scatters to test for linearity 
+plot(x = i_a_m_b_join$log_metal, y = i_a_m_b_join$Percent_.5) #log metal; looks better 
+plot(x = i_a_m_b_join$log_incinerate, y = i_a_m_b_join$Percent_.5) 
+plot(x = i_a_m_b_join$log_PCI, y = i_a_m_b_join$Percent_.5)
+plot(x = i_a_m_b_join$quadPOV, y = i_a_m_b_join$Percent_.5)
+plot(x = i_a_m_b_join$number_airports, y = i_a_m_b_join$Percent_.5)
 
-#mapping intersections#####
-newmap<- ggplot()+
-  geom_sf(data = census_sf, color = "Black", fill = "Green", alpha = 0.3, show.legend = "polygon")+
-  geom_sf(data = metal_sf, color = 'blue', size = 2, show.legend = "point" )
-newmap
+ggplot(i_a_m_b_join, aes(log_metal, Percent_.5)) +
+  geom_point() + 
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(log_incinerate, Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(meanPCI    , Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(quadPOV, Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+ggplot(i_a_m_b_join, aes(number_airports, Percent_.5)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE)
+
+#homoskedasticity and normality 
+par(mfrow=c(2,2), mar = c(2,2,2,2))
+plot(model4)
+plot(model9)
+summary(model4)
+summary(model9)
+AIC(model4)
+AIC(model9)
+
+#Multicolinearity 
+library(car)
+vif(model9)
+vif(model4)
 
 ```
 
