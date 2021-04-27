@@ -565,23 +565,15 @@ Phila.msa.Pb.monthly.decomp <- stl(Phila.msa.Pb.monthly.ts, s.window = "periodic
 plot(Phila.msa.Pb.monthly.decomp)
 ```
 
-```{r spatial-analysis}
-#Reduce our data to just one record for each location, computing mean and max daily AQI values 2010 and 2020
+```{r spatial-analysis 2010}
+#Reduce our data to just one record for each location, computing mean and max daily values 
 
 EPAair_PA_Lead_avg2010 <- epa.PAlead.2010 %>%
   group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
   summarize(meanPb = mean(Daily.Mean.Pb.Concentration),
             maxPb = max(Daily.Mean.Pb.Concentration))
 
-EPAair_PA_Lead_avg2015 <- epa.PAlead.2015 %>%
-  group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
-  summarize(meanPb = mean(Daily.Mean.Pb.Concentration),
-            maxPb = max(Daily.Mean.Pb.Concentration))
 
-EPAair_PA_Lead_avg2020 <- epa.PAlead.2020 %>%
-  group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
-  summarize(meanPb = mean(Daily.Mean.Pb.Concentration),
-            maxPb = max(Daily.Mean.Pb.Concentration))
 
 #Convert the dataset to a spatially enabled "sf" data frame
 sf_PA_Lead_avg2010 <- st_as_sf(EPAair_PA_Lead_avg2010,
@@ -591,18 +583,7 @@ sf_PA_Lead_avg2010 <- st_as_sf(EPAair_PA_Lead_avg2010,
 sf_PA_Lead_high_2010<-filter(sf_PA_Lead_avg2010, maxPb > 0.15)
 range(sf_PA_Lead_high_2010$meanPb)
 
-sf_PA_Lead_avg2015 <- st_as_sf(EPAair_PA_Lead_avg2015,
-                             coords = c('SITE_LONGITUDE','SITE_LATITUDE'),
-                             crs=4326)
 
-sf_PA_Lead_high_2015<-filter(sf_PA_Lead_avg2015, maxPb > 0.15)
-range(sf_PA_Lead_high_2010$meanPb)
-
-sf_PA_Lead_avg2020 <- st_as_sf(EPAair_PA_Lead_avg2020,
-                             coords = c('SITE_LONGITUDE','SITE_LATITUDE'),
-                             crs=4326)
-
-sf_PA_Lead_high_2020<-filter(sf_PA_Lead_avg2020, maxPb > 0.15)
 
 #read in county shape file
 counties_sf<- st_read('./Data/Spatial/cb_2018_us_county_20m.shp')%>%
@@ -639,7 +620,9 @@ ggplot() +
    labs(size="Lead Values
        (µg/m3)")+
   ggtitle("2010 Mean Lead Values Across Pennsylvania")
+```
 
+```{r spatial analysis 2010, echo = false}
 ggplot() + 
   geom_sf(data=PA_county_2010,aes(fill = meanPCI),alpha=0.3) + 
   scale_fill_gradient2(low="red",high="blue", midpoint = 28000, breaks=c(16000,28000, 40000)) + 
@@ -649,7 +632,9 @@ ggplot() +
    labs(size="Lead Values
        (µg/m3)")+
   ggtitle("2010 Mean Lead Values Across Pennsylvania")
+```
 
+```{r spatial-analysis 2010, echo = false}
 
 ggplot() + 
   geom_sf(data=PA_county_2010,aes(fill = meanPCI),alpha=0.3) + 
@@ -661,6 +646,26 @@ ggplot() +
        (µg/m3)")+
   ggtitle("2020 Max Lead Levels over .15 (µg/m3)")
 
+
+```
+
+
+```{r spatial analysis 2015}
+#Reduce our data to just one record for each location, computing mean and max daily values 
+EPAair_PA_Lead_avg2015 <- epa.PAlead.2015 %>%
+  group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
+  summarize(meanPb = mean(Daily.Mean.Pb.Concentration),
+            maxPb = max(Daily.Mean.Pb.Concentration))
+
+#Convert the dataset to a spatially enabled "sf" data frame
+sf_PA_Lead_avg2015 <- st_as_sf(EPAair_PA_Lead_avg2015,
+                             coords = c('SITE_LONGITUDE','SITE_LATITUDE'),
+                             crs=4326)
+
+sf_PA_Lead_high_2015<-filter(sf_PA_Lead_avg2015, maxPb > 0.15)
+range(sf_PA_Lead_high_2010$meanPb)
+
+#read in CDC Data for each year and group by county
 #2015
 CDC_PA_2014<-read.csv("./Data/Raw/Pennsylvania_CDC_2014.csv", header = TRUE)
 
@@ -685,7 +690,10 @@ ggplot() +
   labs(size="Lead Values 
        (µg/m3)")+
   ggtitle("2015 Mean Lead Values Across Pennsylvania")
+```
 
+
+```{r spatial analysis 2015, echo=FALSE}
 ggplot() + 
   geom_sf(data=PA_county_2014,aes(fill = meanPCI),alpha=0.3) + 
    scale_fill_gradient2(low="red",high="blue", midpoint = 30000, breaks=c(18000,30000, 40000)) +
@@ -695,7 +703,10 @@ ggplot() +
   labs(size="Lead Values
        (µg/m3)")+
   ggtitle("2015 Mean Lead Values Across Pennsylvania")
+```
 
+
+```{r spatial analysis 2015, echo=FALSE}
 ggplot() + 
   geom_sf(data=PA_county_2014,aes(fill = meanPCI),alpha=0.3) + 
   scale_fill_gradient2(low="red",high="blue", midpoint = 30000, breaks=c(18000,30000, 40000)) +
@@ -705,7 +716,23 @@ ggplot() +
    labs(size="Lead Values
        (µg/m3)")+
   ggtitle("2015 Max Lead Levels over .15 (µg/m3)")
+```
 
+```{r spatial analysis 2020}
+#Reduce our data to just one record for each location, computing mean and max daily values 
+EPAair_PA_Lead_avg2020 <- epa.PAlead.2020 %>%
+  group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
+  summarize(meanPb = mean(Daily.Mean.Pb.Concentration),
+            maxPb = max(Daily.Mean.Pb.Concentration))
+
+#Convert the dataset to a spatially enabled "sf" data frame
+sf_PA_Lead_avg2020 <- st_as_sf(EPAair_PA_Lead_avg2020,
+                             coords = c('SITE_LONGITUDE','SITE_LATITUDE'),
+                             crs=4326)
+
+sf_PA_Lead_high_2020<-filter(sf_PA_Lead_avg2020, maxPb > 0.15)
+
+#read in CDC Data for each year and group by county
 #2020
 CDC_PA_2018<-read.csv("./Data/Raw/Pennsylvania_CDC_2018.csv", header = TRUE)
 
@@ -730,7 +757,10 @@ ggplot() +
   labs(size="Lead Values 
        (µg/m3)")+
   ggtitle("2020 Mean Lead Values Across Pennsylvania")
+```
 
+
+```{r spatial analysis 2020, echo=FALSE}
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPCI),alpha=0.3) + 
    scale_fill_gradient2(low="red",high="blue", midpoint = 35000, breaks=c(21000,35000, 47000)) +
@@ -740,7 +770,10 @@ ggplot() +
   labs(size="Lead Values
        (µg/m3)")+
   ggtitle("2020 Mean Lead Values Across Pennsylvania")
+```
 
+
+```{r spatial analysis 2020, echo=FALSE}
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPCI),alpha=0.3) + 
   scale_fill_gradient2(low="red",high="blue", midpoint = 35000, breaks=c(21000,35000, 47000)) +
@@ -752,8 +785,8 @@ ggplot() +
   ggtitle("2020 Max Lead Levels over .15 (µg/m3)")
 
 
-
 ```
+
 
 ```{r Regression Data Wrangling}
 #
