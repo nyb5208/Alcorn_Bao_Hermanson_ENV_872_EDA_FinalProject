@@ -947,7 +947,7 @@ i_a_m_b_join[is.na(i_a_m_b_join)] = 0  #remove NAs
 #### II 
 
 
-```{r setuping section, echo = FALSE, message = FALSE, warning = FALSE }
+```{r setuping section, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Histograms of Emission Sites" }
 ### Data Visualization ####
 library(ggplot2)
 p1<-ggplot(i_a_m_b_join, aes(x=number_incinerators))+
@@ -964,7 +964,7 @@ p2
 p3
 ```
 
-```{r sum stats, echo = FALSE, message = FALSE, warning = FALSE }
+```{r sum stats1, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Summary Statistics of Metal" }
 #summary stats tables
 summary.metal <- i_a_m_b_join %>% 
   select(number_metal_plants) %>% 
@@ -976,7 +976,8 @@ summary.metal <- i_a_m_b_join %>%
                    Maximum=max(number_metal_plants)
                    ) 
 glimpse(summary.metal)
-
+```
+```{r sum stats2, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Summary Statistics of Incinerators" }
 summary.incinerate <- i_a_m_b_join %>% 
   select(number_incinerators) %>% 
   dplyr::summarize(Length=length(number_incinerators),
@@ -987,7 +988,9 @@ summary.incinerate <- i_a_m_b_join %>%
                    Maximum=max(number_incinerators)
                    ) 
 glimpse(summary.incinerate)
+```
 
+```{r sum stats3, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Summary Statistics of Airports" }
 summary.airport <- i_a_m_b_join %>% 
   select(number_airports) %>% 
   dplyr::summarize(Length=length(number_airports),
@@ -999,7 +1002,7 @@ summary.airport <- i_a_m_b_join %>%
                    ) 
 glimpse(summary.airport)
 ```
-```{r plots, echo = FALSE, message = FALSE, warning = FALSE }
+```{r plots, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Linear Plots of Individual Variables"  }
 #### Linear Plots ####
 
 ggplot(i_a_m_b_join, aes(log_metal, Percent_.5)) +
@@ -1080,21 +1083,20 @@ model9 <- lm(formula = Percent_.5 ~ log_metal + log_incinerate + meanPCI + quadP
 summary(model9) # final model 
 ```
 
-```{r analysis tools, echo = FALSE, message = FALSE, warning = FALSE }
+```{r analysis tools, include = FALSE}
 ### Regression Visualization #####
 par(mfrow=c(2,2), mar = c(2,2,2,2))
 
 plot(model4)
-plot(model9)
+```
 
-glimpse(summary.airport)
-glimpse(summary.incinerate)
-glimpse(summary.metal)
+```{r analysis tools2, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Model Assumption Plots"  }
+plot(model9)
 
 ```
 ### III 
 
-```{r setup}
+```{r setup, include = FALSE}
 par(mfrow=c(2,2), mar = c(2,2,2,2))
 #Individual Scatters to test for linearity 
 plot(x = i_a_m_b_join$log_metal, y = i_a_m_b_join$Percent_.5) #log metal; looks better 
@@ -1122,18 +1124,24 @@ ggplot(i_a_m_b_join, aes(quadPOV, Percent_.5)) +
 ggplot(i_a_m_b_join, aes(number_airports, Percent_.5)) +
   geom_point() +
   stat_smooth(method = lm, se = FALSE)
+```
 
+```{r analyis final, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Model Assumption Plots"  }
 #homoskedasticity and normality 
 par(mfrow=c(2,2), mar = c(2,2,2,2))
-plot(model4)
+#plot(model4)
 plot(model9)
-summary(model4)
-summary(model9)
-AIC(model4)
-AIC(model9)
+#summary(model4)
+```
 
+```{r Summary final, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Final Model Summary"  }
+summary(model9)
+#AIC(model4)
+AIC(model9)
 #Multicolinearity 
 library(car)
+```
+```{r multicollinearity, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Multicollinearity Test - VIF Test"  }
 vif(model9)
 vif(model4)
 
