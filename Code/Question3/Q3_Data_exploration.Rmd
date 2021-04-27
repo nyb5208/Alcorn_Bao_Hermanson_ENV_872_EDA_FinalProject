@@ -2,11 +2,20 @@
 title: "DataExploration_Q3"
 author: "Max Hermanson"
 date: "4/26/2021"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
-
-```{r setup, include=FALSE}
+ - `include = FALSE` - code is run, but neither code nor results appear in knitted file
+ - `echo = FALSE`    - code not included in knitted file, but results are
+ - `eval = FALSE`    - code is not run in the knitted file
+ - `message = FALSE` - messages do not appear in knitted file
+ - `warning = FALSE` - warnings do not appear...
+ - `fig.cap = "..."` - adds a caption to graphical results
+ 
+```{r setuping section, echo = FALSE, message = FALSE, warning = FALSE }
 ### Data Visualization ####
+library(ggplot2)
 p1<-ggplot(i_a_m_b_join, aes(x=number_incinerators))+
   geom_histogram(fill="lightgreen", color="darkgreen", binwidth=1)+
   labs(x="# of Incinerators", title="Incinerators per county, histogram")
@@ -19,7 +28,9 @@ p3<-ggplot(i_a_m_b_join, aes(x=number_metal_plants))+
 p1
 p2
 p3
+```
 
+```{r sum stats, echo = FALSE, message = FALSE, warning = FALSE }
 #summary stats tables
 summary.metal <- i_a_m_b_join %>% 
   select(number_metal_plants) %>% 
@@ -53,7 +64,8 @@ summary.airport <- i_a_m_b_join %>%
                    Maximum=max(number_airports)
                    ) 
 glimpse(summary.airport)
-
+```
+```{r plots, echo = FALSE, message = FALSE, warning = FALSE }
 #### Linear Plots ####
 
 ggplot(i_a_m_b_join, aes(log_metal, Percent_.5)) +
@@ -75,6 +87,9 @@ ggplot(i_a_m_b_join, aes(quadPOV, Percent_.5)) +
 ggplot(i_a_m_b_join, aes(number_airports, Percent_.5)) +
   geom_point() +
   stat_smooth(method = lm, se = FALSE)
+```
+
+```{r transformations, include = FALSE}
 #### Transformations ##### 
 i_a_m_b_join$number_incinerators <-i_a_m_b_join$number_incinerators+0.001 #account for zeros in log
 i_a_m_b_join$number_airports <- i_a_m_b_join$number_airports+0.001 #account for zeros in log
@@ -97,10 +112,10 @@ plot(x = i_a_m_b_join$log_incinerate, y = i_a_m_b_join$Percent_.5) #log incinera
 plot(x = i_a_m_b_join$number_airports, y = i_a_m_b_join$log_blood) 
 plot(x = i_a_m_b_join$log_PCI, y = i_a_m_b_join$Percent_.5)
 plot(x = i_a_m_b_join$quadPOV, y = i_a_m_b_join$Percent_.5)
+```
 
 
-
-
+```{r modeling, include = FALSE}
 model1 <- lm(formula = Percent_.5 ~ number_metal_plants + number_incinerators + number_airports, data = i_a_m_b_join)
 summary(model1)
 
@@ -129,7 +144,9 @@ summary(model8)
 
 model9 <- lm(formula = Percent_.5 ~ log_metal + log_incinerate + meanPCI + quadPOV, data = i_a_m_b_join)
 summary(model9) # final model 
+```
 
+```{r analysis tools, echo = FALSE, message = FALSE, warning = FALSE }
 ### Regression Visualization #####
 par(mfrow=c(2,2), mar = c(2,2,2,2))
 
@@ -139,7 +156,5 @@ plot(model9)
 glimpse(summary.airport)
 glimpse(summary.incinerate)
 glimpse(summary.metal)
-
-
 
 ```
