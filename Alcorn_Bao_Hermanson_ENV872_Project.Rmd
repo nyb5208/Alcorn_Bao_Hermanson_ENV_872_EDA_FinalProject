@@ -26,11 +26,9 @@ editor_options:
 \listoffigures 
 \newpage
 
-<<<<<<< HEAD
+
 ```{r setup1, include=FALSE}
-=======
-```{r setup-first, include=FALSE}
->>>>>>> be65ec7ee205d2bc53178abc97819cc6f41bc000
+
 # Set your working directory
 getwd()
 # Load your packages
@@ -222,7 +220,7 @@ From the lineplot of the linearly interpolated daily mean air lead levels for th
 To further assess the trends, the non-seasonal Mann-Kendall trend tests for the daily time series objects found that four of the five most populous metropolitan followed significant, monotonic trends for daily and monthly mean air lead levels. The Mann-Kendall trend test for the daily time series found significant (p<0.05) downward monotonic trends for mean daily air lead levels the following metropolitan areas:  Philadelphia-Camden-Wilmington, PA-NJ-DE-MD (tau = -0.168, p-value=< 2.22e-16), Pittsburgh, PA (tau = -0.276, p-value=< 2.22e-16), Allentown-Bethlehem-Easton, PA-NJ (tau= -0.257 , p-value=< 2.22e-16 ), Scranton--Wilkes-Barre--Hazleton, PA (tau=-0.53, , p-value=< 2.22e-16). Lancaster, PA had a downward, non-monotonic trend (p>0.05) for daily mean air lead levels (tau=-0.0181, p-value =0.145). The nonseasonal Mann-Kendall trend tests for the monthly time series objects found significant (p<0.05) downward monotonic trends for the following metropolitan areas: Philadelphia-Camden-Wilmington, PA-NJ-DE-MD (tau=-0.711 , p-value<2.22e-16 ), Pittsburgh, PA (tau=-0.755, p-value<2.22e-16 ), Allentown-Bethlehem-Easton, PA-NJ (tau= -0.378 , p-value= 1.78e-08 ), and Scranton--Wilkes-Barre--Hazleton, PA (tau=-0.593 , p-value<2.22e-16 ). There was a non-monotonic (p-value>0.05) downward trend observed for monthly mean air lead levels in Lancaster, PA (tau= -0.0055, p-value = 0.934).
 
 
-```{r time_series-data-wrangling,echo=FALSE}
+```{r time_series-data-wrangling1,echo=FALSE}
 #Looking at the lead air concentrations for major metropolitan areas in Pennsylvania 
 # Looking at the Combined Statistical Areas (CBSA) to identify the metropolitan areas included in this study
 summary(epa.PA.airPb.processed$CBSA_NAME)
@@ -313,9 +311,6 @@ class(Pa.monthly.Pb.MSA$Date_combined)
 
 <<<<<<< HEAD
 ```{r time-series-visuals,echo=FALSE ,fig.align='left',fig.cap="Monthly Average Pb Air Concentrations from 2010 to 2020 in PA Metro Areas",fig.height = 8, fig.width = 10}
-=======
-```{r time-series-visuals,echo=FALSE,fig.align='left',fig.cap="Monthly Average Pb Air Concentrations from 2010 to 2020 in PA Metro Areas",fig.height = 8, fig.width = 10}
->>>>>>> be65ec7ee205d2bc53178abc97819cc6f41bc000
 #Looking at the top 5 Metropolitan Areas for air Pb concentrations from 2010 to 2020 
 #PA Metropolitan Area
 PAmonthly_plot<-ggplot(Pa.monthly.Pb.MSA,aes(x = Date_combined,
@@ -663,7 +658,6 @@ plot(Phila.msa.Pb.monthly.decomp)
 ## Question 2: What are the spatial associations between air lead levels and socioeconomic factors (ie. income and poverty) across counties in Pennsylvania?
 The spatial analysis confirmed that mean lead concentration levels have gone down from 2010 to 2020. The highest mean concentration levels for 2010 was .15 ug/m^3 compared to .1 ug/m^3 for 2015 and .03 ug/m^3 for 2020. The graphs also showed where high lead concentrations resided in the state of Pennsylvania. Counties that had the highest concentrations were Lancaster, Berks, Lehigh, Beaver, Allegheny, and Indiana. These are areas that have medium levels of people below poverty and tend to have lower per capita income levels compared with the rest of the state. When looking at the amount of maximum lead concentration levels that were above the air quality standard of .15 ug/m^3, 2010 had 7 locations that exceeded this limit. Berks and Beaver each had two areas with readings above .9 ug/m^3. For 2015 and 2020, there were only three locations (for each year) that exceeded the air quality standard limit. Beaver county had zero areas during these years and Berks county reduced to only one reading at approximately .24 ug/m^3. This spatial analysis assists with the time series analysis done in the section above. Moving forward, doing an analysis at a smaller scale would provide improved results. Future analysis could look at counties, such as Berks and Beaver, and perform analysis at the zip code level. 
 
-<<<<<<< HEAD
 ```{r spatial-analysis 2010, echo=FALSE, fig.cap="2010 Mean Lead Levels Across Pennsylvania",fig.align='left',fig.height = 8, fig.width = 10}
 #Reduce our data to just one record for each location, computing mean and max daily values 
 
