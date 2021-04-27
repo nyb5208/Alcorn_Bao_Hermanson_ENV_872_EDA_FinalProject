@@ -565,7 +565,7 @@ Phila.msa.Pb.monthly.decomp <- stl(Phila.msa.Pb.monthly.ts, s.window = "periodic
 plot(Phila.msa.Pb.monthly.decomp)
 ```
 
-```{r spatial-analysis 2010}
+```{r spatial-analysis 2010, fig.cap="2010 Mean Lead Levels Across Pennsylvania"}
 #Reduce our data to just one record for each location, computing mean and max daily values 
 
 EPAair_PA_Lead_avg2010 <- epa.PAlead.2010 %>%
@@ -619,10 +619,10 @@ ggplot() +
   geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
    labs(size="Lead Values
        (µg/m3)")+
-  ggtitle("2010 Mean Lead Values Across Pennsylvania")
+  
 ```
 
-```{r spatial analysis 2010, echo = false}
+```{r spatial analysis 2010, echo = false, fig.cap="2010 Mean Lead Levels Across Pennsylvania"}
 ggplot() + 
   geom_sf(data=PA_county_2010,aes(fill = meanPCI),alpha=0.3) + 
   scale_fill_gradient2(low="red",high="blue", midpoint = 28000, breaks=c(16000,28000, 40000)) + 
@@ -631,10 +631,10 @@ ggplot() +
   geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
    labs(size="Lead Values
        (µg/m3)")+
-  ggtitle("2010 Mean Lead Values Across Pennsylvania")
+  
 ```
 
-```{r spatial-analysis 2010, echo = false}
+```{r spatial-analysis 2010, echo = false, fig.cap=""2010 Max Lead Levels over .15 (µg/m3)"}
 
 ggplot() + 
   geom_sf(data=PA_county_2010,aes(fill = meanPCI),alpha=0.3) + 
@@ -644,13 +644,13 @@ ggplot() +
   geom_sf(data=sf_PA_Lead_high_2010, aes(size=maxPb))+
    labs(size="Lead Values
        (µg/m3)")+
-  ggtitle("2020 Max Lead Levels over .15 (µg/m3)")
+  
 
 
 ```
 
 
-```{r spatial analysis 2015}
+```{r spatial analysis 2015, fig.cap="2015 Mean Lead Levels Across Pennsylvania"}
 #Reduce our data to just one record for each location, computing mean and max daily values 
 EPAair_PA_Lead_avg2015 <- epa.PAlead.2015 %>%
   group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
@@ -689,11 +689,11 @@ ggplot() +
   geom_sf(data=sf_PA_Lead_avg2015, aes(size=meanPb))+
   labs(size="Lead Values 
        (µg/m3)")+
-  ggtitle("2015 Mean Lead Values Across Pennsylvania")
+  
 ```
 
 
-```{r spatial analysis 2015, echo=FALSE}
+```{r spatial analysis 2015, echo=FALSE, fig.cap="2015 Mean Lead Levels Across Pennsylvania"}
 ggplot() + 
   geom_sf(data=PA_county_2014,aes(fill = meanPCI),alpha=0.3) + 
    scale_fill_gradient2(low="red",high="blue", midpoint = 30000, breaks=c(18000,30000, 40000)) +
@@ -702,11 +702,11 @@ ggplot() +
   geom_sf(data=sf_PA_Lead_avg2015, aes(size=meanPb))+
   labs(size="Lead Values
        (µg/m3)")+
-  ggtitle("2015 Mean Lead Values Across Pennsylvania")
+  
 ```
 
 
-```{r spatial analysis 2015, echo=FALSE}
+```{r spatial analysis 2015, echo=FALSE, fig.cap="2015 Max Lead Levels over .15 (µg/m3)"}
 ggplot() + 
   geom_sf(data=PA_county_2014,aes(fill = meanPCI),alpha=0.3) + 
   scale_fill_gradient2(low="red",high="blue", midpoint = 30000, breaks=c(18000,30000, 40000)) +
@@ -718,7 +718,7 @@ ggplot() +
   ggtitle("2015 Max Lead Levels over .15 (µg/m3)")
 ```
 
-```{r spatial analysis 2020}
+```{r spatial analysis 2020, fig.cap="2020 Mean Lead Levels Across Pennsylvania"}
 #Reduce our data to just one record for each location, computing mean and max daily values 
 EPAair_PA_Lead_avg2020 <- epa.PAlead.2020 %>%
   group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
@@ -756,11 +756,11 @@ ggplot() +
   geom_sf(data=sf_PA_Lead_avg2020, aes(size=meanPb))+
   labs(size="Lead Values 
        (µg/m3)")+
-  ggtitle("2020 Mean Lead Values Across Pennsylvania")
+  
 ```
 
 
-```{r spatial analysis 2020, echo=FALSE}
+```{r spatial analysis 2020, echo=FALSE, fig.cap="2020 Mean Lead Levels Across Pennsylvania"}
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPCI),alpha=0.3) + 
    scale_fill_gradient2(low="red",high="blue", midpoint = 35000, breaks=c(21000,35000, 47000)) +
@@ -769,11 +769,11 @@ ggplot() +
   geom_sf(data=sf_PA_Lead_avg2020, aes(size=meanPb))+
   labs(size="Lead Values
        (µg/m3)")+
-  ggtitle("2020 Mean Lead Values Across Pennsylvania")
+  
 ```
 
 
-```{r spatial analysis 2020, echo=FALSE}
+```{r spatial analysis 2020, echo=FALSE, fig.cap="2020 Max Lead Levels over .15 (µg/m3)"}
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPCI),alpha=0.3) + 
   scale_fill_gradient2(low="red",high="blue", midpoint = 35000, breaks=c(21000,35000, 47000)) +
@@ -782,7 +782,7 @@ ggplot() +
   geom_sf(data=sf_PA_Lead_high_2020, aes(size=maxPb))+
    labs(size="Lead Values
        (µg/m3)")+
-  ggtitle("2020 Max Lead Levels over .15 (µg/m3)")
+  
 
 
 ```
