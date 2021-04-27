@@ -1195,7 +1195,9 @@ Ab Latif Wani, A. A., & Usmani, J. A. (2015). Lead toxicity: a review. Interdisc
 About Air Data Reports. (2021). United States Environmental Protection Agency. Retrieved from https://www.epa.gov/outdoor-air-quality-data/about-air-data-reports 
 
 American Lung Association (2021). Most Polluted Cities. Retrieved from https://www.lung.org/research/sota/city-rankings/most-polluted-cities 
+
 CDC Social Vulnerability Index Data [internet database] available via https://www.atsdr.cdc.gov/placeandhealth/svi/data_documentation_download.html
+
 Kinney, P. L. (2018). Interactions of climate change, air pollution, and human health. Current environmental health reports, 5(1), 179-186.https://doi.org/10.1007/s40572-018-0188-x
 
 O’Shea, M. J., Vann, D. R., Hwang, W. T., & Gieré, R. (2020). A mineralogical and chemical investigation of road dust in Philadelphia, PA, USA. Environmental Science and Pollution Research, 1-20. https://doi.org/10.1007/s11356-019-06746-y
