@@ -8,3 +8,5 @@ Furthermore, this study was also interested in assessing the association between
 
 #Data Description 
 Data used in this study included: 
+-CDC Childhood Blood Lead Surveillance Data: Blood Lead Levels (µg/dL) among Children < 72 Months of Age, by County and Blood Lead Level (BLL) Group, 2017 (.csv)
+
