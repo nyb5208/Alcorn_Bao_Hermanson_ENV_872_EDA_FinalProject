@@ -7,7 +7,7 @@ output:
     keep_tex: yes
     fig_caption: yes
     number_sections: yes
-  html_document: no
+  html_document: 
     df_print: paged
   word_document: default
 subtitle: https://github.com/nyb5208/Alcorn_Bao_Hermanson_ENV_872_EDA_FinalProject.git
@@ -28,10 +28,10 @@ editor_options:
 
 
 ```{r setup1, include=FALSE}
-
 # Set your working directory
 getwd()
 # Load your packages
+
 library(tidyverse)
 library(ggplot2)
 library(ggridges)
