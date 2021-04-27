@@ -1020,14 +1020,6 @@ newmap<- ggplot()+
   geom_sf(data = metal_sf, color = 'blue', size = 2, show.legend = "point" )
 newmap
 
-
-
-
-```
-```{r regression}
-
-
-
 ```
 
 
