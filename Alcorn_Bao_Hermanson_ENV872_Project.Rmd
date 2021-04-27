@@ -16,6 +16,7 @@ fontsize: 12pt
 mainfont: Times New Roman
 editor_options:
   chunk_output_type: console
+always_allow_html: yes 
 ---
 
 \newpage
@@ -31,7 +32,8 @@ editor_options:
 # Set your working directory
 getwd()
 # Load your packages
-library(webshot)
+#library(webshot)
+#webshot::install_phantomjs()
 library(tidyverse)
 library(ggplot2)
 library(ggridges)
@@ -876,16 +878,10 @@ ggplot() +
 
 ```
 
-=======
->>>>>>> be65ec7ee205d2bc53178abc97819cc6f41bc000
-## Question 3: Is lead exposure (measured via blood lead levels) in children in Pennsylvania associated with air lead emission sources?
-### Original Model (Model 4)
-#### Blood lead = (\beta1 x metal) + (\beta2 x incinerators) + (\beta3 x airports) + (\beta4 x meanPerCapIncome) + (\beta5 x POV)
-
 ### Final Model (Model 9) 
-#### Blood lead = (\beta1 x log_metal) + (\beta2 x log_incinerate) + (\beta4 x meanPerCapIncome) + (\beta5 x POV^2)
+#### Blood lead = (beta1 x log_metal) + (beta2 x log_incinerate) + (beta4 x meanPerCapIncome) + (beta5 x POV$^$2)
 
-This model is statistically insignificant overall, with an f-statistic’s p-value (0.29) being far greater than 0.05. The coefficient of meanPCI (mean per-capita income) was statistically significant (p < 0.05), and can be interpreted as every decrease in income by $2,877 is correlated with a 1% increase in blood-lead levels in children. 
+This model is statistically insignificant overall, with an f-statistics p-value (0.29) being far greater than 0.05. The coefficient of meanPCI (mean per-capita income) was statistically significant (p < 0.05), and can be interpreted as every decrease in income by 2,877 dollars is correlated with a 1% increase in blood-lead levels in children. 
 
 The low significance of this model is not surprising, given the limitations of the data. The number of metal/incinerator plants may not necessarily reflect the quantity of particulate lead being emitted, which likely varies greatly between plants. If data were able to be obtained about how much smoke/lead-particulate matter is being emitted per plant, then that would have been more useful. The same applies to airports; it is likely that the quantity of airports does not matter so much as the number of flights and size of planes cycling through each airport; were FAA data on these parameters available, they would have been carried out. This is ultimately why the airport data was omitted from the final model.
 
