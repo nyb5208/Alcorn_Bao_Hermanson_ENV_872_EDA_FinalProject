@@ -135,18 +135,61 @@ Social Vulnerability data was collected over five year time periods in the state
 \newpage
 # Methods
 ## Question 1: How do air lead levels vary from 2010 to 2020 across the major metropolitan areas in Pennsylvania?
+### Data Wrangling
+US EPA daily mean air lead concentration data for each year from 2010 to 2020 were individually read into RStudio as separate dataframes and combined into one dataframe for all daily mean air lead levels from 2010 to 2020, using the rbind() function. The combined data frame was further processed with a pipe that selected for the date lead levels were collected, the monitoring site ID, the site name, the CBSA name and code identifiers, state name, county name and county FIPS code; a new variable for month, year, and date formatted as month-year were created using the mutate() function. 
+
+Air lead levels from 2010 to 2020 were assessed across Pennsylvania by metropolitan statistical areas. The top five most populous metropolitan areas were the focus of this portion of the study. The reason is that these areas were assumed to have historically higher industrial emissions and more sources of lead associated with legacy paint and gasoline, and sources from aviation fuel from airports (US EPA, 2020a). Furthermore, the Air Quality System only collected lead concentration measurements for 15 counties in Pennsylvania across this period, and so we were limited to analyses at the metropolitan area level  rather than at the county level. 
+
+US Census data for  Metropolitan and Micropolitan Statistical Area Population Estimates and Estimated Components of Change: April 1, 2010 to July 1, 2019 were read in as a dataframe and processed with a pipeline that selected for metropolitan area data by the 5-digit CBSA code, names of the metropolitan areas that overlapped with the US EPA daily mean lead concentration dataset, as well as the 2010 US Census reported population size. The top five metropolitan areas by population size (1= most populous)  in Pennsylvania were identified as (1) Philadelphia-Camden-Wilmington, PA-NJ-DE-MD, (2)Pittsburgh, PA, (3)Allentown-Bethlehem-Easton, PA-NJ, (4)Scranton--Wilkes-Barre--Hazleton, PA, (5)Lancaster, PA. 
+
+The processed, combined 2010-2020 US EPA daily mean air lead concentrations dataframe were filtered by the unique CBSA codes for each metropolitan area and individual data frames were created for each metropolitan area which contained their respective date and lead concentration measurements. 
+
+
+### Exploratory Analysis 
+A new variable was created using the mutate() function to summarize and calculate the monthly mean air lead levels for each metropolitan area dataframe. Monthly mean air lead levels for all metropolitan areas were calculated from 2010 to 2020. Line plots were generated for the monthly mean air lead levels for each metropolitan area to assess the trends in air lead levels between 2010 to 2020.  The monthly air lead levels were graphed in three-month intervals in each metropolitan area and were compared to the primary and secondary EPA 3-month rolling average NAAQS for lead, 0.15ug/m^3. 
+
+### Data Analysis 
+The daily mean air lead data for each metropolitan area data frame contained missing air lead concentration measurements for certain days and a linear interpolation was applied to the daily mean air lead levels for each metropolitan area. Spline interpolations were not used as data did not follow a quadratic or higher-order polynomial trend. Linear interpolation was used over piecewise interpolation because our study was interested in the change in air lead levels over a continuous ten-year period of time from 2010 to 2020. The linearly interpolated daily mean air lead levels for each metropolitan area were combined into one dataframe. Following linear interpolation of the daily mean air lead levels for each metropolitan area dataframe, the data frames were converted into time series objects for daily observations and monthly observations. Seasonality was not observed for the interpolated daily mean air lead levels for the metropolitan areas. Nonseasonal Mann-Kendall trend tests were conducted on the daily and monthly time series objects for mean air lead levels for each of the five metropolitan areas. 
+
 
 ## Question 2: What are the spatial associations between air lead levels and socioeconomic factors (ie. income and poverty) across counties in Pennsylvania?
+### Data Wrangling
+Data wrangling began with grouping EPA air lead concentration data by county, latitude and longitude for the years of 2010, 2015, and 2020 using the group_by() function. County mean and maximum lead concentrations for 2010, 2015, and 2020 were computed by averaging all county daily mean lead concentrations and selecting the maximum county daily mean lead concentration through the summarize () function. These data sets were then converted into spatial features st_as_sf () function and using NAD 83 as a coordinate reference system. EPA mean and maximum air lead concentration values were then joined with a Pennsylvania county shape file, county per capita income estimates and percentage of people in poverty estimates using the left_join () function. These data frames were joined by the county column. We also looked at lead concentrations that exceeded air quality standards of .15 micrograms per cubic meter for 2010, 2015, and 2020. To obtain max lead concentrations over .15 micrograms per cubic meter, values that exceeded this limit in the EPA air lead concentration were filtered out of the EPA air lead concentration data using the filter() function. 
+
+### Exploratory Analysis 
+Data exploration used graphs to visually analyze lead concentration for 2010, 2015 and 2020. Different data visualization techniques were experimented with to determine what best represented the data and made the graphs visually appealing. Mean population for each county was also considered as a variable for spatial associations of high lead concentrations but this did not prove to be useful when graphed. This variable was taken out of the analysis. 
+
+### Data Analysis 
+Analysis consisted of overlaying per capita income and percentage of people in poverty estimates on top of mean and max air lead concentration values. In the end, maps were created for lead concentration levels paired with either per capita income or percentage of persons below poverty for all years. These were visually compared to each other to determine trends in the past to years and if the variables used showed spatial association. Maps were also created for the max lead concentration levels that were above .15 micrograms per cubic meter. These were used to analyze differences between all three years. 
 
 ## Question 3: Is lead exposure (measured via blood lead levels) in children in Pennsylvania associated with air lead emission sources?
+### Data Wrangling
+1. Matching coordinates with counties
+Shape files for specific metal processing plants, incinerators, and airports were individually read as separate dataframes and converted to ‘sf’ dataframes within R, and the ‘st_intersects’ function was used in conjunction with U.S. 2010 census data to identify in which county each of these features were located. 
+
+Specific types of metal processing plants, incinerators, and airports were filtered out using the filter() function for a variety of criteria specified in the Dataset Description section of this document. 
+
+2. Combining datasets into one (converted column classes, renamed columns)
+It was important to compile attribute information for each county into a single dataframe so that a regression could be run upon each county observation. In order to combine separate dataframes for the aforementioned shapefiles, class differences and syntax differences between the columns and their values were resolved. Common changes that had to occur were getting rid of leading zeros (001 vs. 1) and renaming the county code columns for each attribute to “COUNTYFP10” (later on, Jack’s county per capita income and county poverty sf dataframes were merged into this dataframe to include more variables into the model). 
+
+3. Cleaning and prepping data
+Data was cleaned and prepped for transformations: replaced NA’s with zeros for the plant/airport data and added small integer values to all data in order to log transform variables with values of zero. 
+
+### Exploratory Analysis 
+1. Examined distribution of variables and transformed where necessary
+The variables’ distributions were examined, and individual scatter plots for each explanatory variable (EV) were created against the response variables to check for linearity. Based on these results, the metal processing plant data (METAL) and incinerator data (INCINERATE) were logged, and the county poverty data (POV) were squared to be a quadratic term. Residuals v Fitted graphs of these showed better fits. 
+### Data Analysis 
+2. Tested assumptions 
+An ordinary least squares (OLS) multilinear regression was carried out. The following assumptions were tested for: linearity, homoscedasticity, multicollinearity, and normality. 
+
+Based on the residuals vs fitted plot, the final model is non-linear. It possesses an upward-cone shape and the red trend line sharply trails off at higher fitted values. 
+The final model appears to be heteroskedastic based on its scale-location graph, which sharply deviates from zero at higher fitted values. This model does not meet the homoskedasticity assumption. 
+Multicollinearity was examined using the vif() function, which conducts a Variance Inflation Factor between explanatory variables. Values above two are considered moderately correlated, but given how close two most of them were, mean-centering was not performed. 
+This model met the normality assumption based on the Normal Q-Q plot. 
 \newpage
-# Exploratory Analysis 
+# 
 ```{r exploratory-analysis, include= FALSE, warning = FALSE,message=FALSE}
 #
-dim(epa.PAair.lead)
-colnames(epa.PAair.lead)
-head(epa.PAair.lead)
-
 #Cleaned and Processed EPA PA Air Lead Data
 epa.PA.airPb.processed <- epa.PAair.lead %>%
                                   select(Date, Site.ID, 
@@ -156,12 +199,22 @@ epa.PA.airPb.processed <- epa.PAair.lead %>%
                                   mutate(Month = month(Date),
                                   Year=year(Date)) %>%
                                   mutate(Date_combined = my(paste0(Month,"-",Year)))
+##### Looking at air lead level averages by metropolitan area 
+#####
+epa.PA.air.Pb.summary.msa <-epa.PAair.lead %>%
+  select(Date, CBSA_NAME, CBSA_CODE, Daily.Mean.Pb.Concentration)%>%
+  group_by(CBSA_NAME) %>%
+  dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))
+epa.PA.air.Pb.summary.msa
 ```
 \newpage
 
-
-# Analysis
+# Results 
 ## Question 1: How do air lead levels vary from 2010 to 2020 across the major metropolitan areas in Pennsylvania?
+From the lineplot of the linearly interpolated daily mean air lead levels for the five metropolitan areas, we see that mean daily lead levels appear to be decreasing from 2010 to 2020. It is important to note that the time intervals vary between the metropolitan areas for mean daily air lead measurements. Mean daily air lead levels were measured from 2010 to 2020 for the Pittsburgh, PA and the Philadelphia-Camden-Wilmington, PA-NJ-DE-MD metropolitan areas. Mean daily air lead levels were measured from 2012 to 2020 for the Lancaster, PA and the Allentown-Bethlehem-Easton, PA-NJ metropolitan areas. The mean daily air lead levels were measured from 2010 to 2018 for the Scranton--Wilkes-Barre--Hazleton, PA metropolitan areas.
+
+To further assess the trends, the non-seasonal Mann-Kendall trend tests for the daily time series objects found that four of the five most populous metropolitan followed significant, monotonic trends for daily and monthly mean air lead levels. The Mann-Kendall trend test for the daily time series found significant (p<0.05) downward monotonic trends for mean daily air lead levels the following metropolitan areas:  Philadelphia-Camden-Wilmington, PA-NJ-DE-MD (tau = -0.168, p-value=< 2.22e-16), Pittsburgh, PA (tau = -0.276, p-value=< 2.22e-16), Allentown-Bethlehem-Easton, PA-NJ (tau= -0.257 , p-value=< 2.22e-16 ), Scranton--Wilkes-Barre--Hazleton, PA (tau=-0.53, , p-value=< 2.22e-16). Lancaster, PA had a downward, non-monotonic trend (p>0.05) for daily mean air lead levels (tau=-0.0181, p-value =0.145). The nonseasonal Mann-Kendall trend tests for the monthly time series objects found significant (p<0.05) downward monotonic trends for the following metropolitan areas: Philadelphia-Camden-Wilmington, PA-NJ-DE-MD (tau=-0.711 , p-value<2.22e-16 ), Pittsburgh, PA (tau=-0.755, p-value<2.22e-16 ), Allentown-Bethlehem-Easton, PA-NJ (tau= -0.378 , p-value= 1.78e-08 ), and Scranton--Wilkes-Barre--Hazleton, PA (tau=-0.593 , p-value<2.22e-16 ). There was a non-monotonic (p-value>0.05) downward trend observed for monthly mean air lead levels in Lancaster, PA (tau= -0.0055, p-value = 0.934).
+
 
 ```{r time_series-data-wrangling,echo=FALSE}
 #Looking at the lead air concentrations for major metropolitan areas in Pennsylvania 
@@ -599,6 +652,7 @@ plot(Phila.msa.Pb.monthly.decomp)
 ```
 
 ## Question 2: What are the spatial associations between air lead levels and socioeconomic factors (ie. income and poverty) across counties in Pennsylvania?
+The spatial analysis confirmed that mean lead concentration levels have gone down from 2010 to 2020. The highest mean concentration levels for 2010 was .15 µg/m^3 compared to .1 µg/m^3 for 2015 and .03 µg/m^3 for 2020. The graphs also showed where high lead concentrations resided in the state of Pennsylvania. Counties that had the highest concentrations were Lancaster, Berks, Lehigh, Beaver, Allegheny, and Indiana. These are areas that have medium levels of people below poverty and tend to have lower per capita income levels compared with the rest of the state. When looking at the amount of maximum lead concentration levels that were above the air quality standard of .15 µg/m^3, 2010 had 7 locations that exceeded this limit. Berks and Beaver each had two areas with readings above .9 µg/m^3. For 2015 and 2020, there were only three locations (for each year) that exceeded the air quality standard limit. Beaver county had zero areas during these years and Berks county reduced to only one reading at approximately .24 µg/m^3. This spatial analysis assists with the time series analysis done in the section above. Moving forward, doing an analysis at a smaller scale would provide improved results. Future analysis could look at counties, such as Berks and Beaver, and perform analysis at the zip code level. 
 
 ```{r spatial-analysis 2010, fig.cap="2010 Mean Lead Levels Across Pennsylvania"}
 #Reduce our data to just one record for each location, computing mean and max daily values 
@@ -656,6 +710,8 @@ ggplot() +
        (µg/m3)")+
   
 ```
+
+
 
 ```{r spatial analysis 2010, echo = false, fig.cap="2010 Mean Lead Levels Across Pennsylvania"}
 ggplot() + 
@@ -823,6 +879,20 @@ ggplot() +
 ```
 
 ## Question 3: Is lead exposure (measured via blood lead levels) in children in Pennsylvania associated with air lead emission sources?
+### Original Model (Model 4)
+#### Blood lead = (\beta1 x metal) + (\beta2 x incinerators) + (\beta3 x airports) + (\beta4 x meanPerCapIncome) + (\beta5 x POV)
+
+### Final Model (Model 9) 
+#### Blood lead = (\beta1 x log_metal) + (\beta2 x log_incinerate) + (\beta4 x meanPerCapIncome) + (\beta5 x POV^2)
+
+This model is statistically insignificant overall, with an f-statistic’s p-value (0.29) being far greater than 0.05. The coefficient of meanPCI (mean per-capita income) was statistically significant (p < 0.05), and can be interpreted as every decrease in income by $2,877 is correlated with a 1% increase in blood-lead levels in children. 
+
+The low significance of this model is not surprising, given the limitations of the data. The number of metal/incinerator plants may not necessarily reflect the quantity of particulate lead being emitted, which likely varies greatly between plants. If data were able to be obtained about how much smoke/lead-particulate matter is being emitted per plant, then that would have been more useful. The same applies to airports; it is likely that the quantity of airports does not matter so much as the number of flights and size of planes cycling through each airport; were FAA data on these parameters available, they would have been carried out. This is ultimately why the airport data was omitted from the final model.
+
+Quantity of plants/airports would have been more useful if the geographic units used in this model were smaller -- county-level data was the smallest data we could work with, given the reported blood lead levels reported by the CDC were at a county level. Another geographical consideration is that lead-emissions from the studied sources may not affect their respective counties and instead disperse to other counties. 
+
+Of further concern with the metal processing data was that the range of metal-processing plants was low across counties (max number of plants was 12, min 0), with the mean being 1.72 plants/county. Such skewness of the mean may not be appropriate for an OLS regression.
+
 ```{r Regression Data Wrangling}
 #
 epa.PAcounty.Pb2 <- epa.PA.airPb.processed %>%    #ADDED BY MAX FOR REGRESSION STUFF 
@@ -1181,8 +1251,6 @@ vif(model9)
 vif(model4)
 
 ```
-
-
 \newpage
 # Summary and Conclusions
 
