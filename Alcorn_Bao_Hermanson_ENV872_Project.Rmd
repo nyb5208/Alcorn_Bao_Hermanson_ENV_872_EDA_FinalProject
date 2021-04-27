@@ -305,15 +305,14 @@ class(Pa.monthly.Pb.MSA$Date_combined)
 ```
 
 
-```{r time-series-visuals}
-#Looking at the top 5 Metropolitan Areas for air Pb concentrations from 2010 to 2020
+```{r time-series-visuals,echo=false,fig.align='left',fig.cap="Monthly Average Pb Air Concentrations from 2010 to 2020 in PA Metro Areas",fig.height = 8, fig.width = 10}
+#Looking at the top 5 Metropolitan Areas for air Pb concentrations from 2010 to 2020 
 #PA Metropolitan Area
 PAmonthly_plot<-ggplot(Pa.monthly.Pb.MSA,aes(x = Date_combined,
                       y = Mean.monthly.Pb, color= CBSA))+
                       geom_line() +
                       labs(y="Monthly Average Pb Air Concentration (ug/m^3)",
-                           x="Date",
-                          title="Monthly Average Pb Air Concentrations from 2010 to 2020 in PA Metro Areas")+
+                           x="Date")+
                           scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
                                        limits=c(as.Date("2010-01-01"), as.Date("2021-01-01")),
              expand=c(0,0))+
@@ -391,7 +390,7 @@ Lancaster.msa.Pb.cleaned <-Lancaster.msa.Pb %>%
            add_column(MSA=c("Lancaster, PA"))
 ```
 
-```{r linear-interp-visual,echo=FALSE}
+```{r linear-interp-visual,echo=FALSE, fig.align='left',fig.cap="Daily average air Pb levels from 2010 to 2020 in the five most populous metropolitan areas in PA",fig.height = 8, fig.width = 10}
 #first I joined all the linear interpolated data together
 PA.msa.Pb.cleaned <-rbind(Phila.msa.Pb.cleaned,Pitt.msa.Pb.cleaned,Allentown.msa.Pb.cleaned,Scranton.msa.Pb.cleaned, Lancaster.msa.Pb.cleaned)
 class(PA.msa.Pb.cleaned$Date)
@@ -401,7 +400,7 @@ PA.msa.Pb.cleaned.plot<-ggplot(PA.msa.Pb.cleaned, aes(x = Date,
                       geom_line() +
                       labs(y="Daily Average Air Pb Level (ug/m^3)",
                            x="Date",
-                          title="Daily Average Air Pb Levels from 2010 to 2020 in Metropolitan Areas in PA",
+                          title="",
                           color="")+
                           scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
                                        limits=c(as.Date("2010-01-01"), as.Date("2021-01-01")),
@@ -414,7 +413,7 @@ print(PA.msa.Pb.cleaned.plot)
 
 ```
 
-```{r time-series-analysis}
+```{r time-series-analysis, include=FALSE}
 #I am looking at the  metropolitan areas with Air Pb Levels that exceeded the EPA primary and secondary NAAQs
 #Pittsburgh
 Pitt.msa.linear.interp.plot <-ggplot(Pitt.msa.Pb.cleaned)+
@@ -652,9 +651,9 @@ plot(Phila.msa.Pb.monthly.decomp)
 ```
 
 ## Question 2: What are the spatial associations between air lead levels and socioeconomic factors (ie. income and poverty) across counties in Pennsylvania?
-The spatial analysis confirmed that mean lead concentration levels have gone down from 2010 to 2020. The highest mean concentration levels for 2010 was .15 µg/m^3 compared to .1 µg/m^3 for 2015 and .03 µg/m^3 for 2020. The graphs also showed where high lead concentrations resided in the state of Pennsylvania. Counties that had the highest concentrations were Lancaster, Berks, Lehigh, Beaver, Allegheny, and Indiana. These are areas that have medium levels of people below poverty and tend to have lower per capita income levels compared with the rest of the state. When looking at the amount of maximum lead concentration levels that were above the air quality standard of .15 µg/m^3, 2010 had 7 locations that exceeded this limit. Berks and Beaver each had two areas with readings above .9 µg/m^3. For 2015 and 2020, there were only three locations (for each year) that exceeded the air quality standard limit. Beaver county had zero areas during these years and Berks county reduced to only one reading at approximately .24 µg/m^3. This spatial analysis assists with the time series analysis done in the section above. Moving forward, doing an analysis at a smaller scale would provide improved results. Future analysis could look at counties, such as Berks and Beaver, and perform analysis at the zip code level. 
+The spatial analysis confirmed that mean lead concentration levels have gone down from 2010 to 2020. The highest mean concentration levels for 2010 was .15 /mug/m^3 compared to .1 /mug/m^3 for 2015 and .03 /mug/m^3 for 2020. The graphs also showed where high lead concentrations resided in the state of Pennsylvania. Counties that had the highest concentrations were Lancaster, Berks, Lehigh, Beaver, Allegheny, and Indiana. These are areas that have medium levels of people below poverty and tend to have lower per capita income levels compared with the rest of the state. When looking at the amount of maximum lead concentration levels that were above the air quality standard of .15 /mug/m^3, 2010 had 7 locations that exceeded this limit. Berks and Beaver each had two areas with readings above .9 /mug/m^3. For 2015 and 2020, there were only three locations (for each year) that exceeded the air quality standard limit. Beaver county had zero areas during these years and Berks county reduced to only one reading at approximately .24 /mug/m^3. This spatial analysis assists with the time series analysis done in the section above. Moving forward, doing an analysis at a smaller scale would provide improved results. Future analysis could look at counties, such as Berks and Beaver, and perform analysis at the zip code level. 
 
-```{r spatial-analysis 2010, fig.cap="2010 Mean Lead Levels Across Pennsylvania"}
+```{r spatial-analysis 2010, echo=FALSE, fig.cap="2010 Mean Lead Levels Across Pennsylvania",fig.align='left',fig.height = 8, fig.width = 10}
 #Reduce our data to just one record for each location, computing mean and max daily values 
 
 EPAair_PA_Lead_avg2010 <- epa.PAlead.2010 %>%
@@ -707,13 +706,13 @@ ggplot() +
    labs(fill = "% Pop in Poverty")+
   geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
    labs(size="Lead Values
-       (µg/m3)")+
+       (/mug/m3)")+
   
 ```
 
 
 
-```{r spatial analysis 2010, echo = false, fig.cap="2010 Mean Lead Levels Across Pennsylvania"}
+```{r spatial analysis 2010, echo=FALSE, fig.cap="2010 Mean Lead Levels Across Pennsylvania",fig.align='left',fig.height = 8, fig.width = 10}
 ggplot() + 
   geom_sf(data=PA_county_2010,aes(fill = meanPCI),alpha=0.3) + 
   scale_fill_gradient2(low="red",high="blue", midpoint = 28000, breaks=c(16000,28000, 40000)) + 
@@ -721,11 +720,11 @@ ggplot() +
     Income")+
   geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
    labs(size="Lead Values
-       (µg/m3)")+
+       (/mug/m3)")+
   
 ```
 
-```{r spatial-analysis 2010, echo = false, fig.cap=""2010 Max Lead Levels over .15 (µg/m3)"}
+```{r spatial-analysis 2010, echo=FALSE, fig.cap="2010 Max Lead Levels over .15 (µg/m3)",fig.align='left',fig.height = 8, fig.width = 10}
 
 ggplot() + 
   geom_sf(data=PA_county_2010,aes(fill = meanPCI),alpha=0.3) + 
@@ -741,7 +740,7 @@ ggplot() +
 ```
 
 
-```{r spatial analysis 2015, fig.cap="2015 Mean Lead Levels Across Pennsylvania"}
+```{r spatial analysis 2015, echo=FALSE, fig.cap="2015 Mean Lead Levels Across Pennsylvania", fig.align='left',fig.height = 8, fig.width = 10}
 #Reduce our data to just one record for each location, computing mean and max daily values 
 EPAair_PA_Lead_avg2015 <- epa.PAlead.2015 %>%
   group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
@@ -809,7 +808,7 @@ ggplot() +
   ggtitle("2015 Max Lead Levels over .15 (µg/m3)")
 ```
 
-```{r spatial analysis 2020, fig.cap="2020 Mean Lead Levels Across Pennsylvania"}
+```{r spatial analysis 2020, echo=FALSE,fig.cap="2020 Mean Lead Levels Across Pennsylvania", fig.align='left',fig.height = 8, fig.width = 10}
 #Reduce our data to just one record for each location, computing mean and max daily values 
 EPAair_PA_Lead_avg2020 <- epa.PAlead.2020 %>%
   group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
@@ -851,7 +850,7 @@ ggplot() +
 ```
 
 
-```{r spatial analysis 2020, echo=FALSE, fig.cap="2020 Mean Lead Levels Across Pennsylvania"}
+```{r spatial analysis 2020, echo=FALSE, fig.cap="2020 Mean Lead Levels Across Pennsylvania", fig.align='left',fig.height = 8, fig.width = 10}
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPCI),alpha=0.3) + 
    scale_fill_gradient2(low="red",high="blue", midpoint = 35000, breaks=c(21000,35000, 47000)) +
@@ -864,7 +863,7 @@ ggplot() +
 ```
 
 
-```{r spatial analysis 2020, echo=FALSE, fig.cap="2020 Max Lead Levels over .15 (µg/m3)"}
+```{r spatial analysis 2020, echo=FALSE, fig.cap="2020 Max Lead Levels over .15 (µg/m3)",fig.align='left',fig.height = 8, fig.width = 10}
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPCI),alpha=0.3) + 
   scale_fill_gradient2(low="red",high="blue", midpoint = 35000, breaks=c(21000,35000, 47000)) +
@@ -893,7 +892,7 @@ Quantity of plants/airports would have been more useful if the geographic units 
 
 Of further concern with the metal processing data was that the range of metal-processing plants was low across counties (max number of plants was 12, min 0), with the mean being 1.72 plants/county. Such skewness of the mean may not be appropriate for an OLS regression.
 
-```{r Regression Data Wrangling}
+```{r Regression Data Wrangling,include=FALSE}
 #
 epa.PAcounty.Pb2 <- epa.PA.airPb.processed %>%    #ADDED BY MAX FOR REGRESSION STUFF 
    select(Date,COUNTY, Daily.Mean.Pb.Concentration, COUNTY_CODE) %>%
@@ -1049,9 +1048,6 @@ i_a_m_b_join[is.na(i_a_m_b_join)] = 0  #remove NAs
 
 ```
 
-#### II 
-
-
 ```{r setuping section, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Histograms of Emission Sites" }
 ### Data Visualization ####
 library(ggplot2)
@@ -1069,7 +1065,7 @@ p2
 p3
 ```
 
-```{r sum stats1, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Summary Statistics of Metal" }
+```{r sum stats1, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Summary Statistics of Metal", fig.align='left',fig.height = 8, fig.width = 10}
 #summary stats tables
 summary.metal <- i_a_m_b_join %>% 
   select(number_metal_plants) %>% 
@@ -1095,7 +1091,7 @@ summary.incinerate <- i_a_m_b_join %>%
 glimpse(summary.incinerate)
 ```
 
-```{r sum stats3, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Summary Statistics of Airports" }
+```{r sum stats3, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Summary Statistics of Airports",fig.height = 8, fig.width = 10, fig.align='left'}
 summary.airport <- i_a_m_b_join %>% 
   select(number_airports) %>% 
   dplyr::summarize(Length=length(number_airports),
@@ -1199,7 +1195,6 @@ plot(model4)
 plot(model9)
 
 ```
-### III 
 
 ```{r setup, include = FALSE}
 par(mfrow=c(2,2), mar = c(2,2,2,2))
@@ -1231,7 +1226,7 @@ ggplot(i_a_m_b_join, aes(number_airports, Percent_.5)) +
   stat_smooth(method = lm, se = FALSE)
 ```
 
-```{r analyis final, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Model Assumption Plots"  }
+```{r analyis final, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Model Assumption Plots",fig.align='left',fig.height = 8, fig.width = 10}
 #homoskedasticity and normality 
 par(mfrow=c(2,2), mar = c(2,2,2,2))
 #plot(model4)
@@ -1239,7 +1234,7 @@ plot(model9)
 #summary(model4)
 ```
 
-```{r Summary final, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Final Model Summary"  }
+```{r Summary final, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Final Model Summary", fig.height = 8, fig.width = 10, fig.align='left'}
 summary(model9)
 #AIC(model4)
 AIC(model9)
