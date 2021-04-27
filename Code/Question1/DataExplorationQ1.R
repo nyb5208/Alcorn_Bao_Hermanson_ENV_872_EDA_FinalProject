@@ -70,10 +70,27 @@ epa.PA.airPb.processed <- epa.PAair.lead %>%
   mutate(Month = month(Date),
          Year=year(Date)) %>%
   mutate(Date_combined = my(paste0(Month,"-",Year)))
-##### Looking at air lead level averages by metropolitan area
+##### Looking at air lead level averages by metropolitan area 
 #####
 epa.PA.air.Pb.summary.msa <-epa.PAair.lead %>%
   select(Date, CBSA_NAME, CBSA_CODE, Daily.Mean.Pb.Concentration)%>%
   group_by(CBSA_NAME) %>%
   dplyr::summarise(Mean.monthly.Pb = mean(Daily.Mean.Pb.Concentration))
 epa.PA.air.Pb.summary.msa
+#Prior to linear interpolation of data 
+#Looking at the top 5 Metropolitan Areas for air Pb concentrations from 2010 to 2020
+#PA Metropolitan Area
+PAmonthly_plot<-ggplot(Pa.monthly.Pb.MSA,aes(x = Date_combined,
+                                             y = Mean.monthly.Pb, color= CBSA))+
+  geom_line() +
+  labs(y="Monthly Average Pb Air Concentration (ug/m^3)",
+       x="Date",
+       title="Monthly Average Pb Air Concentrations from 2010 to 2020 in PA Metro Areas")+
+  scale_x_date(date_breaks = "3 months",date_labels = "%b %Y",
+               limits=c(as.Date("2010-01-01"), as.Date("2021-01-01")),
+               expand=c(0,0))+
+  theme(axis.text.x=element_text(angle=90, hjust=1))+
+  geom_hline(yintercept=0.15, linetype='dotted', col = 'black')+
+  annotate("text", x = as.Date("2016-12-01", "%Y-%m-%d"), y = 0.15,
+           label = "EPA Primary and Secondary 3-month Average Pb NAAQ Standard=0.15ug/m^3", vjust = -0.5)
+print(PAmonthly_plot)
