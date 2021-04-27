@@ -5,6 +5,10 @@ EPAair_PA_Lead_avg2010 <- epa.PAlead.2010 %>%
   summarize(meanPb = mean(Daily.Mean.Pb.Concentration),
             maxPb = max(Daily.Mean.Pb.Concentration))
 
+EPAair_PA_Lead_avg2015 <- epa.PAlead.2015 %>%
+  group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
+  summarize(meanPb = mean(Daily.Mean.Pb.Concentration),
+            maxPb = max(Daily.Mean.Pb.Concentration))
 
 EPAair_PA_Lead_avg2020 <- epa.PAlead.2020 %>%
   group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
@@ -19,7 +23,12 @@ sf_PA_Lead_avg2010 <- st_as_sf(EPAair_PA_Lead_avg2010,
 sf_PA_Lead_high_2010<-filter(sf_PA_Lead_avg2010, maxPb > 0.15)
 range(sf_PA_Lead_high_2010$meanPb)
 
+sf_PA_Lead_avg2015 <- st_as_sf(EPAair_PA_Lead_avg2015,
+                               coords = c('SITE_LONGITUDE','SITE_LATITUDE'),
+                               crs=4326)
 
+sf_PA_Lead_high_2015<-filter(sf_PA_Lead_avg2015, maxPb > 0.15)
+range(sf_PA_Lead_high_2010$meanPb)
 
 sf_PA_Lead_avg2020 <- st_as_sf(EPAair_PA_Lead_avg2020,
                                coords = c('SITE_LONGITUDE','SITE_LATITUDE'),
@@ -53,7 +62,23 @@ range(CDC_PA_2010_avg$meanPCI)
 #join CDC data and county shape file
 PA_county_2010<-left_join(counties_sf, CDC_PA_2010_avg, by = c("CNTY_FIPS"))
 
-#2018
+#2015
+CDC_PA_2014<-read.csv("./Data/Raw/Pennsylvania_CDC_2014.csv", header = TRUE)
+
+CDC_PA_2014$CNTY_FIPS<-as.numeric(CDC_PA_2014$CNTY_FIPS)
+
+CDC_PA_2014_avg<-CDC_PA_2014%>%
+  group_by(COUNTY) %>%
+  summarize(meanPCI = mean(E_PCI),
+            meanPOV = mean(EP_POV),
+            meanPOP = sum(E_TOTPOP))
+
+CDC_PA_2014_avg<-mutate(CDC_PA_2014_avg, meanPOV = (meanPOV/100))
+CDC_PA_2014_avg$CNTY_FIPS<-CDC_PA_2010_avg$CNTY_FIPS
+#join CDC data and county shape file
+PA_county_2014<-left_join(counties_sf, CDC_PA_2014_avg, by = c("CNTY_FIPS"))
+
+#2020
 CDC_PA_2018<-read.csv("./Data/Raw/Pennsylvania_CDC_2018.csv", header = TRUE)
 
 CDC_PA_2018$CNTY_FIPS<-as.numeric(CDC_PA_2018$CNTY_FIPS)
