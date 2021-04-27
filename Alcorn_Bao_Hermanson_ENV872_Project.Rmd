@@ -24,7 +24,7 @@ editor_options:
 \listoffigures 
 \newpage
 
-```{r setup, include=FALSE}
+```{r setup1, include=FALSE}
 # Set your working directory
 getwd()
 # Load your packages
@@ -305,7 +305,7 @@ class(Pa.monthly.Pb.MSA$Date_combined)
 ```
 
 
-```{r time-series-visuals,echo=false,fig.align='left',fig.cap="Monthly Average Pb Air Concentrations from 2010 to 2020 in PA Metro Areas",fig.height = 8, fig.width = 10}
+```{r time-series-visuals,echo=FALSE ,fig.align='left',fig.cap="Monthly Average Pb Air Concentrations from 2010 to 2020 in PA Metro Areas",fig.height = 8, fig.width = 10}
 #Looking at the top 5 Metropolitan Areas for air Pb concentrations from 2010 to 2020 
 #PA Metropolitan Area
 PAmonthly_plot<-ggplot(Pa.monthly.Pb.MSA,aes(x = Date_combined,
@@ -651,7 +651,7 @@ plot(Phila.msa.Pb.monthly.decomp)
 ```
 
 ## Question 2: What are the spatial associations between air lead levels and socioeconomic factors (ie. income and poverty) across counties in Pennsylvania?
-The spatial analysis confirmed that mean lead concentration levels have gone down from 2010 to 2020. The highest mean concentration levels for 2010 was .15 /mug/m^3 compared to .1 /mug/m^3 for 2015 and .03 /mug/m^3 for 2020. The graphs also showed where high lead concentrations resided in the state of Pennsylvania. Counties that had the highest concentrations were Lancaster, Berks, Lehigh, Beaver, Allegheny, and Indiana. These are areas that have medium levels of people below poverty and tend to have lower per capita income levels compared with the rest of the state. When looking at the amount of maximum lead concentration levels that were above the air quality standard of .15 /mug/m^3, 2010 had 7 locations that exceeded this limit. Berks and Beaver each had two areas with readings above .9 /mug/m^3. For 2015 and 2020, there were only three locations (for each year) that exceeded the air quality standard limit. Beaver county had zero areas during these years and Berks county reduced to only one reading at approximately .24 /mug/m^3. This spatial analysis assists with the time series analysis done in the section above. Moving forward, doing an analysis at a smaller scale would provide improved results. Future analysis could look at counties, such as Berks and Beaver, and perform analysis at the zip code level. 
+The spatial analysis confirmed that mean lead concentration levels have gone down from 2010 to 2020. The highest mean concentration levels for 2010 was .15 ug/m^3 compared to .1 ug/m^3 for 2015 and .03 ug/m^3 for 2020. The graphs also showed where high lead concentrations resided in the state of Pennsylvania. Counties that had the highest concentrations were Lancaster, Berks, Lehigh, Beaver, Allegheny, and Indiana. These are areas that have medium levels of people below poverty and tend to have lower per capita income levels compared with the rest of the state. When looking at the amount of maximum lead concentration levels that were above the air quality standard of .15 ug/m^3, 2010 had 7 locations that exceeded this limit. Berks and Beaver each had two areas with readings above .9 ug/m^3. For 2015 and 2020, there were only three locations (for each year) that exceeded the air quality standard limit. Beaver county had zero areas during these years and Berks county reduced to only one reading at approximately .24 ug/m^3. This spatial analysis assists with the time series analysis done in the section above. Moving forward, doing an analysis at a smaller scale would provide improved results. Future analysis could look at counties, such as Berks and Beaver, and perform analysis at the zip code level. 
 
 ```{r spatial-analysis 2010, echo=FALSE, fig.cap="2010 Mean Lead Levels Across Pennsylvania",fig.align='left',fig.height = 8, fig.width = 10}
 #Reduce our data to just one record for each location, computing mean and max daily values 
@@ -706,13 +706,13 @@ ggplot() +
    labs(fill = "% Pop in Poverty")+
   geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
    labs(size="Lead Values
-       (/mug/m3)")+
+       (ug/m3)")+
   
 ```
 
 
 
-```{r spatial analysis 2010, echo=FALSE, fig.cap="2010 Mean Lead Levels Across Pennsylvania",fig.align='left',fig.height = 8, fig.width = 10}
+```{r spatial analysis 2010.2, echo=FALSE, fig.cap="2010 Mean Lead Levels Across Pennsylvania",fig.align='left',fig.height = 8, fig.width = 10}
 ggplot() + 
   geom_sf(data=PA_county_2010,aes(fill = meanPCI),alpha=0.3) + 
   scale_fill_gradient2(low="red",high="blue", midpoint = 28000, breaks=c(16000,28000, 40000)) + 
@@ -720,11 +720,11 @@ ggplot() +
     Income")+
   geom_sf(data=sf_PA_Lead_avg2010, aes(size=meanPb))+
    labs(size="Lead Values
-       (/mug/m3)")+
+       (ug/m3)")+
   
 ```
 
-```{r spatial-analysis 2010, echo=FALSE, fig.cap="2010 Max Lead Levels over .15 (µg/m3)",fig.align='left',fig.height = 8, fig.width = 10}
+```{r spatial-analysis 2010.3, echo=FALSE, fig.cap="2010 Max Lead Levels over .15 (µg/m3)",fig.align='left',fig.height = 8, fig.width = 10}
 
 ggplot() + 
   geom_sf(data=PA_county_2010,aes(fill = meanPCI),alpha=0.3) + 
@@ -740,7 +740,7 @@ ggplot() +
 ```
 
 
-```{r spatial analysis 2015, echo=FALSE, fig.cap="2015 Mean Lead Levels Across Pennsylvania", fig.align='left',fig.height = 8, fig.width = 10}
+```{r spatial analysis 2015.4, echo=FALSE, fig.cap="2015 Mean Lead Levels Across Pennsylvania", fig.align='left',fig.height = 8, fig.width = 10}
 #Reduce our data to just one record for each location, computing mean and max daily values 
 EPAair_PA_Lead_avg2015 <- epa.PAlead.2015 %>%
   group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
@@ -783,7 +783,7 @@ ggplot() +
 ```
 
 
-```{r spatial analysis 2015, echo=FALSE, fig.cap="2015 Mean Lead Levels Across Pennsylvania"}
+```{r spatial analysis 2015.5, echo=FALSE, fig.cap="2015 Mean Lead Levels Across Pennsylvania"}
 ggplot() + 
   geom_sf(data=PA_county_2014,aes(fill = meanPCI),alpha=0.3) + 
    scale_fill_gradient2(low="red",high="blue", midpoint = 30000, breaks=c(18000,30000, 40000)) +
@@ -796,7 +796,7 @@ ggplot() +
 ```
 
 
-```{r spatial analysis 2015, echo=FALSE, fig.cap="2015 Max Lead Levels over .15 (µg/m3)"}
+```{r spatial analysis 2015.6, echo=FALSE, fig.cap="2015 Max Lead Levels over .15 (µg/m3)"}
 ggplot() + 
   geom_sf(data=PA_county_2014,aes(fill = meanPCI),alpha=0.3) + 
   scale_fill_gradient2(low="red",high="blue", midpoint = 30000, breaks=c(18000,30000, 40000)) +
@@ -808,7 +808,7 @@ ggplot() +
   ggtitle("2015 Max Lead Levels over .15 (µg/m3)")
 ```
 
-```{r spatial analysis 2020, echo=FALSE,fig.cap="2020 Mean Lead Levels Across Pennsylvania", fig.align='left',fig.height = 8, fig.width = 10}
+```{r spatial analysis 2020.1, echo=FALSE,fig.cap="2020 Mean Lead Levels Across Pennsylvania", fig.align='left',fig.height = 8, fig.width = 10}
 #Reduce our data to just one record for each location, computing mean and max daily values 
 EPAair_PA_Lead_avg2020 <- epa.PAlead.2020 %>%
   group_by(COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>%
@@ -850,7 +850,7 @@ ggplot() +
 ```
 
 
-```{r spatial analysis 2020, echo=FALSE, fig.cap="2020 Mean Lead Levels Across Pennsylvania", fig.align='left',fig.height = 8, fig.width = 10}
+```{r spatial analysis 2020.2, echo=FALSE, fig.cap="2020 Mean Lead Levels Across Pennsylvania", fig.align='left',fig.height = 8, fig.width = 10}
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPCI),alpha=0.3) + 
    scale_fill_gradient2(low="red",high="blue", midpoint = 35000, breaks=c(21000,35000, 47000)) +
@@ -863,7 +863,7 @@ ggplot() +
 ```
 
 
-```{r spatial analysis 2020, echo=FALSE, fig.cap="2020 Max Lead Levels over .15 (µg/m3)",fig.align='left',fig.height = 8, fig.width = 10}
+```{r spatial analysis 2020.3, echo=FALSE, fig.cap="2020 Max Lead Levels over .15 (µg/m3)",fig.align='left',fig.height = 8, fig.width = 10}
 ggplot() + 
   geom_sf(data=PA_county_2018,aes(fill = meanPCI),alpha=0.3) + 
   scale_fill_gradient2(low="red",high="blue", midpoint = 35000, breaks=c(21000,35000, 47000)) +
