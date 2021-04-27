@@ -85,16 +85,27 @@ epa.PAair.lead <-rbind(epa.PAlead.2010, epa.PAlead.2011, epa.PAlead.2012, epa.PA
 epa.PAair.lead$Date <- as.Date(epa.PAair.lead$Date, format="%m/%d/%Y")
 class(epa.PAair.lead$Date)
 ```
+# Introduction
+Lead is a heavy metal that is naturally found in the Earth’s crust and commonly used in many human products and industries (WHO, 2019). However, its ubiquitous use has caused extensive environmental contamination and public health concerns in many parts of the world (Ab Latif Wani and Usmani, 2015). Main sources of lead contamination include mining, smelting, manufacturing, recycling activities, leaded paint, leaded gasoline, and leaded aviation fuel (US EPA, 2021a). Over three quarters of global lead consumption is for the manufacturing of lead-acid batteries for motor vehicles (WHO, 2019). 
 
+Once ingested, lead spreads through the blood into other parts of the body.  Depending on the level of exposure, lead can adversely affect the nervous system, kidney function, immune system, reproductive and developmental systems and the cardiovascular system (US EPA, 2020a).  One of the biggest health concerns of lead consumption is the neurological effects on children. Children are particularly sensitive to lead exposure and can have side effects such as behavioral problems, learning disabilities, and lower IQ (Ab Latif Wani and Usmani, 2015). 
 
-# Rationale and Research Questions
->
+Currently, the National Ambient Air Quality Standards (NAAQS) for lead are 0.15 micrograms per cubic meter Pb in total suspended particles as a 3-month average (US EPA, 2021b). Air quality monitors are placed throughout the United States in order to measure air lead levels. In our project, we look at lead air quality monitors in the state of Pennsylvania from 2010 to 2020.
 
-- ***Question 1: How do air lead concentrations vary from 2010 to 2020 across Pennsylvania?***
+# Rationale
+In this study, we were interested in evaluating lead air pollution in Pennsylvania. In the 2019 United Health Foundation’s annual American Health Rankings report, Pennsylvania was rated 47th in the United States for air quality (United Health Foundation, 2019). The metropolitan areas around major Pennsylvania cities such as Pittsburgh, Philadelphia, and Lancaster are currently ranked among the top 25 most polluted in the country (American Lung Association, 2021). Pennsylvania’s pollution history is embedded in various industries such as agriculture, manufacturing steel production, and coal mining and smelting (Stevens, 1955). The latter two have contributed to the current sources of lead pollution in the air, soil, and water around the state (O’Shea et al., 2020). 
 
-- ***Question 2: Where are the hotspots for air lead concentrations in Pennsylvania?***
+Other historical uses of lead in paints, gasoline, water pipes, and  batteries fueled the lead smelting industries in the state, especially in major cities like Philadelphia (O’Shea et al., 2020). From a 2014 report from the Pennsylvania  Department of Health, approximately 70% of homes in Pennsylvania were built prior to the leaded paint ban in 1978 (PA Department of Health, 2014); this has become a major source of human lead exposure as homes begin aging and the leaded paint chips deposit into the soil (O’Shea et al., 2020; PA Department of Health, 2014). Current industrial emissions (e.g. from smelters, airports, metal processing facilities, incinerators) and lead from historical uses are now found in soils and roadside dust that get resuspended into the ambient air (US EPA, 2021a). Humans can be exposed to lead via inhalation of resuspended dust and soil particles containing lead in the air. Humans may also be exposed via ingestion of lead-contaminated water, food, and dust (Pizzol and Andersen, 2010). 
 
-- ***Question 3: PA Income, resperitory disease, water lead levels, number of: airports, metal processing plants, coal plants, incinerators***
+Considering Pennsylvania’s industrial and historical uses of lead as well as its current air quality status, we were interested in current air lead pollution levels and lead exposure levels in Pennsylvania. We decided to look at more recent temporal trends of air lead levels of the EPA criteria pollutant, and chose a ten-year period from 2010 to 2020. Furthermore, we were interested in identifying how air lead levels were spatially associated with socioeconomic factors including income and poverty at the county level. As lead is an EPA criteria pollutant, we were also interested in exploring how sources of air lead (e.g. frequency of metal processing plants, airports, incinerators) may be associated with lead exposure in children in Pennsylvania. These analyses are summarized in the following research questions: 
+
+##Research Questions:
+
+1. ***How do air lead levels vary from 2010 to 2020 across the major metropolitan areas in Pennsylvania?***
+
+2. ***What are the spatial associations between air lead levels and socioeconomic factors (ie. income and poverty) across counties in Pennsylvania?***
+
+3. ***Is lead exposure (measured via blood lead levels) in children in Pennsylvania associated with air lead emission sources?***
 
 
 \newpage
