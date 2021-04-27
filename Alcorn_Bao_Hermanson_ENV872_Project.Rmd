@@ -84,11 +84,6 @@ epa.PAair.lead <-rbind(epa.PAlead.2010, epa.PAlead.2011, epa.PAlead.2012, epa.PA
 #Change date variable from factor to date
 epa.PAair.lead$Date <- as.Date(epa.PAair.lead$Date, format="%m/%d/%Y")
 class(epa.PAair.lead$Date)
-#___________________
-#Read in PA Counties shp file (State FIPS = 42)
-PA_county_sf <- st_read("./Data/Spatial/cb_2018_us_county_20m.shp") %>%
-filter(STATEFP == 42)
-
 ```
 
 
