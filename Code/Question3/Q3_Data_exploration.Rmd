@@ -102,4 +102,42 @@ plot(model9)
 
 
 
+summary.metal <- i_a_m_b_join %>% 
+  select(number_metal_plants) %>% 
+  dplyr::summarize(length.methane=length(number_metal_plants),
+                   mean.methane=mean(number_metal_plants),
+                   median.methane=median(number_metal_plants),
+                   sd.methane=sd(number_metal_plants),
+                   min.methane=min(number_metal_plants),
+                   max.methane=max(number_metal_plants)
+                   ) 
+glimpse(summary.metal)
+
+
+library(gt)
+summary.metal %>% 
+  gt() %>% 
+  tab_header(
+    title= md("Summary Statistics of Metal Plants in PA")
+  ) %>% 
+  
+  
+  fmt_passthrough(columns=vars(length.methane, mean.methane, median.methane, sd.methane, min.methane, max.methane)) %>% 
+  fmt_number(columns=vars(length.methane),decimals=2) %>% 
+  fmt_number(columns=vars(mean.methane), decimals=2) %>% 
+  fmt_number(columns=vars(median.methane), decimals = 2) %>% 
+  fmt_number(columns=vars(sd.methane), decimals = 2) %>% 
+  fmt_number(columns=vars(min.methane), decimals = 2) %>% 
+  fmt_number(columns=vars(max.methane), decimals = 2) %>% 
+
+  cols_label(
+    length.methane="Observations",
+    median.methane="Median",
+    mean.methane="Mean",
+    sd.methane="SD",
+    min.methane = "Min",
+    max.methane = "Max",
+    
+  )  
+summary.metal
 ```
