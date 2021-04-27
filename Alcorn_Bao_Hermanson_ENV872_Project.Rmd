@@ -18,7 +18,6 @@ editor_options:
 
 \newpage
 \tableofcontents 
-
 \newpage
 \listoftables
 \newpage
@@ -107,15 +106,40 @@ Considering Pennsylvania’s industrial and historical uses of lead as well as i
 
 3. ***Is lead exposure (measured via blood lead levels) in children in Pennsylvania associated with air lead emission sources?***
 
-
 \newpage
 
 # Dataset Information
 
+## CDC Childhood Blood Lead Surveillance Data: Blood Lead Levels (µg/dL) among Children < 72 Months of Age, by County and Blood Lead Level (BLL) Group, 2017 (.csv)
+>The CDC has a national surveillance system for assessing blood lead levels (BLL). Data is collected from health-care provider reports to the CDC on a variety of metrics, which include number of patients with BLL greater than 5 µg/dL, and the average BLL of counties. The CDC notes these data may be biased by the fact that those who are tested for elevated BLL are typically tested because they predisposed to higher levels due to certain criteria. 
 
+## Federal Aviation Administration Airport Data (shapefile)
+>These data are collected by the FAA through legally-required reporting by existing airports. This dataset is updated regularly, and the data used in our research project was from April, 2021. Notable attributes included for each airport were geographic coordinates, status active, airport purpose, and type of aircraft used at the airport. 
 
+## Pennsylvania Department of Environmental Protection (DEP) Database on Mineral Preparation Plants and Incinerators (shapefile)
+>A mineral preparation plant is a site at which extracted minerals are processed in order to separate and purify elements and compounds of interest. These processes typically require heating the minerals to very high temperatures, which can release lead particulates into the air. The DEP keeps track of the location, owner, site status, and primary facility type of these plants. Data used in this study were dated to April of 2021. 
+
+>Detailed and regular incinerator data is also maintained by the DEP (last updated in April 2021). Incinerators combust waste products, which emits particulate matter whose composition depends upon the type of waste being burned. Incinerators are used for a variety of materials, including garbage, industrial scrap products, hospital waste, and dead organisms or cadavers. Filters were applied to select only industrial-waste-related incinerators that might possess lead particulates. 
+
+## US Census Metropolitan and Micropolitan Statistical Area Population Estimates and Estimated Components of Change: April 1, 2010 to July 1, 2019 
+>Metropolitan and Micropolitan Statistical Area Population Estimates and Estimated Components of Change were collected by the US Census in 2019 across the United States. Estimates for total population size, numeric change in total population, births, deaths, natural increase periods defined by births minus deaths, net domestic migration, net international migration, net migration periods, and residuals from 2011 to 2019 were based on population size data from the 2010 US Census (US Census Bureau, 2020a). The dataset also contains the population size reported in the 2010 US Census as the variable, CENSUS2010POP. The following dataset contained the following identifier variables for the metropolitan and micropolitan statistical areas in the United States: name of the statistical area (NAME), the 5-digit core statistical based area (CBSA) code, and the legal statistical area description (LSAD) (US Census Bureau, 2020b). For this study, only the following variables were used: CBSA, NAME, LSAD, and CENSUS2010POP.
+
+## US EPA Daily Air Lead Data 2010-2020 
+The daily air lead levels data were collected from all outdoor monitoring sites from the US EPA Air Quality System Data Mart. Data for each year were individually downloaded from the US EPA Outdoor Air Quality Database. The daily air lead levels were taken from 24-hr average lead level observations measured in ug/m^3 and recorded by the air quality System (AQS) (About Air Data Reports, 2021). The data included the following variables: date of air lead measurement, source of data, the daily mean lead concentration ug/m^3, daily observation count, and data completion percentage, based on the site monitoring frequency and schedule (About Air Data Reports, 2021). 
+
+The following site identifier variables were also included in the datasets: parameter occurrence code (POC), which specifies the monitor number that collected the data, 5-digit AQS parameter code, site name, 2-digit state federal information processing system (FIPS) code, state name, the 3-digit county FIPS code, county name, site ID (composed of the state FIPs code, county FIPS code, and 4-character AQS code), core statistical based area (CBSA) name and code for the metropolitan area designated to the monitoring site, and the site latitude and longitude coordinates (About Air Data Reports, 2021). 
+
+## CDC Social Vulnerability Data (2010 and 2018)
+
+Social Vulnerability data was collected over five year time periods in the state of Pennsylvania using the American Community Survey. For the 2010 data, data was collected from 2006-2010 and the 2018 data was collected from the years 2014-2018. Questions involved in the survey covered vulnerability topics such as socioeconomic status, household composition and disability, minority status and language, and housing type and transportation. The data set included  over one hundred variables. The variables used in the following analysis include county name, per capita income (E_PCI), and percentage of persons below poverty estimate (EP_POV). 
 \newpage
+# Methods
+## Question 1: How do air lead levels vary from 2010 to 2020 across the major metropolitan areas in Pennsylvania?
 
+## Question 2: What are the spatial associations between air lead levels and socioeconomic factors (ie. income and poverty) across counties in Pennsylvania?
+
+## Question 3: Is lead exposure (measured via blood lead levels) in children in Pennsylvania associated with air lead emission sources?
+\newpage
 # Exploratory Analysis 
 ```{r exploratory-analysis, include= FALSE, warning = FALSE,message=FALSE}
 #
@@ -133,12 +157,12 @@ epa.PA.airPb.processed <- epa.PAair.lead %>%
                                   Year=year(Date)) %>%
                                   mutate(Date_combined = my(paste0(Month,"-",Year)))
 ```
-
-
 \newpage
-# Introduction 
+
 
 # Analysis
+## Question 1: How do air lead levels vary from 2010 to 2020 across the major metropolitan areas in Pennsylvania?
+
 ```{r time_series-data-wrangling,echo=FALSE}
 #Looking at the lead air concentrations for major metropolitan areas in Pennsylvania 
 # Looking at the Combined Statistical Areas (CBSA) to identify the metropolitan areas included in this study
@@ -574,6 +598,8 @@ Phila.msa.Pb.monthly.decomp <- stl(Phila.msa.Pb.monthly.ts, s.window = "periodic
 plot(Phila.msa.Pb.monthly.decomp)
 ```
 
+## Question 2: What are the spatial associations between air lead levels and socioeconomic factors (ie. income and poverty) across counties in Pennsylvania?
+
 ```{r spatial-analysis 2010, fig.cap="2010 Mean Lead Levels Across Pennsylvania"}
 #Reduce our data to just one record for each location, computing mean and max daily values 
 
@@ -796,7 +822,7 @@ ggplot() +
 
 ```
 
-
+## Question 3: Is lead exposure (measured via blood lead levels) in children in Pennsylvania associated with air lead emission sources?
 ```{r Regression Data Wrangling}
 #
 epa.PAcounty.Pb2 <- epa.PA.airPb.processed %>%    #ADDED BY MAX FOR REGRESSION STUFF 
@@ -1159,6 +1185,9 @@ vif(model4)
 
 \newpage
 # Summary and Conclusions
+
+We found that four of the five most populous metropolitan areas Philadelphia-Camden-Wilmington, PA-NJ-DE-MD (2010-2020), Pittsburgh, PA (2010-2020), Allentown-Bethlehem-Easton, PA-NJ (2012-2020), and Scranton--Wilkes-Barre--Hazleton, PA (2010-2018) in Pennsylvania had downward monotonic trends for daily and monthly mean air lead concentrations (p<0.05). The Lancaster, PA metropolitan area did not show a monotonic downward trend for air lead levels, which may be attributed to other factors not explored in this study such as industrial emissions between 2012 and 2020. It is important to note that the downward trend for the other four metropolitan areas may be attributed to the banning of lead in paints in 1978, the banning of lead in vehicle fuels in 1996, the waning of lead-smelting industry, or other factors such as lead abatement programs from 2010 to 2020  in Pennsylvania into the twenty-first century (Schwarz et al., 2012). Future studies may look at conducting multiple linear regression to assess air lead levels in association with remediation measures to reduce air lead exposure or other factors such as climate factors like temperature and wind speed, which may influence quantity of lead in ambient air (Kinney, 2018). Obtaining census-block specific data and air emissions data will enable stronger multilinear regression in future models. 
+
 \newpage
 # References
 <add references here if relevant, otherwise delete this section> 
